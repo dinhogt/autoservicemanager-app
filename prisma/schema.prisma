@@ -1,0 +1,157 @@
+// AutoServiceManager - MySQL datasource (transactional data)
+// Auditoria/eventos: CloudWatch Logs (ADR-010) — Mongo não é mais fonte de audit
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// --- Cadastro ---
+model Cliente {
+  id        String   @id @default(uuid())
+  nome      String
+  cpfCnpj   String   @unique
+  contato   String?
+  enderecos String?  // JSON or comma-separated; can be normalized later
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  veiculos      Veiculo[]
+  ordensServico OrdemServico[]
+
+  @@index([ativo])
+}
+
+model Veiculo {
+  id        String   @id @default(uuid())
+  clienteId String
+  placa     String
+  marca     String?
+  modelo    String?
+  ano       Int?
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cliente       Cliente        @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  ordensServico OrdemServico[]
+
+  @@unique([placa])
+  @@index([ativo])
+}
+
+// --- Catálogo de Serviços ---
+model ServicoCatalogo {
+  id                  String  @id @default(uuid())
+  descricao           String
+  precoBase           Decimal @db.Decimal(10, 2)
+  tempoMedioExecucao  Int     // minutes
+  ativo               Boolean @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  itensServico ItemServicoOs[]
+
+  @@index([ativo])
+}
+
+// --- Estoque ---
+model PecaEstoque {
+  id                   String   @id @default(uuid())
+  descricao            String
+  precoUnitario        Decimal  @db.Decimal(10, 2)
+  quantidadeEmEstoque  Int      @default(0)
+  codigoInterno        String   @unique
+  ativo                Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  itensPeca ItemPecaOs[]
+
+  @@index([ativo])
+}
+
+// --- Atendimento (Ordem de Serviço) ---
+enum StatusOs {
+  RECEBIDA
+  EM_DIAGNOSTICO
+  AGUARDANDO_APROVACAO
+  EM_EXECUCAO
+  FINALIZADA
+  ENTREGUE
+  REJEITADA
+}
+
+model OrdemServico {
+  id            String    @id @default(uuid())
+  clienteId     String
+  veiculoId     String
+  status        StatusOs  @default(RECEBIDA)
+  total         Decimal?  @db.Decimal(12, 2)
+  dataCriacao   DateTime  @default(now())
+  dataConclusao DateTime?
+  dataEntrega   DateTime?
+
+  cliente   Cliente   @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  veiculo   Veiculo  @relation(fields: [veiculoId], references: [id], onDelete: Restrict)
+  itensServico ItemServicoOs[]
+  itensPeca    ItemPecaOs[]
+
+  @@index([dataCriacao])
+  @@index([status])
+  @@index([clienteId])
+  @@index([veiculoId])
+}
+
+model ItemServicoOs {
+  id                String   @id @default(uuid())
+  ordemServicoId    String
+  servicoCatalogoId String
+  quantidade        Int      @default(1)
+  precoAplicado     Decimal  @db.Decimal(10, 2)
+
+  ordemServico   OrdemServico   @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+  servicoCatalogo ServicoCatalogo @relation(fields: [servicoCatalogoId], references: [id], onDelete: Restrict)
+
+  @@unique([ordemServicoId, servicoCatalogoId])
+}
+
+model ItemPecaOs {
+  id             String   @id @default(uuid())
+  ordemServicoId String
+  pecaEstoqueId  String
+  quantidade     Int
+  precoUnitario  Decimal  @db.Decimal(10, 2)
+  reservado      Boolean  @default(false)
+  baixado        Boolean  @default(false)
+
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+  pecaEstoque  PecaEstoque @relation(fields: [pecaEstoqueId], references: [id], onDelete: Restrict)
+
+  @@unique([ordemServicoId, pecaEstoqueId])
+}
+
+// --- Autenticação ---
+enum RoleAdmin {
+  ADMIN
+  GERENTE
+  MECANICO
+  ATENDENTE
+}
+
+model UsuarioAdmin {
+  id        String     @id @default(uuid())
+  nome      String
+  email     String     @unique
+  senhaHash String
+  role      RoleAdmin  @default(ATENDENTE)
+  ativo     Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}

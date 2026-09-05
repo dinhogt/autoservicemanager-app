@@ -1,0 +1,37 @@
+version: 0.2.0
+name: "complexity-profile-selector"
+
+profiles:
+  opc:
+    recommended_flow: "opc-flow"
+    description: "One Person Company Micro SaaS — solo founder with AI"
+  low:
+    recommended_flow: "default-flow"
+    signals_max: 1
+  medium:
+    recommended_flow: "default-flow"
+    signals_min: 2
+    signals_max: 3
+  high:
+    recommended_flow: "complex-flow"
+    signals_min: 4
+
+signals:
+  - id: "opc_mode"
+    description: "flow_config.opc_mode true — solo founder Micro SaaS"
+  - id: "multi_service"
+    description: "More than one deployable service or bounded context"
+  - id: "multi_team"
+    description: "Multiple teams owning different modules"
+  - id: "external_integrations"
+    description: "Third-party APIs, payments, identity providers"
+  - id: "regulated_data"
+    description: "PII, financial, or health-related data"
+  - id: "infra_as_code"
+    description: "Terraform, Pulumi, CloudFormation, or multi-environment IaC"
+  - id: "event_driven"
+    description: "Kafka, Pub/Sub, SQS, or similar async backbone"
+
+intake_artifacts_when_high:
+  - "docs/requirements/wbs.md"
+  - "docs/requirements/epics.md"

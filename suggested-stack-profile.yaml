@@ -1,0 +1,6 @@
+# Suggested override — merge into spec-skills-lib/rules/global-rules.override.yaml
+technologies:
+  stack_profile: "typescript-node-react"
+flow_config:
+  active_flow: "default-flow"
+  complexity_profile: "low"

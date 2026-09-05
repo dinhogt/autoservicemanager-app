@@ -1,0 +1,698 @@
+{
+  "info": {
+    "name": "AutoServiceManager — API completa",
+    "description": "Collection de todos os endpoints da API AutoServiceManager.\n\nVariáveis:\n- `baseUrl`: http://localhost:3000 (compose) ou http://localhost:30080 (kind)\n- `jwt_token`: preenchido automaticamente após Login\n- `webhook_secret`: mesmo valor de WEBHOOK_SECRET no ambiente\n- IDs (`os_id`, `cliente_id`, `veiculo_id`, etc.): seed ou scripts de resposta\n\nCredenciais seed: joao.silva@autoservice.local / Senha@1234\nCPF seed: 52998224725",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "jwt_token", "value": "" },
+    { "key": "webhook_secret", "value": "docker-compose-dev-webhook-secret-min-16" },
+    { "key": "os_id", "value": "" },
+    { "key": "cpf_cnpj", "value": "52998224725" },
+    { "key": "placa", "value": "BRA2E19" },
+    { "key": "cliente_id", "value": "550e8400-e29b-41d4-a716-446655440101" },
+    { "key": "veiculo_id", "value": "550e8400-e29b-41d4-a716-446655440201" },
+    { "key": "servico_id", "value": "550e8400-e29b-41d4-a716-446655440301" },
+    { "key": "peca_id", "value": "550e8400-e29b-41d4-a716-446655440401" },
+    { "key": "usuario_id", "value": "550e8400-e29b-41d4-a716-446655440501" }
+  ],
+  "item": [
+    {
+      "name": "App",
+      "item": [
+        {
+          "name": "Health / Hello",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('jwt_token', pm.response.json().access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"joao.silva@autoservice.local\",\n  \"password\": \"Senha@1234\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "OS — Público",
+      "item": [
+        {
+          "name": "Criar OS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('os_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": \"{{cliente_id}}\",\n  \"veiculoId\": \"{{veiculo_id}}\",\n  \"itensServico\": [\n    { \"servicoCatalogoId\": \"{{servico_id}}\", \"quantidade\": 1 }\n  ],\n  \"itensPeca\": [\n    { \"pecaEstoqueId\": \"{{peca_id}}\", \"quantidade\": 1 }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/ordens-servico"
+          }
+        },
+        {
+          "name": "Consultar status (por CPF/CNPJ)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ordens-servico/{{os_id}}/status?cpfCnpj={{cpf_cnpj}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["ordens-servico", "{{os_id}}", "status"],
+              "query": [{ "key": "cpfCnpj", "value": "{{cpf_cnpj}}" }]
+            }
+          }
+        },
+        {
+          "name": "Consultar status (por placa)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ordens-servico/{{os_id}}/status?placa={{placa}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["ordens-servico", "{{os_id}}", "status"],
+              "query": [{ "key": "placa", "value": "{{placa}}" }]
+            }
+          }
+        },
+        {
+          "name": "Aprovar orçamento",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aprovado\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ordens-servico/{{os_id}}/aprovacoes?cpfCnpj={{cpf_cnpj}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["ordens-servico", "{{os_id}}", "aprovacoes"],
+              "query": [{ "key": "cpfCnpj", "value": "{{cpf_cnpj}}" }]
+            }
+          }
+        },
+        {
+          "name": "Rejeitar orçamento",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aprovado\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ordens-servico/{{os_id}}/aprovacoes?cpfCnpj={{cpf_cnpj}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["ordens-servico", "{{os_id}}", "aprovacoes"],
+              "query": [{ "key": "cpfCnpj", "value": "{{cpf_cnpj}}" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "OS — Admin",
+      "item": [
+        {
+          "name": "Listar OS (priorizada)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/ordens-servico?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "ordens-servico"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Métricas — tempo médio",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/ordens-servico/metricas/tempo-medio"
+          }
+        },
+        {
+          "name": "Obter OS por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/ordens-servico/{{os_id}}"
+          }
+        },
+        {
+          "name": "Histórico da OS",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/ordens-servico/{{os_id}}/historico"
+          }
+        },
+        {
+          "name": "Iniciar diagnóstico",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/ordens-servico/{{os_id}}/diagnostico"
+          }
+        },
+        {
+          "name": "Gerar orçamento",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/ordens-servico/{{os_id}}/orcamento"
+          }
+        },
+        {
+          "name": "Finalizar OS",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/ordens-servico/{{os_id}}/finalizacao"
+          }
+        },
+        {
+          "name": "Entregar veículo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/ordens-servico/{{os_id}}/entrega"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Atualizar status (externo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Webhook-Secret", "value": "{{webhook_secret}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"EM_DIAGNOSTICO\"\n}"
+            },
+            "url": "{{baseUrl}}/webhooks/os/{{os_id}}/status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin — Usuários",
+      "item": [
+        {
+          "name": "Criar usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('usuario_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Carlos Santos\",\n  \"email\": \"carlos.santos@autoservice.local\",\n  \"password\": \"Senha@1234\",\n  \"role\": \"MECANICO\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/usuarios"
+          }
+        },
+        {
+          "name": "Listar usuários",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/usuarios?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "usuarios"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obter usuário por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/usuarios/{{usuario_id}}"
+          }
+        },
+        {
+          "name": "Atualizar usuário",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Carlos Santos Jr.\",\n  \"role\": \"GERENTE\",\n  \"ativo\": true\n}"
+            },
+            "url": "{{baseUrl}}/admin/usuarios/{{usuario_id}}"
+          }
+        },
+        {
+          "name": "Alterar senha",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Senha@1234\",\n  \"newPassword\": \"NovaSenha@5678\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/usuarios/{{usuario_id}}/senha"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin — Clientes",
+      "item": [
+        {
+          "name": "Cadastrar cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('cliente_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Roberto Almeida\",\n  \"cpfCnpj\": \"39053344705\",\n  \"contato\": \"roberto@demo.autoservice.local\",\n  \"enderecos\": \"Rua Augusta, 1200 - Consolação, São Paulo - SP, 01304-001\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/clientes"
+          }
+        },
+        {
+          "name": "Listar clientes",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/clientes?page=1&limit=20&incluirInativos=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "clientes"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "incluirInativos", "value": "false" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obter cliente por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/clientes/{{cliente_id}}"
+          }
+        },
+        {
+          "name": "Atualizar cliente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Roberto Almeida Silva\",\n  \"contato\": \"(11) 91234-5678\",\n  \"enderecos\": \"Av. Brasil, 500 - Centro, São Paulo - SP\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/clientes/{{cliente_id}}"
+          }
+        },
+        {
+          "name": "Inativar cliente",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/clientes/{{cliente_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin — Veículos",
+      "item": [
+        {
+          "name": "Cadastrar veículo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('veiculo_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": \"{{cliente_id}}\",\n  \"placa\": \"XYZ1A23\",\n  \"marca\": \"Fiat\",\n  \"modelo\": \"Uno 1.0 Fire\",\n  \"ano\": 2019\n}"
+            },
+            "url": "{{baseUrl}}/admin/veiculos"
+          }
+        },
+        {
+          "name": "Listar veículos",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/veiculos?page=1&limit=20&incluirInativos=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "veiculos"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "incluirInativos", "value": "false" },
+                {
+                  "key": "clienteId",
+                  "value": "{{cliente_id}}",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obter veículo por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/veiculos/{{veiculo_id}}"
+          }
+        },
+        {
+          "name": "Atualizar veículo",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marca\": \"Volkswagen\",\n  \"modelo\": \"Gol 1.6 MSI\",\n  \"ano\": 2021\n}"
+            },
+            "url": "{{baseUrl}}/admin/veiculos/{{veiculo_id}}"
+          }
+        },
+        {
+          "name": "Inativar veículo",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/veiculos/{{veiculo_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin — Peças e estoque",
+      "item": [
+        {
+          "name": "Cadastrar peça",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('peca_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Filtro de óleo – universal\",\n  \"precoUnitario\": 35,\n  \"quantidadeEmEstoque\": 50,\n  \"codigoInterno\": \"FLT-OL-999\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/pecas"
+          }
+        },
+        {
+          "name": "Listar peças",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/pecas?page=1&limit=20&incluirInativos=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "pecas"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "incluirInativos", "value": "false" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obter peça por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/pecas/{{peca_id}}"
+          }
+        },
+        {
+          "name": "Atualizar peça",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Filtro de óleo premium – universal\",\n  \"precoUnitario\": 42.5\n}"
+            },
+            "url": "{{baseUrl}}/admin/pecas/{{peca_id}}"
+          }
+        },
+        {
+          "name": "Movimentar estoque (entrada)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"entrada\",\n  \"quantidade\": 10\n}"
+            },
+            "url": "{{baseUrl}}/admin/pecas/{{peca_id}}/movimentacoes"
+          }
+        },
+        {
+          "name": "Movimentar estoque (saída)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"saida\",\n  \"quantidade\": 2\n}"
+            },
+            "url": "{{baseUrl}}/admin/pecas/{{peca_id}}/movimentacoes"
+          }
+        },
+        {
+          "name": "Inativar peça",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/pecas/{{peca_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin — Catálogo de serviços",
+      "item": [
+        {
+          "name": "Cadastrar serviço",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('servico_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Troca de óleo e filtro\",\n  \"precoBase\": 150,\n  \"tempoMedioExecucao\": 30\n}"
+            },
+            "url": "{{baseUrl}}/admin/servicos"
+          }
+        },
+        {
+          "name": "Listar serviços",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/servicos?page=1&limit=20&incluirInativos=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "servicos"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "incluirInativos", "value": "false" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obter serviço por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/servicos/{{servico_id}}"
+          }
+        },
+        {
+          "name": "Atualizar serviço",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Alinhamento e balanceamento completo\",\n  \"precoBase\": 200,\n  \"tempoMedioExecucao\": 75\n}"
+            },
+            "url": "{{baseUrl}}/admin/servicos/{{servico_id}}"
+          }
+        },
+        {
+          "name": "Inativar serviço",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/servicos/{{servico_id}}"
+          }
+        }
+      ]
+    }
+  ]
+}

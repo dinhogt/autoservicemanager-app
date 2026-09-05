@@ -1,0 +1,7 @@
+# Copie para terraform.tfvars e preencha (nunca commitar valores reais)
+
+aws_region     = "us-east-1"
+project_name   = "autoservice-dev"
+db_password    = "CHANGE_ME_STRONG_PASSWORD"
+jwt_secret     = "CHANGE_ME_JWT_MIN_16_CHARS"
+webhook_secret = "CHANGE_ME_WEBHOOK_MIN_16"

@@ -1,0 +1,20 @@
+id: "java-spring"
+name: "Java + Spring Boot"
+languages: ["Java", "Kotlin"]
+frameworks: ["Spring Boot"]
+package_manager: "maven / gradle"
+test_runner: "junit"
+lint: "checkstyle / spotbugs"
+build: "mvn package / gradle build"
+directory_conventions:
+  source: "src/main/java/"
+  tests: "src/test/java/"
+  docs: "docs/"
+commands:
+  test: "./mvnw test"
+  lint: "./mvnw verify"
+  build: "./mvnw package"
+observability_defaults:
+  metrics: ["micrometer"]
+  tracing: "opentelemetry"
+security_audit_commands: ["./mvnw dependency:analyze"]

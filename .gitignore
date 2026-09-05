@@ -1,0 +1,36 @@
+# dependências
+node_modules
+package-lock.json
+
+# variáveis de ambiente (segredos)
+.env
+.env.*
+!.env.example
+
+# build artifacts
+dist
+build
+*.tsbuildinfo
+
+
+# cobertura e relatórios locais (mantemos docs/security/* versionados)
+coverage
+
+# lambda zip artefact
+# auth-lambda removido deste repo
+*.zip
+
+# instaladores locais (não versionar)
+*.pkg
+AWSCLIV2.pkg
+
+# editor / SO
+.DS_Store
+.idea
+.vscode
+# .cursor (rules/skills versionados no app pós-cisão)
+*.log
+
+# specs locais do agente (não faz parte da entrega)
+codeAgentSpecs/
+# spec-skills-lib/ (contrato Spec-Skills no app)

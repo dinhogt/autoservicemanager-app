@@ -1,0 +1,6 @@
+technologies:
+  stack_profile: "nestjs-next-react"
+flow_config:
+  active_flow: "default-flow"
+  complexity_profile: "low"
+  opc_mode: false

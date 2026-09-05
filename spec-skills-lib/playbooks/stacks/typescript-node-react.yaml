@@ -1,0 +1,20 @@
+id: "typescript-node-react"
+name: "TypeScript + Node.js + React"
+languages: ["TypeScript", "JavaScript"]
+frameworks: ["Node.js", "React"]
+package_manager: "npm"
+test_runner: "vitest"
+lint: "eslint"
+build: "tsc / vite"
+directory_conventions:
+  source: "src/"
+  tests: "src/**/*.test.ts"
+  docs: "docs/"
+commands:
+  test: "npm test"
+  lint: "npm run lint"
+  build: "npm run build"
+observability_defaults:
+  metrics: ["prometheus", "opentelemetry"]
+  tracing: "opentelemetry"
+security_audit_commands: ["npm audit"]

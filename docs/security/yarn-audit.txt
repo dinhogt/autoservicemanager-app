@@ -1,0 +1,18 @@
+yarn audit v1.22.22
+┌───────────────┬──────────────────────────────────────────────────────────────┐
+│ low           │ body-parser vulnerable to denial of service when invalid     │
+│               │ limit value silently disables size enforcement               │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ Package       │ body-parser                                                  │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ Patched in    │ >=2.3.0                                                      │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ Dependency of │ @nestjs/platform-express                                     │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ Path          │ @nestjs/platform-express > express > body-parser             │
+├───────────────┼──────────────────────────────────────────────────────────────┤
+│ More info     │ https://www.npmjs.com/advisories/1123976                     │
+└───────────────┴──────────────────────────────────────────────────────────────┘
+1 vulnerabilities found - Packages audited: 188
+Severity: 1 Low
+Done in 0.60s.

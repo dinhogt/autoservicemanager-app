@@ -1,0 +1,144 @@
+version: 0.4.0
+description: "Maps spec-skills integration templates to project paths"
+
+targets:
+  cursor:
+    - from: integrations/cursor/rules/spec-skills-orchestrator.mdc
+      to: .cursor/rules/spec-skills-orchestrator.mdc
+    - from: integrations/cursor/rules/security-guardrails.mdc
+      to: .cursor/rules/security-guardrails.mdc
+    - from: integrations/cursor/rules/complex-project.mdc
+      to: .cursor/rules/complex-project.mdc
+    - from: integrations/cursor/skills/opc-mode/SKILL.md
+      to: .cursor/skills/opc-mode/SKILL.md
+    - from: integrations/cursor/skills/framework-skills/SKILL.md
+      to: .cursor/skills/framework-skills/SKILL.md
+    - from: integrations/cursor/skills/role-digital-business/SKILL.md
+      to: .cursor/skills/role-digital-business/SKILL.md
+    - from: integrations/cursor/skills/role-saas/SKILL.md
+      to: .cursor/skills/role-saas/SKILL.md
+    - from: integrations/cursor/skills/role-copywriting/SKILL.md
+      to: .cursor/skills/role-copywriting/SKILL.md
+    - from: integrations/cursor/skills/role-cloud/SKILL.md
+      to: .cursor/skills/role-cloud/SKILL.md
+    - from: integrations/cursor/skills/role-finops/SKILL.md
+      to: .cursor/skills/role-finops/SKILL.md
+    - from: integrations/cursor/skills/role-discovery/SKILL.md
+      to: .cursor/skills/role-discovery/SKILL.md
+    - from: integrations/cursor/skills/role-ux/SKILL.md
+      to: .cursor/skills/role-ux/SKILL.md
+    - from: integrations/cursor/skills/role-ai-engineering/SKILL.md
+      to: .cursor/skills/role-ai-engineering/SKILL.md
+    - from: integrations/cursor/skills/role-legal/SKILL.md
+      to: .cursor/skills/role-legal/SKILL.md
+    - from: integrations/cursor/skills/role-automation/SKILL.md
+      to: .cursor/skills/role-automation/SKILL.md
+    - from: integrations/cursor/skills/role-growth/SKILL.md
+      to: .cursor/skills/role-growth/SKILL.md
+    - from: integrations/cursor/skills/role-saas-ops/SKILL.md
+      to: .cursor/skills/role-saas-ops/SKILL.md
+    - from: integrations/cursor/agents/role-digital-business.md
+      to: .cursor/agents/role-digital-business.md
+    - from: integrations/cursor/agents/role-saas.md
+      to: .cursor/agents/role-saas.md
+    - from: integrations/cursor/agents/role-copywriting.md
+      to: .cursor/agents/role-copywriting.md
+    - from: integrations/cursor/agents/role-cloud.md
+      to: .cursor/agents/role-cloud.md
+    - from: integrations/cursor/agents/role-finops.md
+      to: .cursor/agents/role-finops.md
+    - from: integrations/cursor/agents/role-discovery.md
+      to: .cursor/agents/role-discovery.md
+    - from: integrations/cursor/agents/role-ux.md
+      to: .cursor/agents/role-ux.md
+    - from: integrations/cursor/agents/role-ai-engineering.md
+      to: .cursor/agents/role-ai-engineering.md
+    - from: integrations/cursor/agents/role-legal.md
+      to: .cursor/agents/role-legal.md
+    - from: integrations/cursor/agents/role-automation.md
+      to: .cursor/agents/role-automation.md
+    - from: integrations/cursor/agents/role-growth.md
+      to: .cursor/agents/role-growth.md
+    - from: integrations/cursor/agents/role-saas-ops.md
+      to: .cursor/agents/role-saas-ops.md
+  vscode:
+    - from: integrations/vscode/copilot-instructions.md
+      to: .github/copilot-instructions.md
+    - from: integrations/vscode/instructions/spec-skills-orchestrator.instructions.md
+      to: .github/instructions/spec-skills-orchestrator.instructions.md
+    - from: integrations/vscode/instructions/security-guardrails.instructions.md
+      to: .github/instructions/security-guardrails.instructions.md
+    - from: integrations/vscode/instructions/frontend.instructions.md
+      to: .github/instructions/frontend.instructions.md
+    - from: integrations/vscode/instructions/backend.instructions.md
+      to: .github/instructions/backend.instructions.md
+    - from: integrations/vscode/instructions/infrastructure.instructions.md
+      to: .github/instructions/infrastructure.instructions.md
+  antigravity:
+    workspace:
+      - from: integrations/antigravity/rules/spec-skills-orchestrator.md
+        to: .agents/rules/spec-skills-orchestrator.md
+      - from: integrations/antigravity/rules/security-guardrails.md
+        to: .agents/rules/security-guardrails.md
+      - from: integrations/antigravity/rules/stack-and-playbooks.md
+        to: .agents/rules/stack-and-playbooks.md
+      - from: integrations/antigravity/workflows/upstream-business-requirements.md
+        to: .agents/workflows/upstream-business-requirements.md
+      - from: integrations/antigravity/workflows/upstream-opc-discovery.md
+        to: .agents/workflows/upstream-opc-discovery.md
+      - from: integrations/antigravity/workflows/design-architecture-security.md
+        to: .agents/workflows/design-architecture-security.md
+      - from: integrations/antigravity/workflows/design-ai-cloud.md
+        to: .agents/workflows/design-ai-cloud.md
+      - from: integrations/antigravity/workflows/implement-parallel.md
+        to: .agents/workflows/implement-parallel.md
+      - from: integrations/antigravity/workflows/validate-release.md
+        to: .agents/workflows/validate-release.md
+      - from: integrations/antigravity/workflows/launch-growth-loop.md
+        to: .agents/workflows/launch-growth-loop.md
+      - from: integrations/antigravity/workflows/complex-project-kickoff.md
+        to: .agents/workflows/complex-project-kickoff.md
+      - from: integrations/antigravity/skills/spec-skills-orchestrator/SKILL.md
+        to: .agents/skills/spec-skills-orchestrator/SKILL.md
+      - from: integrations/antigravity/skills/opc-mode/SKILL.md
+        to: .agents/skills/opc-mode/SKILL.md
+      - from: integrations/antigravity/skills/framework-skills/SKILL.md
+        to: .agents/skills/framework-skills/SKILL.md
+      - from: integrations/antigravity/skills/role-security/SKILL.md
+        to: .agents/skills/role-security/SKILL.md
+      - from: integrations/antigravity/skills/role-architecture/SKILL.md
+        to: .agents/skills/role-architecture/SKILL.md
+      - from: integrations/antigravity/skills/stack-playbook/SKILL.md
+        to: .agents/skills/stack-playbook/SKILL.md
+      - from: integrations/antigravity/skills/role-digital-business/SKILL.md
+        to: .agents/skills/role-digital-business/SKILL.md
+      - from: integrations/antigravity/skills/role-saas/SKILL.md
+        to: .agents/skills/role-saas/SKILL.md
+      - from: integrations/antigravity/skills/role-copywriting/SKILL.md
+        to: .agents/skills/role-copywriting/SKILL.md
+      - from: integrations/antigravity/skills/role-cloud/SKILL.md
+        to: .agents/skills/role-cloud/SKILL.md
+      - from: integrations/antigravity/skills/role-finops/SKILL.md
+        to: .agents/skills/role-finops/SKILL.md
+      - from: integrations/antigravity/skills/role-discovery/SKILL.md
+        to: .agents/skills/role-discovery/SKILL.md
+      - from: integrations/antigravity/skills/role-ux/SKILL.md
+        to: .agents/skills/role-ux/SKILL.md
+      - from: integrations/antigravity/skills/role-ai-engineering/SKILL.md
+        to: .agents/skills/role-ai-engineering/SKILL.md
+      - from: integrations/antigravity/skills/role-legal/SKILL.md
+        to: .agents/skills/role-legal/SKILL.md
+      - from: integrations/antigravity/skills/role-automation/SKILL.md
+        to: .agents/skills/role-automation/SKILL.md
+      - from: integrations/antigravity/skills/role-growth/SKILL.md
+        to: .agents/skills/role-growth/SKILL.md
+      - from: integrations/antigravity/skills/role-saas-ops/SKILL.md
+        to: .agents/skills/role-saas-ops/SKILL.md
+    global_optional:
+      - from: integrations/antigravity/global/GEMINI-snippet.md
+        to: GEMINI.md
+        note: "Append or merge into ~/.gemini/GEMINI.md when using --global"
+
+agents_md:
+  from: AGENTS.md
+  to: AGENTS.md

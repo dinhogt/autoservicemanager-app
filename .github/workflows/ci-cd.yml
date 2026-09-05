@@ -1,0 +1,156 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+
+env:
+  NODE_VERSION: "22"
+  AWS_REGION: us-east-1
+
+jobs:
+  security-gate:
+    uses: ./.github/workflows/security-gate.yml
+
+  ci:
+    needs: security-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Architecture boundaries
+        run: yarn arch:check
+
+      - name: Test with coverage
+        run: yarn test:cov
+
+      - name: Build
+        run: yarn build
+
+      - name: Docker build
+        run: docker build -t autoservicemanager:ci .
+
+  cd:
+    # master = prod demo; develop = homolog
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+    needs: [ci, security-gate]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: ${{ github.ref == 'refs/heads/master' && 'production' || 'homolog' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      # OIDC → IAM (ADR-009). Secrets: AWS_ROLE_ARN, ECR_REPOSITORY, EKS_CLUSTER_NAME.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      - name: Run database migrations
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/configmap.yaml
+          # X-Ray UDP :2000 já vem do addon amazon-cloudwatch-observability (hostPort).
+          # Não aplicar k8s/xray-daemonset.yaml — conflita e força scale-out de nodes.
+          kubectl delete daemonset xray-daemon -n autoservice --ignore-not-found
+          kubectl delete service xray-daemon -n autoservice --ignore-not-found
+          if [ -n "${APP_IRSA_ROLE_ARN:-}" ]; then
+            sed "s|arn:aws:iam::ACCOUNT_ID:role/autoservicemanager-ENV-app-irsa|${APP_IRSA_ROLE_ARN}|g" \
+              k8s/serviceaccount-api.yaml | kubectl apply -f -
+          else
+            kubectl apply -f k8s/serviceaccount-api.yaml
+          fi
+          if [ -n "${MIGRATE_IRSA_ROLE_ARN:-}" ]; then
+            sed "s|arn:aws:iam::ACCOUNT_ID:role/autoservicemanager-ENV-migrate-irsa|${MIGRATE_IRSA_ROLE_ARN}|g" \
+              k8s/serviceaccount-migrate.yaml | kubectl apply -f -
+          else
+            kubectl apply -f k8s/serviceaccount-migrate.yaml
+          fi
+          kubectl delete job autoservice-migrate -n autoservice --ignore-not-found
+          IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}"
+          sed "s|ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/autoservice-dev-api:latest|${IMAGE}|g" k8s/job-migrate.yaml | kubectl apply -f -
+          kubectl wait --for=condition=complete job/autoservice-migrate -n autoservice --timeout=180s
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          APP_IRSA_ROLE_ARN: ${{ secrets.APP_IRSA_ROLE_ARN }}
+          MIGRATE_IRSA_ROLE_ARN: ${{ secrets.MIGRATE_IRSA_ROLE_ARN }}
+
+      - name: Deploy manifests
+        run: |
+          IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}"
+          sed "s|ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/autoservice-dev-api:latest|${IMAGE}|g" k8s/api-deployment.yaml | kubectl apply -f -
+          kubectl apply -f k8s/api-service.yaml
+          kubectl apply -f k8s/hpa.yaml
+          kubectl rollout status deployment/autoservice-api -n autoservice --timeout=180s
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+
+      - name: Register pods on NLB target group
+        env:
+          TARGET_GROUP_ARN: ${{ secrets.TARGET_GROUP_ARN }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+        run: |
+          if [ -z "${TARGET_GROUP_ARN}" ]; then
+            echo "TARGET_GROUP_ARN secret missing — skip (APIGW/NLB ficará 503 até registrar)"
+            exit 0
+          fi
+          # Substitui targets antigos pelos IPs atuais dos pods (target_type=ip)
+          mapfile -t OLD < <(aws elbv2 describe-target-health \
+            --target-group-arn "$TARGET_GROUP_ARN" \
+            --query 'TargetHealthDescriptions[].Target.[Id,Port]' --output text | awk '{print $1","$2}')
+          if [ "${#OLD[@]}" -gt 0 ] && [ -n "${OLD[0]}" ]; then
+            DEREG=()
+            for t in "${OLD[@]}"; do
+              IFS=',' read -r id port <<<"$t"
+              DEREG+=("Id=${id},Port=${port}")
+            done
+            aws elbv2 deregister-targets --target-group-arn "$TARGET_GROUP_ARN" --targets "${DEREG[@]}" || true
+          fi
+          mapfile -t IPS < <(kubectl get pods -n autoservice -l app=autoservice-api \
+            -o jsonpath='{range .items[*]}{.status.podIP}{"\n"}{end}')
+          REG=()
+          for ip in "${IPS[@]}"; do
+            [ -n "$ip" ] && REG+=("Id=${ip},Port=3000")
+          done
+          if [ "${#REG[@]}" -eq 0 ]; then
+            echo "Nenhum pod IP para registrar"; exit 1
+          fi
+          aws elbv2 register-targets --target-group-arn "$TARGET_GROUP_ARN" --targets "${REG[@]}"
+          echo "Registered: ${REG[*]}"

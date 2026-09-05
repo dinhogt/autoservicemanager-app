@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoservice-api
+  namespace: autoservice
+  labels:
+    app: autoservice-api
+spec:
+  # Não fixe replicas aqui: o HPA (autoservice-api-hpa) controla scale-up/down.
+  # Omitir evita que `kubectl apply` redefina réplicas e “brigue” com o autoscaler.
+  selector:
+    matchLabels:
+      app: autoservice-api
+  template:
+    metadata:
+      labels:
+        app: autoservice-api
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+      containers:
+        - name: api
+          image: autoservicemanager:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: autoservice-config
+            - secretRef:
+                name: autoservice-secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            # Request de CPU é a base do HPA (target 70%). Valor realista evita scale por ruído.
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 768Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 20
+      volumes:
+        - name: tmp
+          emptyDir: {}

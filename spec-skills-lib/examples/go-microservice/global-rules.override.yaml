@@ -1,0 +1,32 @@
+version: 0.2.0
+project:
+  name: "go-microservice-example"
+  domain: "platform"
+
+technologies:
+  stack_profile: "go-http-service"
+  languages: ["Go"]
+  frameworks: ["chi"]
+  datastores: ["PostgreSQL", "Redis"]
+  tooling: ["golangci-lint", "govulncheck"]
+
+architecture:
+  style: "microservices"
+  boundaries: ["api", "worker", "integration"]
+  patterns: ["hexagonal", "event-driven"]
+
+implementation_level: "production"
+
+flow_config:
+  active_flow: "complex-flow"
+  complexity_profile: "high"
+
+security:
+  asvs_level: "L2"
+  threat_model_required: true
+  dependency_audit_required: true
+  sbom_required: true
+
+execution_profile:
+  active_profile: "production_remote"
+  remote_calls_allowed: true

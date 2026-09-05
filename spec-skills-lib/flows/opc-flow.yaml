@@ -1,0 +1,321 @@
+version: 0.4.0
+name: "opc-micro-saas-flow"
+
+stages:
+  - id: "stage-business"
+    role: "business"
+    mode: "caveman"
+    inputs: ["project-brief"]
+    outputs: ["problem-statement", "success-metrics"]
+  - id: "stage-discovery"
+    role: "discovery"
+    mode: "caveman"
+    inputs: ["problem-statement", "success-metrics"]
+    outputs: ["market-research", "competitive-map", "icp-personas"]
+  - id: "stage-digital-business"
+    role: "digital-business"
+    mode: "caveman"
+    inputs: ["market-research", "icp-personas", "problem-statement"]
+    outputs: ["viability-summary", "profitability-model"]
+  - id: "stage-saas"
+    role: "saas"
+    mode: "caveman"
+    inputs: ["viability-summary", "problem-statement", "success-metrics"]
+    outputs: ["product-approach", "startup-pattern-checklist"]
+  - id: "stage-requirements"
+    role: "requirements"
+    mode: "caveman"
+    inputs: ["problem-statement", "success-metrics", "viability-summary", "product-approach"]
+    outputs: ["requirements", "acceptance-criteria"]
+  - id: "stage-ux"
+    role: "ux"
+    mode: "caveman"
+    inputs: ["requirements", "acceptance-criteria", "product-approach"]
+    outputs: ["wireframes", "design-system", "a11y-checklist"]
+  - id: "stage-copywriting"
+    role: "copywriting"
+    mode: "caveman"
+    inputs: ["product-approach", "requirements", "wireframes"]
+    outputs: ["sales-strategy", "copy-deck"]
+  - id: "stage-architecture"
+    role: "architecture"
+    mode: "caveman"
+    inputs: ["requirements", "acceptance-criteria", "sales-strategy", "design-system"]
+    outputs: ["solution-design", "adr"]
+  - id: "stage-ai-engineering"
+    role: "ai-engineering"
+    mode: "caveman"
+    skip_when: "ai_features_enabled == false"
+    inputs: ["solution-design", "adr", "product-approach"]
+    outputs: ["ai-architecture", "eval-plan", "llm-cost-estimate"]
+  - id: "stage-cloud"
+    role: "cloud"
+    mode: "caveman"
+    inputs: ["solution-design", "adr", "product-approach", "ai-architecture"]
+    outputs: ["option-evaluation", "architecture-overview"]
+  - id: "stage-security"
+    role: "security"
+    mode: "caveman"
+    inputs: ["solution-design", "adr", "option-evaluation"]
+    outputs: ["threat-model", "security-controls"]
+  - id: "stage-legal"
+    role: "legal"
+    mode: "caveman"
+    inputs: ["threat-model", "product-approach", "icp-personas"]
+    outputs: ["terms-of-service", "privacy-policy", "compliance-checklist"]
+  - id: "stage-finops"
+    role: "finops"
+    mode: "caveman"
+    inputs: ["option-evaluation", "security-controls", "compliance-checklist"]
+    outputs: ["implementation-cost-plan", "optimization-backlog"]
+  - id: "stage-frontend"
+    role: "frontend"
+    mode: "caveman"
+    inputs: ["solution-design", "security-controls", "wireframes", "design-system", "copy-deck", "implementation-cost-plan"]
+    outputs: ["ui-implementation", "ui-tests"]
+  - id: "stage-backend"
+    role: "backend"
+    mode: "caveman"
+    inputs: ["solution-design", "security-controls", "implementation-cost-plan", "ai-architecture"]
+    outputs: ["api-implementation", "api-tests"]
+  - id: "stage-automation"
+    role: "automation"
+    mode: "caveman"
+    inputs: ["ui-implementation", "api-implementation"]
+    outputs: ["workflow-inventory", "n8n-setup"]
+  - id: "stage-documentation"
+    role: "documentation"
+    mode: "caveman"
+    inputs: ["ui-implementation", "api-implementation", "adr", "threat-model", "sales-strategy", "workflow-inventory"]
+    outputs: ["readme", "runbook", "release-notes"]
+  - id: "stage-observability"
+    role: "observability"
+    mode: "caveman"
+    inputs: ["ui-implementation", "api-implementation", "runbook"]
+    outputs: ["dashboards", "alerts", "tracing-config"]
+  - id: "stage-qa"
+    role: "qa"
+    mode: "caveman"
+    inputs: ["ui-tests", "api-tests", "runbook", "dashboards", "alerts"]
+    outputs: ["qa-report", "go-no-go"]
+  - id: "stage-saas-ops"
+    role: "saas-ops"
+    mode: "caveman"
+    inputs: ["qa-report", "product-approach", "implementation-cost-plan"]
+    outputs: ["billing-setup", "tenant-management", "metrics-dashboard"]
+  - id: "stage-support-debug"
+    role: "support-debug"
+    mode: "caveman"
+    inputs: ["qa-report", "release-notes", "metrics-dashboard"]
+    outputs: ["incident-playbook", "feedback-backlog"]
+  - id: "stage-growth"
+    role: "growth"
+    mode: "caveman"
+    inputs: ["feedback-backlog", "sales-strategy", "metrics-dashboard"]
+    outputs: ["growth-strategy", "seo-baseline", "retention-metrics"]
+
+transitions:
+  - from: "stage-business"
+    to: "stage-discovery"
+  - from: "stage-discovery"
+    to: "stage-digital-business"
+  - from: "stage-digital-business"
+    to: "stage-saas"
+  - from: "stage-saas"
+    to: "stage-requirements"
+  - from: "stage-requirements"
+    to: "stage-ux"
+  - from: "stage-ux"
+    to: "stage-copywriting"
+  - from: "stage-copywriting"
+    to: "stage-architecture"
+  - from: "stage-architecture"
+    to: "stage-ai-engineering"
+  - from: "stage-architecture"
+    to: "stage-cloud"
+  - from: "stage-ai-engineering"
+    to: "stage-cloud"
+  - from: "stage-cloud"
+    to: "stage-security"
+  - from: "stage-security"
+    to: "stage-legal"
+  - from: "stage-legal"
+    to: "stage-finops"
+  - from: "stage-finops"
+    to: "stage-frontend"
+  - from: "stage-finops"
+    to: "stage-backend"
+  - from: "stage-frontend"
+    to: "stage-automation"
+  - from: "stage-backend"
+    to: "stage-automation"
+  - from: "stage-automation"
+    to: "stage-documentation"
+  - from: "stage-documentation"
+    to: "stage-observability"
+  - from: "stage-observability"
+    to: "stage-qa"
+  - from: "stage-qa"
+    to: "stage-saas-ops"
+  - from: "stage-saas-ops"
+    to: "stage-support-debug"
+  - from: "stage-support-debug"
+    to: "stage-growth"
+
+parallel_groups:
+  - id: "impl-fork"
+    stages: ["stage-frontend", "stage-backend"]
+    join_stage: "stage-automation"
+    join_policy: "all"
+
+gates:
+  - id: "gate-discovery-validated"
+    stage_id: "stage-discovery"
+    criteria:
+      - "ICP and JTBD documented"
+      - "competitive map with at least 3 competitors"
+      - "opportunity verdict recorded"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-digital-business-viability"
+    stage_id: "stage-digital-business"
+    criteria:
+      - "viability verdict documented with assumptions"
+      - "profitability model includes break-even"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-saas-approach"
+    stage_id: "stage-saas"
+    criteria:
+      - "product approach suited to stage (MVP/PLG/tenant)"
+      - "startup pattern checklist completed"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-requirements-quality"
+    stage_id: "stage-requirements"
+    criteria:
+      - "all requirements have acceptance criteria"
+      - "requirements are traceable to business goals"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-ux-ready"
+    stage_id: "stage-ux"
+    criteria:
+      - "wireframes for main flows complete"
+      - "design system tokens defined"
+      - "a11y checklist for critical paths"
+    on_fail: "rework_stage"
+  - id: "gate-copy-sales-strategy"
+    stage_id: "stage-copywriting"
+    criteria:
+      - "sales strategy includes ICP promise and funnel CTAs"
+      - "copy deck aligned to product approach and UX"
+    on_fail: "rework_stage"
+  - id: "gate-architecture-quality"
+    stage_id: "stage-architecture"
+    criteria:
+      - "key decisions documented in ADR"
+      - "architecture boundaries are explicit"
+      - "governance checklist applied"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-ai-architecture"
+    stage_id: "stage-ai-engineering"
+    criteria:
+      - "AI architecture documented when ai_features_enabled"
+      - "eval plan and LLM cost estimate present"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-cloud-selection"
+    stage_id: "stage-cloud"
+    criteria:
+      - "OCI evaluated when cloud_preference oci-first"
+      - "options scored on cost performance quality usability"
+      - "single cloud recommendation documented"
+      - "scale tiers 100/1K/10K/100K addressed"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-security-review"
+    stage_id: "stage-security"
+    criteria:
+      - "threat model documented for changed scope"
+      - "applicable ASVS controls listed"
+      - "no secrets in repository diff"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-legal-compliance"
+    stage_id: "stage-legal"
+    criteria:
+      - "ToS and privacy policy drafted"
+      - "LGPD/GDPR compliance checklist complete"
+    on_fail: "rework_stage"
+  - id: "gate-finops-implementation-cost"
+    stage_id: "stage-finops"
+    criteria:
+      - "implementation cost plan with reduction target"
+      - "optimization backlog limited to delivery phase"
+    on_fail: "rework_stage"
+  - id: "gate-frontend-quality"
+    stage_id: "stage-frontend"
+    criteria:
+      - "ui tests pass locally"
+      - "critical user flows covered"
+    on_fail: "rework_stage"
+  - id: "gate-implementation-quality"
+    stage_id: "stage-backend"
+    criteria:
+      - "tests pass locally"
+      - "critical error paths validated"
+    on_fail: "rework_stage"
+  - id: "gate-automation-wired"
+    stage_id: "stage-automation"
+    criteria:
+      - "critical workflows documented and operational"
+      - "onboarding and billing webhooks wired"
+    on_fail: "rework_stage"
+  - id: "gate-documentation-quality"
+    stage_id: "stage-documentation"
+    criteria:
+      - "required docs artifacts are updated"
+      - "runbook and release notes are linked"
+    on_fail: "rework_stage"
+  - id: "gate-observability-quality"
+    stage_id: "stage-observability"
+    criteria:
+      - "critical journeys have dashboards"
+      - "alerts configured for high-impact failures"
+    on_fail: "rework_stage"
+  - id: "gate-release-quality"
+    stage_id: "stage-qa"
+    criteria:
+      - "no unresolved critical bugs"
+      - "go-no-go decision recorded"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-saas-ops-ready"
+    stage_id: "stage-saas-ops"
+    criteria:
+      - "Stripe billing and webhooks configured"
+      - "tenant management validated"
+      - "MRR/churn metrics dashboard active"
+    on_fail: "rework_stage"
+  - id: "gate-growth-baseline"
+    stage_id: "stage-growth"
+    criteria:
+      - "growth strategy with SEO baseline"
+      - "retention metrics and North Star defined"
+    on_fail: "rework_stage"
+
+feedback_loops:
+  - from_stage: "stage-discovery"
+    to_stage: "stage-business"
+    trigger: "opportunity verdict invalid"
+  - from_stage: "stage-digital-business"
+    to_stage: "stage-business"
+    trigger: "viability verdict not viable"
+  - from_stage: "stage-legal"
+    to_stage: "stage-security"
+    trigger: "compliance blocks release"
+  - from_stage: "stage-finops"
+    to_stage: "stage-cloud"
+    trigger: "implementation cost infeasible without cloud option change"
+  - from_stage: "stage-saas-ops"
+    to_stage: "stage-finops"
+    trigger: "unit economics degraded by ops cost"
+  - from_stage: "stage-support-debug"
+    to_stage: "stage-requirements"
+    trigger: "incident root cause or recurring support issue"
+  - from_stage: "stage-growth"
+    to_stage: "stage-requirements"
+    trigger: "growth insights require product backlog changes"

@@ -1,0 +1,83 @@
+version: 0.4.0
+name: "spec-skills-priority-matrix"
+description: "Skill priority by OPC learning phase"
+
+priorities:
+  - id: essencial
+    name: "Essencial"
+    description: "Required to ship first Micro SaaS MVP"
+  - id: importante
+    name: "Importante"
+    description: "Required for sustainable operation"
+  - id: desejavel
+    name: "Desejavel"
+    description: "Accelerates scale or portfolio"
+
+phases:
+  - id: mvp-builder
+    name: "Fase 1 — MVP Builder"
+    skills:
+      - skill_id: market-research
+        priority: essencial
+      - skill_id: icp-personas
+        priority: essencial
+      - skill_id: mvp-definition
+        priority: essencial
+      - skill_id: ux-research
+        priority: importante
+      - skill_id: nextjs-react
+        priority: essencial
+      - skill_id: nestjs-api
+        priority: essencial
+      - skill_id: data-modeling
+        priority: essencial
+      - skill_id: oci-bootstrap
+        priority: essencial
+      - skill_id: cicd-iac
+        priority: importante
+      - skill_id: testing
+        priority: essencial
+      - skill_id: appsec
+        priority: essencial
+      - skill_id: compliance
+        priority: importante
+      - skill_id: unit-economics
+        priority: essencial
+
+  - id: micro-saas-operator
+    name: "Fase 2 — Micro SaaS Operator"
+    skills:
+      - skill_id: billing-tenants
+        priority: essencial
+      - skill_id: plg-growth
+        priority: importante
+      - skill_id: workflow-automation
+        priority: importante
+      - skill_id: product-led-sales
+        priority: importante
+      - skill_id: design-systems
+        priority: desejavel
+
+  - id: micro-saas-scaler
+    name: "Fase 3 — Micro SaaS Scaler"
+    skills:
+      - skill_id: aws-scale
+        priority: importante
+      - skill_id: llm-products
+        priority: desejavel
+      - skill_id: plg-growth
+        priority: essencial
+      - skill_id: gcp-ai
+        priority: desejavel
+
+  - id: portfolio-builder
+    name: "Fase 4 — Portfolio Builder"
+    skills:
+      - skill_id: workflow-automation
+        priority: essencial
+      - skill_id: unit-economics
+        priority: essencial
+      - skill_id: billing-tenants
+        priority: essencial
+      - skill_id: market-research
+        priority: essencial

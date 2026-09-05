@@ -1,0 +1,232 @@
+version: 0.3.0
+name: "complex-upstream-downstream-flow"
+
+stages:
+  - id: "stage-business"
+    role: "business"
+    mode: "caveman"
+    inputs: ["project-brief"]
+    outputs: ["problem-statement", "success-metrics"]
+  - id: "stage-digital-business"
+    role: "digital-business"
+    mode: "caveman"
+    inputs: ["problem-statement", "success-metrics"]
+    outputs: ["viability-summary", "profitability-model"]
+  - id: "stage-saas"
+    role: "saas"
+    mode: "caveman"
+    inputs: ["viability-summary", "problem-statement", "success-metrics"]
+    outputs: ["product-approach", "startup-pattern-checklist"]
+  - id: "stage-requirements"
+    role: "requirements"
+    mode: "caveman"
+    inputs: ["problem-statement", "success-metrics", "viability-summary", "product-approach"]
+    outputs: ["requirements", "acceptance-criteria", "wbs", "epics"]
+  - id: "stage-copywriting"
+    role: "copywriting"
+    mode: "caveman"
+    inputs: ["product-approach", "requirements"]
+    outputs: ["sales-strategy", "copy-deck"]
+  - id: "stage-architecture"
+    role: "architecture"
+    mode: "caveman"
+    inputs: ["requirements", "acceptance-criteria", "wbs", "sales-strategy"]
+    outputs: ["solution-design", "adr"]
+  - id: "stage-cloud"
+    role: "cloud"
+    mode: "caveman"
+    inputs: ["solution-design", "adr", "product-approach"]
+    outputs: ["option-evaluation", "architecture-overview"]
+  - id: "stage-security"
+    role: "security"
+    mode: "caveman"
+    inputs: ["solution-design", "adr", "option-evaluation"]
+    outputs: ["threat-model", "security-controls"]
+  - id: "stage-finops"
+    role: "finops"
+    mode: "caveman"
+    inputs: ["option-evaluation", "security-controls"]
+    outputs: ["implementation-cost-plan", "optimization-backlog"]
+  - id: "stage-infrastructure"
+    role: "infrastructure"
+    mode: "caveman"
+    inputs: ["solution-design", "security-controls", "option-evaluation", "implementation-cost-plan"]
+    outputs: ["ci-cd", "environments", "iac"]
+  - id: "stage-frontend"
+    role: "frontend"
+    mode: "caveman"
+    inputs: ["solution-design", "security-controls", "ci-cd", "sales-strategy", "copy-deck", "implementation-cost-plan"]
+    outputs: ["ui-implementation", "ui-tests"]
+  - id: "stage-backend"
+    role: "backend"
+    mode: "caveman"
+    inputs: ["solution-design", "security-controls", "ci-cd", "implementation-cost-plan"]
+    outputs: ["api-implementation", "api-tests"]
+  - id: "stage-documentation"
+    role: "documentation"
+    mode: "caveman"
+    inputs: ["ui-implementation", "api-implementation", "adr", "threat-model", "iac", "sales-strategy"]
+    outputs: ["readme", "runbook", "release-notes"]
+  - id: "stage-observability"
+    role: "observability"
+    mode: "caveman"
+    inputs: ["ui-implementation", "api-implementation", "runbook"]
+    outputs: ["dashboards", "alerts", "tracing-config"]
+  - id: "stage-qa"
+    role: "qa"
+    mode: "caveman"
+    inputs: ["ui-tests", "api-tests", "runbook", "dashboards", "alerts"]
+    outputs: ["qa-report", "go-no-go"]
+  - id: "stage-support-debug"
+    role: "support-debug"
+    mode: "caveman"
+    inputs: ["qa-report", "release-notes"]
+    outputs: ["incident-playbook", "feedback-backlog"]
+
+transitions:
+  - from: "stage-business"
+    to: "stage-digital-business"
+  - from: "stage-digital-business"
+    to: "stage-saas"
+  - from: "stage-saas"
+    to: "stage-requirements"
+  - from: "stage-requirements"
+    to: "stage-copywriting"
+  - from: "stage-copywriting"
+    to: "stage-architecture"
+  - from: "stage-architecture"
+    to: "stage-cloud"
+  - from: "stage-cloud"
+    to: "stage-security"
+  - from: "stage-security"
+    to: "stage-finops"
+  - from: "stage-finops"
+    to: "stage-infrastructure"
+  - from: "stage-infrastructure"
+    to: "stage-frontend"
+  - from: "stage-infrastructure"
+    to: "stage-backend"
+  - from: "stage-frontend"
+    to: "stage-documentation"
+  - from: "stage-backend"
+    to: "stage-documentation"
+  - from: "stage-documentation"
+    to: "stage-observability"
+  - from: "stage-observability"
+    to: "stage-qa"
+  - from: "stage-qa"
+    to: "stage-support-debug"
+
+parallel_groups:
+  - id: "impl-fork"
+    stages: ["stage-frontend", "stage-backend"]
+    join_stage: "stage-documentation"
+    join_policy: "all"
+
+gates:
+  - id: "gate-digital-business-viability"
+    stage_id: "stage-digital-business"
+    criteria:
+      - "viability verdict documented with assumptions"
+      - "profitability model includes break-even"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-saas-approach"
+    stage_id: "stage-saas"
+    criteria:
+      - "product approach suited to stage (MVP/PLG/tenant)"
+      - "startup pattern checklist completed"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-complexity-intake"
+    stage_id: "stage-requirements"
+    criteria:
+      - "wbs and epics exist when complexity_profile is high"
+      - "requirements traceable to epics"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-requirements-quality"
+    stage_id: "stage-requirements"
+    criteria:
+      - "all requirements have acceptance criteria"
+      - "requirements are traceable to business goals"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-copy-sales-strategy"
+    stage_id: "stage-copywriting"
+    criteria:
+      - "sales strategy includes ICP promise and funnel CTAs"
+      - "copy deck aligned to product approach"
+    on_fail: "rework_stage"
+  - id: "gate-architecture-quality"
+    stage_id: "stage-architecture"
+    criteria:
+      - "key decisions documented in ADR"
+      - "architecture boundaries are explicit"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-cloud-selection"
+    stage_id: "stage-cloud"
+    criteria:
+      - "options scored on cost performance quality usability"
+      - "single cloud recommendation documented"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-security-review"
+    stage_id: "stage-security"
+    criteria:
+      - "threat model documented for changed scope"
+      - "applicable ASVS controls listed"
+      - "no secrets in repository diff"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-finops-implementation-cost"
+    stage_id: "stage-finops"
+    criteria:
+      - "implementation cost plan with reduction target"
+      - "optimization backlog limited to delivery phase"
+    on_fail: "rework_stage"
+  - id: "gate-infrastructure-quality"
+    stage_id: "stage-infrastructure"
+    criteria:
+      - "CI/CD pipeline defined for changed components"
+      - "rollback path documented"
+    on_fail: "rework_stage"
+  - id: "gate-frontend-quality"
+    stage_id: "stage-frontend"
+    criteria:
+      - "ui tests pass locally"
+      - "critical user flows covered"
+    on_fail: "rework_stage"
+  - id: "gate-implementation-quality"
+    stage_id: "stage-backend"
+    criteria:
+      - "tests pass locally"
+      - "critical error paths validated"
+    on_fail: "rework_stage"
+  - id: "gate-documentation-quality"
+    stage_id: "stage-documentation"
+    criteria:
+      - "required docs artifacts are updated"
+      - "runbook and release notes are linked"
+    on_fail: "rework_stage"
+  - id: "gate-release-quality"
+    stage_id: "stage-qa"
+    criteria:
+      - "no unresolved critical bugs"
+      - "go-no-go decision recorded"
+    on_fail: "switch_to_normal_mode"
+  - id: "gate-observability-quality"
+    stage_id: "stage-observability"
+    criteria:
+      - "critical journeys have dashboards"
+      - "alerts are configured for high-impact failures"
+      - "traceability exists for key backend flows"
+    on_fail: "rework_stage"
+
+feedback_loops:
+  - from_stage: "stage-digital-business"
+    to_stage: "stage-business"
+    trigger: "viability verdict not viable"
+  - from_stage: "stage-finops"
+    to_stage: "stage-cloud"
+    trigger: "implementation cost infeasible without cloud option change"
+  - from_stage: "stage-architecture"
+    to_stage: "stage-requirements"
+    trigger: "technical discovery blocks requirements"
+  - from_stage: "stage-support-debug"
+    to_stage: "stage-requirements"
+    trigger: "incident root cause or recurring support issue"

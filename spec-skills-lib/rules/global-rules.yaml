@@ -1,0 +1,152 @@
+version: 0.4.0
+project:
+  name: "sample-local-project"
+  domain: "micro-saas-opc"
+
+technologies:
+  stack_profile: "nestjs-next-react"
+  cloud_preference: "oci-first"
+  languages: ["TypeScript"]
+  frameworks: ["Next.js", "NestJS", "React"]
+  datastores: ["MySQL", "Redis"]
+  tooling: ["Prisma", "NATS", "Tailwind", "Shadcn/UI"]
+
+architecture:
+  style: "to-be-defined"
+  boundaries:
+    - "presentation"
+    - "application"
+    - "domain"
+    - "infrastructure"
+  patterns:
+    - "clean-architecture"
+
+implementation_level: "mvp"
+
+quality:
+  test_coverage_target: 80
+  lint_required: true
+  performance_budget_ms: 300
+
+security:
+  owasp_minimum: "ASVS-L1"
+  asvs_level: "L1"
+  secrets_policy: "no-secrets-in-repo"
+  audit_trail_required: true
+  threat_model_required: true
+  dependency_audit_required: true
+  allowed_secret_stores:
+    - "env-var-runtime"
+    - "local-secret-manager"
+  sbom_required: false
+
+documentation:
+  required_artifacts:
+    - "README"
+    - "ADR"
+    - "Runbook"
+    - "ReleaseNotes"
+  update_policy: "all behavior changes require doc update in same change-set"
+
+flow_config:
+  active_flow: "opc-flow"
+  complexity_profile: "low"
+  opc_mode: true
+  expert_stages_enabled: true
+  ai_features_enabled: false
+
+definition_of_done:
+  business:
+    - "problem statement and business goal approved"
+  digital-business:
+    - "viability verdict and profitability model documented"
+  saas:
+    - "product approach and startup pattern checklist completed"
+  copywriting:
+    - "sales strategy and copy deck aligned to product approach"
+  cloud:
+    - "cloud option evaluation with four criteria and single recommendation"
+  finops:
+    - "implementation cost plan with reduction target documented"
+  requirements:
+    - "acceptance criteria are testable"
+  architecture:
+    - "architecture decision and constraints documented"
+  security:
+    - "threat model and ASVS controls mapped for changed scope"
+    - "no secrets in repository diff"
+  infrastructure:
+    - "CI/CD and environments documented with rollback path"
+  frontend:
+    - "ui behavior covered by tests"
+  backend:
+    - "api contract and error paths tested"
+  observability:
+    - "dashboards, alerts and traces validated for critical flows"
+  documentation:
+    - "required artifacts updated and linked"
+  qa:
+    - "functional and regression checks completed"
+  support-debug:
+    - "runbook and known-issues updated"
+  discovery:
+    - "ICP, JTBD, and competitive map documented with validation verdict"
+  ux:
+    - "wireframes and design system tokens ready for implementation"
+  ai-engineering:
+    - "AI architecture documented when ai_features_enabled"
+  legal:
+    - "ToS, privacy policy, and LGPD/GDPR checklist completed"
+  automation:
+    - "critical workflows wired in n8n or equivalent"
+  growth:
+    - "PLG loops, SEO baseline, and retention metrics defined"
+  saas-ops:
+    - "Stripe billing, tenant management, and churn monitoring configured"
+
+caveman_profile:
+  default_mode: "caveman"
+  token_budget_per_role:
+    business: 900
+    digital-business: 1000
+    saas: 1000
+    copywriting: 900
+    cloud: 1200
+    finops: 1000
+    requirements: 1200
+    architecture: 1400
+    security: 1200
+    infrastructure: 1100
+    frontend: 1200
+    backend: 1200
+    observability: 1000
+    documentation: 1000
+    qa: 1000
+    support-debug: 900
+    discovery: 1000
+    ux: 1100
+    ai-engineering: 1300
+    legal: 900
+    automation: 1000
+    growth: 1000
+    saas-ops: 1000
+  max_items_per_section: 5
+  response_format:
+    - "contexto"
+    - "decisao"
+    - "proximo_passo"
+  fallback_policy: "if gate fails in caveman, rerun only failing stage in normal mode"
+
+execution_profile:
+  local_only: true
+  offline_supported: true
+  remote_calls_allowed: false
+  active_profile: "default"
+  profiles:
+    production_remote:
+      remote_calls_allowed: true
+      allowed_endpoints:
+        - "package-registries"
+        - "vulnerability-db"
+        - "optional-saas-scanners"
+      requires_explicit_opt_in: true

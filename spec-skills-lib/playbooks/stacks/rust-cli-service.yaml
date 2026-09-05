@@ -1,0 +1,20 @@
+id: "rust-cli-service"
+name: "Rust CLI or service"
+languages: ["Rust"]
+frameworks: ["tokio", "axum", "actix-web"]
+package_manager: "cargo"
+test_runner: "cargo test"
+lint: "clippy"
+build: "cargo build --release"
+directory_conventions:
+  source: "src/"
+  tests: "tests/ and #[cfg(test)]"
+  docs: "docs/"
+commands:
+  test: "cargo test"
+  lint: "cargo clippy -- -D warnings"
+  build: "cargo build --release"
+observability_defaults:
+  metrics: ["prometheus"]
+  tracing: "tracing crate"
+security_audit_commands: ["cargo audit"]

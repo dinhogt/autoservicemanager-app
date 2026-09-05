@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: autoservice-config
+  namespace: autoservice
+data:
+  NODE_ENV: production
+  PORT: "3000"
+  EMAIL_ENABLED: "true"
+  LOG_FORMAT: "json"
+  AWS_XRAY_ENABLED: "true"
+  AWS_XRAY_CONTEXT_MISSING: "LOG_ERROR"
+  SWAGGER_ENABLED: "false"
+  REQUIRE_GATEWAY_HEADERS: "true"
+  # Defina por ambiente (ex.: https://app.homolog.example.com,https://admin.example.com)
+  CORS_ORIGIN: "https://REPLACE_ME.example.com"
+  MONGODB_DATABASE: autoservicemanager

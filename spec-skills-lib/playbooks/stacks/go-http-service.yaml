@@ -1,0 +1,20 @@
+id: "go-http-service"
+name: "Go HTTP service"
+languages: ["Go"]
+frameworks: ["net/http", "chi", "gin", "echo"]
+package_manager: "go modules"
+test_runner: "go test"
+lint: "golangci-lint"
+build: "go build"
+directory_conventions:
+  source: "cmd/ and internal/"
+  tests: "**/*_test.go"
+  docs: "docs/"
+commands:
+  test: "go test ./..."
+  lint: "golangci-lint run"
+  build: "go build ./..."
+observability_defaults:
+  metrics: ["prometheus"]
+  tracing: "opentelemetry-go"
+security_audit_commands: ["govulncheck ./..."]

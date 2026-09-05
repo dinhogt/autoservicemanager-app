@@ -1,0 +1,23 @@
+version: 0.1.0
+project:
+  name: "bff-example"
+  domain: "omnichannel-commerce"
+
+technologies:
+  stack_profile: "typescript-node-react"
+  languages: ["TypeScript"]
+  frameworks: ["Node.js", "React", "React Native"]
+  datastores: ["MySQL", "MongoDB"]
+  tooling: ["eslint", "prettier", "vitest", "k6"]
+
+architecture:
+  style: "bff"
+  boundaries: ["web-bff", "mobile-bff", "domain-services"]
+  patterns: ["backend-for-frontend", "api-composition"]
+
+implementation_level: "production"
+
+quality:
+  test_coverage_target: 85
+  lint_required: true
+  performance_budget_ms: 200

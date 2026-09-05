@@ -1,0 +1,23 @@
+version: 0.1.0
+project:
+  name: "mobile-example"
+  domain: "consumer-app"
+
+technologies:
+  stack_profile: "typescript-node-react"
+  languages: ["TypeScript"]
+  frameworks: ["React Native", "Node.js"]
+  datastores: ["MySQL", "MongoDB"]
+  tooling: ["eslint", "prettier", "vitest", "detox"]
+
+architecture:
+  style: "mobile-bff"
+  boundaries: ["mobile-app", "bff", "core-services"]
+  patterns: ["clean-architecture", "offline-first"]
+
+implementation_level: "production"
+
+quality:
+  test_coverage_target: 80
+  lint_required: true
+  performance_budget_ms: 300

@@ -1,0 +1,3 @@
+audit_date_utc=2026-08-08T11:51:01Z
+prod: 1 vulnerabilities found - Packages audited: 173 Severity: 1 Low 
+full: 191 vulnerabilities found - Packages audited: 850 Severity: 12 Low | 60 Moderate | 118 High | 1 Critical 

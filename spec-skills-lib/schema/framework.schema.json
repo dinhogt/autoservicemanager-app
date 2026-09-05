@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec-skills-lib/schema/framework.schema.json",
+  "title": "FrameworkSpec",
+  "description": "Validates spec-skills-lib/framework/*.yaml competency files",
+  "type": "object",
+  "required": ["version", "name"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "areas": { "type": "array" },
+    "levels": { "type": "array" },
+    "skills": { "type": "array" },
+    "priorities": { "type": "array" },
+    "phases": { "type": "array" },
+    "augmentation_modes": { "type": "array" },
+    "evolution_roadmap": { "type": "array" }
+  },
+  "additionalProperties": true
+}

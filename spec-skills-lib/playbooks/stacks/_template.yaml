@@ -1,0 +1,20 @@
+id: "your-stack-id"
+name: "Human readable stack name"
+languages: []
+frameworks: []
+package_manager: ""
+test_runner: ""
+lint: ""
+build: ""
+directory_conventions:
+  source: "src/"
+  tests: "tests/"
+  docs: "docs/"
+commands:
+  test: ""
+  lint: ""
+  build: ""
+observability_defaults:
+  metrics: []
+  tracing: ""
+security_audit_commands: []

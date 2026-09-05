@@ -1,0 +1,23 @@
+version: 0.1.0
+project:
+  name: "microfrontend-example"
+  domain: "digital-platform"
+
+technologies:
+  stack_profile: "typescript-node-react"
+  languages: ["TypeScript"]
+  frameworks: ["Node.js", "React"]
+  datastores: ["MongoDB"]
+  tooling: ["eslint", "prettier", "vitest"]
+
+architecture:
+  style: "microfrontend"
+  boundaries: ["rootconfig", "shell", "remote-catalog", "remote-checkout"]
+  patterns: ["module-federation", "frontend-bff"]
+
+implementation_level: "mvp"
+
+quality:
+  test_coverage_target: 75
+  lint_required: true
+  performance_budget_ms: 250

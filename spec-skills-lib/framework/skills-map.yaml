@@ -1,0 +1,192 @@
+version: 0.4.0
+name: "spec-skills-opc-skills-map"
+description: "Hierarchical competency map for Micro SaaS OPC"
+
+areas:
+  - id: product
+    name: "Product"
+    domains:
+      - id: product-discovery
+        name: "Product Discovery"
+        skills:
+          - id: market-research
+            name: "Market Research"
+            objective: "Identify viable Micro SaaS opportunities"
+            subskills: ["Google Trends analysis", "Reddit research", "Product Hunt scan", "Competitive analysis"]
+            tools: ["Google Trends", "Ahrefs", "Semrush", "Reddit", "Product Hunt"]
+            level_default: "Intermediario"
+            best_practices: ["Validate problem before solution", "Focus niche ICP", "Document assumptions"]
+            anti_patterns: ["Build before validate", "Broad ICP", "Ignore competitors"]
+            metrics: ["Problem-solution fit score", "TAM/SAM/SOM estimate"]
+            micro_saas_use_cases: ["Niche B2B tool", "Vertical SaaS for one industry"]
+          - id: icp-personas
+            name: "ICP and Personas"
+            subskills: ["Jobs To Be Done", "Persona canvas", "Pain point mapping"]
+            tools: ["FigJam", "Notion"]
+            level_default: "Intermediario"
+      - id: product-management
+        name: "Product Management"
+        skills:
+          - id: backlog-roadmap
+            name: "Backlog and Roadmap"
+            subskills: ["User stories", "RICE prioritization", "MoSCoW", "North Star Metric"]
+            tools: ["Linear", "GitHub Issues"]
+            level_default: "Intermediario"
+          - id: mvp-definition
+            name: "MVP Definition"
+            subskills: ["Story mapping", "Scope cut", "Launch criteria"]
+            level_default: "Avancado"
+
+  - id: design
+    name: "Design"
+    domains:
+      - id: ux-ui
+        name: "UX/UI Design"
+        skills:
+          - id: ux-research
+            name: "UX Research"
+            subskills: ["Wireframing", "Prototyping", "Design Thinking", "Accessibility WCAG 2.1"]
+            tools: ["Figma", "FigJam"]
+            level_default: "Intermediario"
+          - id: design-systems
+            name: "Design Systems"
+            subskills: ["Component library", "Tokens", "Responsive design"]
+            tools: ["Shadcn/UI", "Tailwind CSS"]
+            level_default: "Avancado"
+
+  - id: engineering
+    name: "Engineering"
+    domains:
+      - id: frontend
+        name: "Frontend"
+        skills:
+          - id: nextjs-react
+            name: "Next.js + React"
+            subskills: ["SSR", "SSG", "ISR", "SEO", "Performance", "A11y"]
+            tools: ["Next.js", "React", "TypeScript", "Tailwind", "Shadcn/UI"]
+            level_default: "Avancado"
+      - id: backend
+        name: "Backend"
+        skills:
+          - id: nestjs-api
+            name: "NestJS APIs"
+            subskills: ["REST", "GraphQL", "Webhooks", "OpenAPI", "Multi-tenant", "Auth", "CQRS"]
+            tools: ["NestJS", "Prisma", "MySQL", "Redis", "NATS"]
+            level_default: "Avancado"
+      - id: data
+        name: "Data"
+        skills:
+          - id: data-modeling
+            name: "Data Modeling"
+            subskills: ["Query optimization", "Indexing", "Cache strategies", "Event storage"]
+            tools: ["MySQL", "Redis", "Prisma"]
+            level_default: "Intermediario"
+      - id: ai
+        name: "AI Engineering"
+        skills:
+          - id: llm-products
+            name: "LLM Products"
+            subskills: ["Prompt engineering", "RAG", "Agents", "MCP", "AI evaluation", "LLMOps"]
+            tools: ["OpenAI", "Anthropic", "Gemini", "LangGraph", "LangChain", "OpenRouter"]
+            level_default: "Avancado"
+
+  - id: platform
+    name: "Platform"
+    domains:
+      - id: cloud
+        name: "Cloud"
+        skills:
+          - id: oci-bootstrap
+            name: "OCI Bootstrap"
+            subskills: ["Compute", "OKE", "Functions", "Object Storage", "LB", "IAM", "Monitoring"]
+            tools: ["OCI"]
+            level_default: "Intermediario"
+          - id: aws-scale
+            name: "AWS Scale-up"
+            subskills: ["ECS Fargate", "EKS", "Lambda", "RDS", "CloudFront", "Cognito"]
+            tools: ["AWS"]
+            level_default: "Avancado"
+          - id: gcp-ai
+            name: "GCP Analytics/AI"
+            subskills: ["Cloud Run", "Vertex AI", "BigQuery", "Pub/Sub"]
+            tools: ["GCP"]
+            level_default: "Uso Excepcional"
+      - id: devops
+        name: "DevOps"
+        skills:
+          - id: cicd-iac
+            name: "CI/CD and IaC"
+            subskills: ["GitHub Actions", "Terraform", "Feature flags", "Release management"]
+            tools: ["Git", "GitHub Actions", "Terraform"]
+            level_default: "Intermediario"
+      - id: quality
+        name: "Quality Engineering"
+        skills:
+          - id: testing
+            name: "Testing"
+            subskills: ["Unit", "Integration", "Contract", "E2E", "Load", "Performance"]
+            tools: ["Jest", "Playwright", "Supertest"]
+            level_default: "Intermediario"
+      - id: security
+        name: "Security"
+        skills:
+          - id: appsec
+            name: "Application Security"
+            subskills: ["OWASP Top 10", "OAuth2", "OIDC", "JWT", "RBAC", "Secrets", "LGPD", "GDPR"]
+            level_default: "Avancado"
+
+  - id: business-ops
+    name: "Business Operations"
+    domains:
+      - id: saas-ops
+        name: "SaaS Operations"
+        skills:
+          - id: billing-tenants
+            name: "Billing and Tenants"
+            subskills: ["Stripe subscriptions", "Tenant management", "Customer success", "Churn reduction"]
+            tools: ["Stripe", "Posthog"]
+            level_default: "Intermediario"
+      - id: growth
+        name: "Growth Marketing"
+        skills:
+          - id: plg-growth
+            name: "PLG and Growth"
+            subskills: ["SEO", "Technical SEO", "Content", "Landing pages", "Email", "Funnels", "Viral loops"]
+            tools: ["Google Analytics", "Posthog", "Search Console"]
+            level_default: "Intermediario"
+      - id: sales
+        name: "Sales"
+        skills:
+          - id: product-led-sales
+            name: "Product-Led Sales"
+            subskills: ["CRM", "Lead qualification", "Outbound automation"]
+            tools: ["Hubspot", "Pipedrive"]
+            level_default: "Intermediario"
+      - id: finance
+        name: "Finance"
+        skills:
+          - id: unit-economics
+            name: "Unit Economics"
+            subskills: ["CAC", "LTV", "MRR", "ARR", "Burn rate", "Runway"]
+            level_default: "Intermediario"
+      - id: legal
+        name: "Legal"
+        skills:
+          - id: compliance
+            name: "Compliance"
+            subskills: ["SaaS contracts", "ToS", "Privacy policy", "LGPD", "GDPR"]
+            level_default: "Intermediario"
+      - id: automation
+        name: "Automation"
+        skills:
+          - id: workflow-automation
+            name: "Workflow Automation"
+            subskills: ["AI agents", "No-code", "Low-code", "Process automation"]
+            tools: ["n8n", "Make", "Zapier"]
+            level_default: "Intermediario"
+
+levels:
+  - "Iniciante"
+  - "Intermediario"
+  - "Avancado"
+  - "Especialista"

@@ -1,0 +1,79 @@
+version: 0.4.0
+name: "spec-skills-ai-augmentation-matrix"
+description: "Human vs AI vs automation vs agent per skill area"
+
+augmentation_modes:
+  - id: humano
+    name: "Humano"
+    description: "Founder decision or review required"
+  - id: ia_assistida
+    name: "IA Assistida"
+    description: "AI copilot drafts; human approves"
+  - id: automacao
+    name: "Automacao"
+    description: "Scripted workflows without LLM"
+  - id: agente_autonomo
+    name: "Agente Autonomo"
+    description: "Agent executes within guardrails"
+
+skills:
+  - skill_id: market-research
+    humano: "Final opportunity selection"
+    ia_assistida: "Competitive analysis drafts, trend summaries"
+    automacao: "Google Trends alerts, RSS feeds"
+    agente_autonomo: "Reddit/Product Hunt scan agent"
+  - skill_id: mvp-definition
+    humano: "Scope and cut decisions"
+    ia_assistida: "User story generation, RICE scoring"
+    automacao: "Backlog sync to GitHub/Linear"
+    agente_autonomo: "Requirements agent from discovery artifacts"
+  - skill_id: ux-research
+    humano: "Brand and final UX approval"
+    ia_assistida: "Wireframe generation, a11y review"
+    automacao: "Figma design token export"
+    agente_autonomo: "UX heuristic review agent"
+  - skill_id: nextjs-react
+    humano: "Architecture and PR review"
+    ia_assistida: "Component and page codegen"
+    automacao: "CI lint, test, build"
+    agente_autonomo: "Frontend implementation agent"
+  - skill_id: nestjs-api
+    humano: "API contract approval"
+    ia_assistida: "Module and test generation"
+    automacao: "OpenAPI validation in CI"
+    agente_autonomo: "Backend implementation agent"
+  - skill_id: oci-bootstrap
+    humano: "Cloud provider sign-off"
+    ia_assistida: "Terraform generation, cost estimates"
+    automacao: "Deploy pipelines, monitoring alerts"
+    agente_autonomo: "FinOps cost anomaly agent"
+  - skill_id: llm-products
+    humano: "AI feature scope and safety"
+    ia_assistida: "Prompt and RAG pipeline design"
+    automacao: "Eval suite in CI"
+    agente_autonomo: "Multi-agent orchestration (LangGraph)"
+  - skill_id: appsec
+    humano: "Threat model approval"
+    ia_assistida: "ASVS mapping, control suggestions"
+    automacao: "Dependency audit, secret scan"
+    agente_autonomo: "Security review agent"
+  - skill_id: compliance
+    humano: "Legal sign-off on ToS/privacy"
+    ia_assistida: "Policy draft generation"
+    automacao: "Cookie consent, audit logs"
+    agente_autonomo: "Compliance checklist agent"
+  - skill_id: plg-growth
+    humano: "Campaign strategy"
+    ia_assistida: "Copy, SEO recommendations"
+    automacao: "Email sequences via n8n"
+    agente_autonomo: "SEO audit agent"
+  - skill_id: billing-tenants
+    humano: "Pricing model decisions"
+    ia_assistida: "Stripe integration codegen"
+    automacao: "Webhook handlers, MRR dashboards"
+    agente_autonomo: "Churn alert agent"
+  - skill_id: workflow-automation
+    humano: "Workflow design approval"
+    ia_assistida: "n8n workflow generation"
+    automacao: "Scheduled jobs, webhooks"
+    agente_autonomo: "Cross-product automation agent"

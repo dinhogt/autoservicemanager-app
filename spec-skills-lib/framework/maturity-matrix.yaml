@@ -1,0 +1,59 @@
+version: 0.4.0
+name: "spec-skills-maturity-matrix"
+description: "Skill maturity levels for OPC Micro SaaS"
+
+levels:
+  - id: iniciante
+    name: "Iniciante"
+    description: "Can follow guides with AI assistance"
+  - id: intermediario
+    name: "Intermediario"
+    description: "Can deliver independently with occasional review"
+  - id: avancado
+    name: "Avancado"
+    description: "Can architect and optimize for scale"
+  - id: especialista
+    name: "Especialista"
+    description: "Can teach, audit, and innovate in domain"
+
+skills:
+  - skill_id: market-research
+    iniciante: "Uses Google Trends and Reddit with AI prompts"
+    intermediario: "Produces competitive map and ICP hypothesis"
+    avancado: "Validates TAM/SAM with multiple data sources"
+    especialista: "Identifies blue-ocean niches; portfolio strategy"
+  - skill_id: nextjs-react
+    iniciante: "Builds pages with Shadcn components"
+    intermediario: "SSR/SSG, SEO, responsive layouts"
+    avancado: "Performance budgets, ISR, design system"
+    especialista: "Edge deployment, advanced caching strategies"
+  - skill_id: nestjs-api
+    iniciante: "CRUD modules with Prisma"
+    intermediario: "Auth, multi-tenant, OpenAPI"
+    avancado: "Event-driven, CQRS, background jobs"
+    especialista: "Modular monolith to service extraction path"
+  - skill_id: oci-bootstrap
+    iniciante: "Deploys container to OCI Compute"
+    intermediario: "OKE cluster, managed MySQL, monitoring"
+    avancado: "Multi-AZ, autoscaling, cost optimization"
+    especialista: "Hybrid OCI/AWS migration planning"
+  - skill_id: llm-products
+    iniciante: "Prompt engineering for features"
+    intermediario: "RAG pipeline with evaluation"
+    avancado: "Multi-agent systems with LangGraph"
+    especialista: "LLMOps, fine-tuning, cost optimization at scale"
+  - skill_id: plg-growth
+    iniciante: "Landing page and basic SEO"
+    intermediario: "Funnel design, email sequences"
+    avancado: "Viral loops, retention cohorts"
+    especialista: "Multi-channel growth engine"
+  - skill_id: billing-tenants
+    iniciante: "Stripe Checkout integration"
+    intermediario: "Subscriptions, customer portal, webhooks"
+    avancado: "Multi-tenant billing, usage-based pricing"
+    especialista: "Revenue ops across product portfolio"
+  - skill_id: workflow-automation
+    iniciante: "Zapier simple triggers"
+    intermediario: "n8n self-hosted workflows"
+    avancado: "AI agent chains in automation"
+    especialista: "Cross-product automation hub"

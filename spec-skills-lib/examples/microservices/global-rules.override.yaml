@@ -1,0 +1,23 @@
+version: 0.1.0
+project:
+  name: "microservices-example"
+  domain: "marketplace"
+
+technologies:
+  stack_profile: "typescript-node-react"
+  languages: ["TypeScript"]
+  frameworks: ["Node.js", "Fastify"]
+  datastores: ["PostgreSQL", "Redis"]
+  tooling: ["eslint", "prettier", "vitest", "k6"]
+
+architecture:
+  style: "microservices"
+  boundaries: ["api-gateway", "catalog-service", "order-service", "billing-service"]
+  patterns: ["event-driven", "saga", "hexagonal"]
+
+implementation_level: "production"
+
+quality:
+  test_coverage_target: 85
+  lint_required: true
+  performance_budget_ms: 200

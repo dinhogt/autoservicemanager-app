@@ -1,0 +1,72 @@
+# LEGADO / opcional — NÃO aplicar se o addon amazon-cloudwatch-observability estiver ativo:
+# o CloudWatch Agent já ocupa hostPort 2000 (X-Ray) e este DaemonSet fica Pending,
+# provocando churn de nodes e custo extra.
+#
+# Preferir o addon; pods usam AWS_XRAY_DAEMON_ADDRESS=$(HOST_IP):2000 apontando ao agent.
+# IRSA do app já tem xray:Put*; o daemon standalone usaria a role do nó (AWSXRayDaemonWriteAccess).
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: xray-daemon
+  namespace: autoservice
+  labels:
+    app: xray-daemon
+spec:
+  selector:
+    matchLabels:
+      app: xray-daemon
+  template:
+    metadata:
+      labels:
+        app: xray-daemon
+    spec:
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: xray-daemon
+          image: public.ecr.aws/xray/aws-xray-daemon:3.3.13
+          command: ["/usr/bin/xray", "-t", "0.0.0.0:2000", "-b", "0.0.0.0:2000"]
+          ports:
+            - name: xray-ingest
+              containerPort: 2000
+              hostPort: 2000
+              protocol: UDP
+            - name: xray-tcp
+              containerPort: 2000
+              hostPort: 2000
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 32m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xray-daemon
+  namespace: autoservice
+  labels:
+    app: xray-daemon
+spec:
+  clusterIP: None
+  selector:
+    app: xray-daemon
+  ports:
+    - name: xray-ingest
+      port: 2000
+      protocol: UDP

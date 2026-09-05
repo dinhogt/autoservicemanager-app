@@ -1,0 +1,12 @@
+---
+description: When to use complex-flow and infrastructure role
+alwaysApply: false
+---
+
+# Complex projects
+
+Switch to `spec-skills-lib/flows/complex-flow.yaml` when complexity signals apply (see `rules/complexity-profile.yaml`).
+
+When `complexity_profile: high`, produce WBS and epics under `docs/requirements/` before architecture.
+
+Run the `infrastructure` role before parallel frontend/backend work.

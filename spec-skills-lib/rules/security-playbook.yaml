@@ -1,0 +1,71 @@
+version: 0.2.0
+name: "security-playbook"
+
+asvs_mapping:
+  poc:
+    level: "L1"
+    controls:
+      - "V1.1 secure SDLC awareness"
+      - "V2.1 input validation on external boundaries"
+      - "V3.1 session/auth basics if applicable"
+      - "V6.1 no secrets in source control"
+  mvp:
+    level: "L1"
+    controls:
+      - "V1.2 documented security requirements"
+      - "V2.4 output encoding for XSS surfaces"
+      - "V4.1 access control on sensitive operations"
+      - "V7.1 dependency lockfiles and local audit"
+      - "V10.1 minimal logging without secrets/PII"
+  production:
+    level: "L2"
+    controls:
+      - "V1.4 threat model for major changes"
+      - "V2.5 parameterized queries / ORM safe usage"
+      - "V4.2 deny-by-default authorization"
+      - "V7.2 SBOM or equivalent dependency inventory"
+      - "V8.1 data protection at rest/in transit"
+      - "V14.1 security headers and transport security"
+
+threat_model:
+  method: "STRIDE-lite"
+  required_artifacts:
+    - "docs/security/threat-model.md"
+  minimum_sections:
+    - "scope and assets"
+    - "trust boundaries"
+    - "top threats and mitigations"
+    - "residual risks"
+
+secrets:
+  prohibited_in_repo:
+    - "API keys"
+    - "passwords"
+    - "private keys"
+    - "connection strings with credentials"
+  pre_commit_checks:
+    - "scan diff for high-entropy strings"
+    - "reject .env with real values"
+  runtime_policy: "load from environment or approved secret store only"
+
+dependency_audit:
+  local_commands_by_stack:
+    nestjs-next-react: ["npm audit", "npm audit --production"]
+    typescript-node-react: ["npm audit", "npm audit --production"]
+    python-django-fastapi: ["pip-audit", "uv pip compile --check"]
+    go-http-service: ["govulncheck ./..."]
+    java-spring: ["./mvnw dependency:analyze", "osv-scanner if available"]
+    dotnet-aspnet: ["dotnet list package --vulnerable"]
+    rust-cli-service: ["cargo audit"]
+
+auth_and_input:
+  - "validate and sanitize all external input at boundaries"
+  - "use framework-native CSRF/session protections when applicable"
+  - "rate-limit authentication endpoints in production"
+  - "never log credentials, tokens, or full PII"
+
+release_checklist:
+  - "threat model updated for changed boundaries"
+  - "dependency audit executed and critical issues triaged"
+  - "no secrets in diff"
+  - "security gate criteria satisfied"

@@ -1,0 +1,20 @@
+id: "dotnet-aspnet"
+name: ".NET + ASP.NET Core"
+languages: ["C#"]
+frameworks: ["ASP.NET Core"]
+package_manager: "nuget"
+test_runner: "xunit"
+lint: "dotnet format / analyzers"
+build: "dotnet build"
+directory_conventions:
+  source: "src/"
+  tests: "tests/"
+  docs: "docs/"
+commands:
+  test: "dotnet test"
+  lint: "dotnet format --verify-no-changes"
+  build: "dotnet build"
+observability_defaults:
+  metrics: ["prometheus-net", "Application Insights"]
+  tracing: "opentelemetry"
+security_audit_commands: ["dotnet list package --vulnerable"]

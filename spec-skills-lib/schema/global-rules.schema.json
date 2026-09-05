@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.spec-skills-lib/schema/global-rules.schema.json",
+  "title": "GlobalRules",
+  "description": "Cross-project local-first rules shared by all specs.",
+  "type": "object",
+  "required": [
+    "version",
+    "project",
+    "technologies",
+    "architecture",
+    "implementation_level",
+    "quality",
+    "security",
+    "documentation",
+    "definition_of_done",
+    "caveman_profile",
+    "execution_profile",
+    "flow_config"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "project": {
+      "type": "object",
+      "required": ["name", "domain"],
+      "properties": {
+        "name": { "type": "string" },
+        "domain": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "technologies": {
+      "type": "object",
+      "required": ["stack_profile", "languages", "frameworks", "datastores", "tooling"],
+      "properties": {
+        "stack_profile": {
+          "type": "string",
+          "description": "Playbook id under playbooks/stacks/ or 'detect' for auto-detection"
+        },
+        "languages": { "type": "array", "items": { "type": "string" } },
+        "frameworks": { "type": "array", "items": { "type": "string" } },
+        "datastores": { "type": "array", "items": { "type": "string" } },
+        "tooling": { "type": "array", "items": { "type": "string" } },
+        "cloud_preference": {
+          "type": "string",
+          "enum": ["oci-first", "aws-first", "gcp-first", "neutral"],
+          "description": "Default cloud evaluation order for OPC projects"
+        }
+      },
+      "additionalProperties": false
+    },
+    "architecture": {
+      "type": "object",
+      "required": ["style", "boundaries", "patterns"],
+      "properties": {
+        "style": { "type": "string" },
+        "boundaries": { "type": "array", "items": { "type": "string" } },
+        "patterns": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "implementation_level": {
+      "type": "string",
+      "enum": ["poc", "mvp", "production"]
+    },
+    "quality": {
+      "type": "object",
+      "required": ["test_coverage_target", "lint_required", "performance_budget_ms"],
+      "properties": {
+        "test_coverage_target": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "lint_required": { "type": "boolean" },
+        "performance_budget_ms": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "security": {
+      "type": "object",
+      "required": [
+        "owasp_minimum",
+        "asvs_level",
+        "secrets_policy",
+        "audit_trail_required",
+        "threat_model_required",
+        "dependency_audit_required",
+        "allowed_secret_stores"
+      ],
+      "properties": {
+        "owasp_minimum": { "type": "string" },
+        "asvs_level": { "type": "string", "enum": ["L1", "L2", "L3"] },
+        "secrets_policy": { "type": "string" },
+        "audit_trail_required": { "type": "boolean" },
+        "threat_model_required": { "type": "boolean" },
+        "dependency_audit_required": { "type": "boolean" },
+        "allowed_secret_stores": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "sbom_required": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "documentation": {
+      "type": "object",
+      "required": ["required_artifacts", "update_policy"],
+      "properties": {
+        "required_artifacts": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "update_policy": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "definition_of_done": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "flow_config": {
+      "type": "object",
+      "required": ["active_flow", "complexity_profile"],
+      "properties": {
+        "active_flow": {
+          "type": "string",
+          "enum": ["default-flow", "complex-flow", "opc-flow"]
+        },
+        "complexity_profile": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "opc_mode": {
+          "type": "boolean",
+          "description": "When true, apply OPC constraints from framework/opc-mode.md"
+        },
+        "ai_features_enabled": {
+          "type": "boolean",
+          "description": "When true, stage-ai-engineering runs in opc-flow"
+        },
+        "expert_stages_enabled": {
+          "type": "boolean",
+          "description": "When true (default v0.3), specialist pipeline stages run in order"
+        }
+      },
+      "additionalProperties": false
+    },
+    "caveman_profile": {
+      "type": "object",
+      "required": [
+        "default_mode",
+        "token_budget_per_role",
+        "max_items_per_section",
+        "response_format",
+        "fallback_policy"
+      ],
+      "properties": {
+        "default_mode": {
+          "type": "string",
+          "enum": ["normal", "caveman"]
+        },
+        "token_budget_per_role": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 100
+          }
+        },
+        "max_items_per_section": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "response_format": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3
+        },
+        "fallback_policy": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution_profile": {
+      "type": "object",
+      "required": ["local_only", "offline_supported", "remote_calls_allowed"],
+      "properties": {
+        "local_only": { "type": "boolean" },
+        "offline_supported": { "type": "boolean" },
+        "remote_calls_allowed": { "type": "boolean" },
+        "active_profile": {
+          "type": "string",
+          "enum": ["default", "production_remote"]
+        },
+        "profiles": {
+          "type": "object",
+          "properties": {
+            "production_remote": {
+              "type": "object",
+              "required": [
+                "remote_calls_allowed",
+                "allowed_endpoints",
+                "requires_explicit_opt_in"
+              ],
+              "properties": {
+                "remote_calls_allowed": { "type": "boolean", "const": true },
+                "allowed_endpoints": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "minItems": 1
+                },
+                "requires_explicit_opt_in": { "type": "boolean", "const": true }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

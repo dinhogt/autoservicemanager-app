@@ -1,0 +1,13 @@
+yarn list v1.22.22
+├─ lodash.includes@4.3.0
+├─ lodash.isboolean@3.0.3
+├─ lodash.isinteger@4.0.4
+├─ lodash.isnumber@3.0.3
+├─ lodash.isplainobject@4.0.6
+├─ lodash.isstring@4.0.1
+├─ lodash.memoize@4.1.2
+├─ lodash.merge@4.6.2
+├─ lodash.once@4.1.1
+├─ lodash@4.18.1
+└─ path-to-regexp@8.4.2
+Done in 0.16s.

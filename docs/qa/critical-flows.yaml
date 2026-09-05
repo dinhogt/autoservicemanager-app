@@ -1,0 +1,94 @@
+# Fluxos críticos — Fase 2 / gate QA
+# Referência: docs/status-os-validacoes-mapeamento.md
+# Specs: test/integration/fluxos-criticos-os.integration.spec.ts
+#         + specs existentes listados em coverage_notes
+
+version: 1
+product: autoServiceManager
+phase: 2
+
+flows:
+  - id: F1
+    name: Ciclo completo de status da OS
+    path: RECEBIDA → EM_DIAGNOSTICO → AGUARDANDO_APROVACAO → EM_EXECUCAO → FINALIZADA → ENTREGUE
+    severity: critical
+    coverage: covered
+    evidence:
+      - test/integration/fluxos-criticos-os.integration.spec.ts
+      - src/domain/atendimento/services/order-status.service.spec.ts
+
+  - id: F2
+    name: Rejeição de orçamento
+    path: AGUARDANDO_APROVACAO → REJEITADA
+    side_effects:
+      - audit OrcamentoRejeitado
+      - notificação de mudança de status
+    severity: critical
+    coverage: covered
+    evidence:
+      - test/integration/fluxos-criticos-os.integration.spec.ts
+      - src/application/atendimento/use-cases/aprovar-orcamento.use-case.spec.ts
+      - test/integration/ordem-servico.controller.integration.spec.ts
+
+  - id: F3
+    name: Transições via webhook
+    checks:
+      - X-Webhook-Secret ausente → 401
+      - X-Webhook-Secret inválido → 401
+      - X-Webhook-Secret válido → 201
+    severity: critical
+    coverage: covered
+    evidence:
+      - test/integration/webhook-os.controller.integration.spec.ts
+      - src/infrastructure/auth/webhook-secret.guard.spec.ts
+      - src/application/atendimento/use-cases/processar-webhook-status-os.use-case.spec.ts
+
+  - id: F4
+    name: Notificações de e-mail em transições de status
+    severity: critical
+    coverage: covered
+    evidence:
+      - test/integration/fluxos-criticos-os.integration.spec.ts
+      - src/infrastructure/notifications/email-os-status-notifier.spec.ts
+      - src/infrastructure/notifications/composite-os-status-notifier.spec.ts
+
+  - id: F5
+    name: RBAC em endpoints admin
+    severity: critical
+    coverage: covered
+    evidence:
+      - src/infrastructure/auth/roles.guard.spec.ts
+      - test/integration/ordem-servico.controller.integration.spec.ts
+      - test/integration/cliente.controller.integration.spec.ts
+      - test/integration/usuario.controller.integration.spec.ts
+
+  - id: F6
+    name: Validação CPF/CNPJ/placa
+    checks:
+      - dígito verificador CPF/CNPJ
+      - placa padrão antigo e Mercosul
+    severity: critical
+    coverage: covered
+    evidence:
+      - src/shared/utils/cpf-cnpj.util.spec.ts
+      - src/domain/cadastro/value-objects/cpf-cnpj.vo.spec.ts
+      - src/shared/utils/placa.util.spec.ts
+      - src/domain/cadastro/value-objects/placa.vo.spec.ts
+
+  - id: F7
+    name: Tempo médio de execução (global e por serviço)
+    note: >
+      Métrica de produto é tempo médio entre dataCriacao e dataConclusao
+      das OS FINALIZADA/ENTREGUE (agregado global e por serviço),
+      não dwell-time por status intermediário.
+    severity: high
+    coverage: covered
+    evidence:
+      - src/application/atendimento/use-cases/obter-tempo-medio-execucao.use-case.spec.ts
+      - src/infrastructure/database/mysql/repositories/prisma-ordem-servico-read.adapter.spec.ts
+      - test/integration/ordem-servico.controller.integration.spec.ts
+      - test/integration/fluxos-criticos-os.integration.spec.ts
+
+coverage_notes:
+  - F3/F5/F6 já estavam cobertos antes deste incremento; F1/F2/F4/F7 foram reforçados.
+  - F8/F9 (auth CPF Lambda + X-Amzn-Trace-Id) são escopo Fase 3 e ficam fora deste gate.

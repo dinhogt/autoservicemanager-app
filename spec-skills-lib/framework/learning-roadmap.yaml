@@ -1,0 +1,108 @@
+version: 0.4.0
+name: "spec-skills-learning-roadmap"
+description: "Four-phase OPC learning path for Micro SaaS"
+
+phases:
+  - id: mvp-builder
+    name: "Fase 1 — MVP Builder"
+    goal: "Build and launch one Micro SaaS solo"
+    duration_weeks: "8-12"
+    pipeline_stages:
+      - business
+      - discovery
+      - digital-business
+      - saas
+      - requirements
+      - ux
+      - copywriting
+      - architecture
+      - cloud
+      - security
+      - legal
+      - finops
+      - frontend
+      - backend
+      - automation
+      - documentation
+      - qa
+    key_skills:
+      - market-research
+      - mvp-definition
+      - nextjs-react
+      - nestjs-api
+      - oci-bootstrap
+      - testing
+      - appsec
+    success_criteria:
+      - "MVP live with paying customer or validated trial"
+      - "Unit economics documented"
+      - "CI/CD and basic monitoring operational"
+    roadmap_steps:
+      - "Complete discovery and viability gates"
+      - "Ship NestJS+Next.js MVP on OCI"
+      - "Integrate Stripe billing"
+      - "Pass security and legal gates"
+
+  - id: micro-saas-operator
+    name: "Fase 2 — Micro SaaS Operator"
+    goal: "Operate and maintain product with minimal manual effort"
+    duration_weeks: "4-8"
+    pipeline_stages:
+      - saas-ops
+      - observability
+      - support-debug
+      - growth
+    key_skills:
+      - billing-tenants
+      - workflow-automation
+      - plg-growth
+    success_criteria:
+      - "MRR tracking automated"
+      - "Support runbook and incident playbook active"
+      - "Churn and retention metrics baselined"
+    roadmap_steps:
+      - "Configure Stripe customer portal and webhooks"
+      - "Deploy n8n automation hub"
+      - "Set up Posthog funnels and alerts"
+
+  - id: micro-saas-scaler
+    name: "Fase 3 — Micro SaaS Scaler"
+    goal: "Scale product to 1K-10K users"
+    duration_weeks: "8-16"
+    key_skills:
+      - aws-scale
+      - plg-growth
+      - llm-products
+    success_criteria:
+      - "Infra scales without manual intervention"
+      - "CAC/LTV ratio healthy"
+      - "Optional AI features evaluated and gated"
+    roadmap_steps:
+      - "Migrate or hybrid to AWS if OCI limits hit"
+      - "Implement viral/referral loops"
+      - "Run ai-engineering stage if product needs AI"
+
+  - id: portfolio-builder
+    name: "Fase 4 — Portfolio Builder"
+    goal: "Operate multiple Micro SaaS simultaneously"
+    duration_weeks: "ongoing"
+    key_skills:
+      - market-research
+      - workflow-automation
+      - unit-economics
+    success_criteria:
+      - "2+ products with shared infra templates"
+      - "Aggregate runway and burn monitored"
+      - "Cross-product automation reduces ops to <5h/week each"
+    roadmap_steps:
+      - "Clone opc-flow template per product"
+      - "Central n8n hub for shared workflows"
+      - "Portfolio FinOps dashboard"
+
+evolution_roadmap:
+  - version: "0.4.0"
+    focus: "OPC pipeline, official stack, framework matrices"
+  - version: "0.5.0"
+    focus: "Portfolio mode, shared infra templates, agent marketplace"
+  - version: "0.6.0"
+    focus: "Automated gate evaluation, maturity scoring in CI"

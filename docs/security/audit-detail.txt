@@ -1,0 +1,141 @@
+# Nota (03/05/2026): recorte agregado de execução anterior.
+# Totais atuais do yarn audit completo: ver rodapé de docs/security/yarn-audit.txt e docs/security/audit-summary.txt
+
+Severity totals: {"info":0,"low":1,"moderate":59,"high":36,"critical":1}
+Unique advisories: 20
+--- critical - handlebars (patched >=4.7.9)
+   Handlebars.js has JavaScript Injection via AST Type Confusion
+    @ ts-jest>handlebars
+--- high - picomatch (patched >=4.0.4)
+   Picomatch has a ReDoS vulnerability via extglob quantifiers
+    @ @nestjs/cli>@angular-devkit/core>picomatch
+    @ @nestjs/cli>@angular-devkit/schematics>@angular-devkit/core>picomatch
+    @ @nestjs/cli>@angular-devkit/schematics-cli>@angular-devkit/schematics>@angular-devkit/core>picomatch
+    @ @nestjs/schematics>@angular-devkit/core>picomatch
+    @ @nestjs/cli>@nestjs/schematics>@angular-devkit/core>picomatch
+    @ @nestjs/cli>@nestjs/schematics>@angular-devkit/schematics>@angular-devkit/core>picomatch
+    @ @types/jest>expect>jest-message-util>picomatch
+    @ jest>@jest/core>@jest/console>jest-message-util>picomatch
+    @ jest>@jest/core>jest-snapshot>expect>jest-message-util>picomatch
+    @ jest>@jest/core>jest-runtime>jest-snapshot>expect>jest-message-util>picomatch
+    @ jest>@jest/core>jest-config>jest-circus>@jest/expect>expect>jest-message-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>@jest/expect>expect>jest-message-util>picomatch
+    @ jest>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>expect>jest-message-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>expect>jest-message-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>expect>jest-message-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>expect>jest-mock>jest-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>jest-worker>jest-util>picomatch
+--- high - path-to-regexp (patched >=8.4.0)
+   path-to-regexp vulnerable to Denial of Service via sequential optional groups
+    @ @nestjs/swagger>path-to-regexp
+    @ @nestjs/platform-express>express>router>path-to-regexp
+--- high - lodash (patched >=4.18.0)
+   lodash vulnerable to Code Injection via `_.template` imports key names
+    @ @nestjs/swagger>lodash
+    @ @nestjs/cli>node-emoji>lodash
+--- high - flatted (patched >=3.4.2)
+   Prototype Pollution via parse() in NodeJS flatted
+    @ eslint>file-entry-cache>flat-cache>flatted
+--- high - handlebars (patched >=4.7.9)
+   Handlebars.js has JavaScript Injection via AST Type Confusion by tampering @partial-block
+    @ ts-jest>handlebars
+--- high - handlebars (patched >=4.7.9)
+   Handlebars.js has JavaScript Injection in CLI Precompiler via Unescaped Names and Options
+    @ ts-jest>handlebars
+--- high - handlebars (patched >=4.7.9)
+   Handlebars.js has JavaScript Injection via AST Type Confusion when passing an object as dynamic partial
+    @ ts-jest>handlebars
+--- high - handlebars (patched >=4.7.9)
+   Handlebars.js has Denial of Service via Malformed Decorator Syntax in Template Compilation
+    @ ts-jest>handlebars
+--- high - picomatch (patched >=2.3.2)
+   Picomatch has a ReDoS vulnerability via extglob quantifiers
+    @ jest>@jest/core>jest-haste-map>anymatch>picomatch
+    @ jest>@jest/core>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>@jest/core>@jest/reporters>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>jest-cli>@jest/core>@jest/reporters>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>babel-jest>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>@jest/core>jest-config>jest-circus>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ ts-loader>micromatch>picomatch
+--- moderate - ajv (patched >=8.18.0)
+   ajv has ReDoS when using `$data` option
+    @ @nestjs/cli>@angular-devkit/core>ajv
+    @ @nestjs/cli>@angular-devkit/schematics>@angular-devkit/core>ajv
+    @ @nestjs/cli>@angular-devkit/schematics-cli>@angular-devkit/schematics>@angular-devkit/core>ajv
+    @ @nestjs/schematics>@angular-devkit/core>ajv
+    @ @nestjs/cli>@nestjs/schematics>@angular-devkit/core>ajv
+    @ @nestjs/cli>@nestjs/schematics>@angular-devkit/schematics>@angular-devkit/core>ajv
+--- moderate - picomatch (patched >=4.0.4)
+   Picomatch: Method Injection in POSIX Character Classes causes incorrect Glob Matching
+    @ @nestjs/cli>@angular-devkit/core>picomatch
+    @ @nestjs/cli>@angular-devkit/schematics>@angular-devkit/core>picomatch
+    @ @nestjs/cli>@angular-devkit/schematics-cli>@angular-devkit/schematics>@angular-devkit/core>picomatch
+    @ @nestjs/schematics>@angular-devkit/core>picomatch
+    @ @nestjs/cli>@nestjs/schematics>@angular-devkit/core>picomatch
+    @ @nestjs/cli>@nestjs/schematics>@angular-devkit/schematics>@angular-devkit/core>picomatch
+    @ @types/jest>expect>jest-message-util>picomatch
+    @ jest>@jest/core>@jest/console>jest-message-util>picomatch
+    @ jest>@jest/core>jest-snapshot>expect>jest-message-util>picomatch
+    @ jest>@jest/core>jest-runtime>jest-snapshot>expect>jest-message-util>picomatch
+    @ jest>@jest/core>jest-config>jest-circus>@jest/expect>expect>jest-message-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>@jest/expect>expect>jest-message-util>picomatch
+    @ jest>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>expect>jest-message-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>expect>jest-message-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>expect>jest-message-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>expect>jest-mock>jest-util>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>jest-worker>jest-util>picomatch
+--- moderate - brace-expansion (patched >=1.1.13)
+   brace-expansion: Zero-step sequence causes process hang and memory exhaustion
+    @ eslint>@eslint/eslintrc>minimatch>brace-expansion
+    @ @eslint/eslintrc>minimatch>brace-expansion
+    @ jest>@jest/core>@jest/transform>babel-plugin-istanbul>test-exclude>minimatch>brace-expansion
+    @ jest>@jest/core>@jest/transform>babel-plugin-istanbul>test-exclude>glob>minimatch>brace-expansion
+    @ jest>@jest/core>@jest/reporters>@jest/transform>babel-plugin-istanbul>test-exclude>glob>minimatch>brace-expansion
+    @ jest>jest-cli>@jest/core>@jest/reporters>@jest/transform>babel-plugin-istanbul>test-exclude>glob>minimatch>brace-expansion
+    @ jest>jest-cli>@jest/core>jest-config>babel-jest>@jest/transform>babel-plugin-istanbul>test-exclude>glob>minimatch>brace-expansion
+    @ jest>@jest/core>jest-config>jest-circus>@jest/expect>jest-snapshot>@jest/transform>babel-plugin-istanbul>test-exclude>glob>minimatch>brace-expansion
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>@jest/expect>jest-snapshot>@jest/transform>babel-plugin-istanbul>test-exclude>glob>minimatch>brace-expansion
+    @ jest>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>@jest/transform>babel-plugin-istanbul>test-exclude>glob>minimatch>brace-expansion
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>@jest/transform>babel-plugin-istanbul>test-exclude>glob>minimatch>brace-expansion
+--- moderate - path-to-regexp (patched >=8.4.0)
+   path-to-regexp vulnerable to Regular Expression Denial of Service via multiple wildcards
+    @ @nestjs/swagger>path-to-regexp
+    @ @nestjs/platform-express>express>router>path-to-regexp
+--- moderate - lodash (patched >=4.18.0)
+   lodash vulnerable to Prototype Pollution via array path bypass in `_.unset` and `_.omit`
+    @ @nestjs/swagger>lodash
+    @ @nestjs/cli>node-emoji>lodash
+--- moderate - handlebars (patched >=4.7.9)
+   Handlebars.js has Prototype Pollution Leading to XSS through Partial Template Injection
+    @ ts-jest>handlebars
+--- moderate - handlebars (patched >=4.7.9)
+   Handlebars.js has a Prototype Method Access Control Gap via Missing __lookupSetter__ Blocklist Entry
+    @ ts-jest>handlebars
+--- moderate - brace-expansion (patched >=5.0.5)
+   brace-expansion: Zero-step sequence causes process hang and memory exhaustion
+    @ @nestjs/cli>glob>minimatch>brace-expansion
+    @ typescript-eslint>@typescript-eslint/typescript-estree>minimatch>brace-expansion
+    @ typescript-eslint>@typescript-eslint/utils>@typescript-eslint/typescript-estree>minimatch>brace-expansion
+    @ typescript-eslint>@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>@typescript-eslint/typescript-estree>minimatch>brace-expansion
+    @ typescript-eslint>@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>@typescript-eslint/utils>@typescript-eslint/typescript-estree>minimatch>brace-expansion
+--- moderate - brace-expansion (patched >=2.0.3)
+   brace-expansion: Zero-step sequence causes process hang and memory exhaustion
+    @ jest>@jest/core>@jest/reporters>glob>minimatch>brace-expansion
+    @ jest>jest-cli>@jest/core>@jest/reporters>glob>minimatch>brace-expansion
+    @ jest>@jest/core>jest-config>jest-circus>jest-runtime>glob>minimatch>brace-expansion
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>glob>minimatch>brace-expansion
+--- moderate - picomatch (patched >=2.3.2)
+   Picomatch: Method Injection in POSIX Character Classes causes incorrect Glob Matching
+    @ jest>@jest/core>jest-haste-map>anymatch>picomatch
+    @ jest>@jest/core>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>@jest/core>@jest/reporters>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>jest-cli>@jest/core>@jest/reporters>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>babel-jest>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>@jest/core>jest-config>jest-circus>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ jest>jest-cli>@jest/core>jest-config>jest-circus>jest-runtime>@jest/globals>@jest/expect>jest-snapshot>@jest/transform>jest-haste-map>anymatch>picomatch
+    @ ts-loader>micromatch>picomatch

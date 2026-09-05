@@ -1,0 +1,37 @@
+id: "nestjs-next-react"
+name: "NestJS + Next.js + React (Official OPC Stack)"
+languages: ["TypeScript"]
+frameworks: ["NestJS", "Next.js", "React"]
+package_manager: "npm"
+test_runner: "jest"
+e2e_runner: "playwright"
+api_test: "supertest"
+lint: "eslint"
+build: "npm run build"
+datastores: ["MySQL", "Redis"]
+messaging: ["NATS"]
+ui: ["Tailwind CSS", "Shadcn/UI"]
+directory_conventions:
+  web: "apps/web/"
+  api: "apps/api/"
+  shared: "packages/shared/"
+  tests_unit: "apps/**/*.spec.ts"
+  tests_e2e: "e2e/"
+  docs: "docs/"
+commands:
+  test: "npm test"
+  test_e2e: "npx playwright test"
+  lint: "npm run lint"
+  build: "npm run build"
+  prisma_migrate: "npx prisma migrate dev"
+observability_defaults:
+  metrics: ["prometheus", "opentelemetry"]
+  tracing: "opentelemetry"
+  analytics: "posthog"
+security_audit_commands:
+  - "npm audit"
+  - "npm audit --production"
+detection_markers:
+  package_json:
+    - "@nestjs/core"
+    - "next"

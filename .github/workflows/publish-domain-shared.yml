@@ -1,0 +1,40 @@
+name: Publish domain-shared
+
+# Publica @autoservicemanager/domain-shared no GitHub Packages.
+# Tag: domain-shared-v0.1.0 (versão deve bater com package.json)
+
+on:
+  push:
+    tags:
+      - 'domain-shared-v*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/domain-shared
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@autoservicemanager'
+
+      - name: Install
+        run: yarn install --frozen-lockfile
+        working-directory: .
+
+      - name: Test & build
+        run: yarn test && yarn build
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

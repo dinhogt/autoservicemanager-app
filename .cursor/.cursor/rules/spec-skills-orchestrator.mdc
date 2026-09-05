@@ -1,0 +1,27 @@
+---
+description: Orchestrate spec-skills flow v0.4, OPC mode, global rules, and stack playbooks
+alwaysApply: true
+---
+
+# Spec-Skills orchestrator
+
+Before coding, read in order:
+
+1. `AGENTS.md` (project root)
+2. `spec-skills-lib/rules/global-rules.yaml` (+ override if present)
+3. Active flow from `flow_config.active_flow` in `spec-skills-lib/flows/`
+4. Stack playbook: `spec-skills-lib/playbooks/stacks/<stack_profile>.yaml`
+5. `spec-skills-lib/roles/_boundaries.md` for specialist stages
+6. `spec-skills-lib/framework/opc-mode.md` when `opc_mode: true`
+
+Use `opc-flow` when `flow_config.opc_mode: true`. Use `complex-flow` when `complexity_profile: high`.
+
+Execute **only the role for the current pipeline stage**.
+
+**opc-flow v0.4:** `business` → `discovery` → `digital-business` → `saas` → `requirements` → `ux` → `copywriting` → `architecture` → [`ai-engineering`] → `cloud` → `security` → `legal` → `finops` → implementation → `saas-ops` → `support-debug` → `growth`
+
+Skip `ai-engineering` when `ai_features_enabled: false`. Official stack: `nestjs-next-react`.
+
+Follow `spec-skills-lib/roles/<role>/spec.md`. Write artifacts under `docs/` per handoff.
+
+On gate failure in caveman mode, rerun only the failing stage in normal mode.

@@ -1,0 +1,27 @@
+version: 0.2.0
+project:
+  name: "python-api-example"
+  domain: "internal-tools"
+
+technologies:
+  stack_profile: "python-django-fastapi"
+  languages: ["Python"]
+  frameworks: ["FastAPI"]
+  datastores: ["PostgreSQL"]
+  tooling: ["pytest", "ruff", "uv"]
+
+architecture:
+  style: "layered-api"
+  boundaries: ["api", "service", "repository"]
+  patterns: ["hexagonal"]
+
+implementation_level: "mvp"
+
+flow_config:
+  active_flow: "default-flow"
+  complexity_profile: "low"
+
+security:
+  asvs_level: "L1"
+  threat_model_required: true
+  dependency_audit_required: true
