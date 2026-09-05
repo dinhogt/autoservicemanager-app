@@ -13,7 +13,7 @@ Proteger rotas de cliente (CPF/placa/OS) sem compartilhar segredo HS256 entre La
 
 ## Proposta
 
-1. `POST /auth/cpf` → Lambda `authCpf` (valida CPF via `@autoservicemanager/domain-shared`, consulta RDS, emite JWT **RS256**)
+1. `POST /auth/cpf` → Lambda `authCpf` (valida CPF via `@dinhogt/domain-shared`, consulta RDS, emite JWT **RS256**)
 2. JWKS público (S3 + CloudFront) com `kid`
 3. API Gateway **JWT Authorizer** valida Bearer antes do VPC Link
 4. Nest recebe `x-cpf` / `x-scope` injetados; admin permanece HS256 local

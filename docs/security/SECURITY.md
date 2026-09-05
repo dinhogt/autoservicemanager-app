@@ -11,7 +11,7 @@ resultado da análise de vulnerabilidades de dependências executada com
 | Etapa | Controle | Artefato |
 |-------|----------|----------|
 | PR / push | Audit deps + scan secrets | `scripts/security-gate.sh`, `.github/workflows/security-gate.yml` |
-| CD app/lambda/infra | `security-gate` obrigatório antes de OIDC deploy | Workflows `*-ci-cd.yml` |
+| CD app/lambda/infra | `security-gate` obrigatório antes de OIDC deploy | Workflows `ci-cd.yml` por remote |
 | Pré-deploy EKS | Secrets via K8s/Secrets Manager; sem seed demo | [runbook-deploy-eks.md](../runbook-deploy-eks.md) |
 | Pós-deploy | Smoke via API Gateway (Swagger off, health) | `scripts/security-smoke.sh` |
 | Production runtime | CORS allowlist, Swagger off, gateway headers, Joi blocklist | `src/main.ts`, `env.validation.ts`, `k8s/configmap.yaml` |

@@ -24,4 +24,4 @@
 - **next_todo:** `delivery-pdf` (branch-protection: [../infrastructure/branch-protection.md](../infrastructure/branch-protection.md))
 - **next_role:** `documentation`
 - **goal:** Vídeo ≤15 min + PDF final com links, docs e confirmação do colaborador
-- **open_risks:** PNG raster opcional para PDF; cisão física dos 4 repos ainda monorepo; secrets OIDC a preencher na conta AWS/GitHub
+- **open_risks:** PNG raster opcional para PDF; cisão física dos 4 repos concluída; secrets OIDC / branch protection live = Fase C

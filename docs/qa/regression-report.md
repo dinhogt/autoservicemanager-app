@@ -80,7 +80,7 @@ Nenhum bloqueante.
 
 ## Conclusão
 
-Regressão **verde**. Projeto **íntegro** em função, qualidade e segurança para o estado atual do monorepo app.
+Regressão **verde**. Projeto **íntegro** em função, qualidade e segurança para o estado atual do repo app.
 
 | Gate | Decisão |
 |------|--------|

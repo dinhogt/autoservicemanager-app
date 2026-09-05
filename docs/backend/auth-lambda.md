@@ -5,16 +5,16 @@
 | Role | `backend` |
 | Todo | `repo-lambda` |
 | Data | 2026-08-08 |
-| Código | [`auth-lambda/`](../../auth-lambda/) |
+| Código | [autoservicemanager-auth-lambda](https://github.com/dinhogt/autoservicemanager-auth-lambda) |
 
 ## Entrega
 
 - Handler `POST /auth/cpf` (API Gateway HTTP API v2)
-- Validação CPF via `@autoservicemanager/domain-shared`
+- Validação CPF via `@dinhogt/domain-shared`
 - Lookup `Cliente` no MySQL (`mysql2`, query parametrizada)
 - JWT **RS256** (`jose`) com chave em Secrets Manager / PEM local
 - Bundle **esbuild** → `dist/handler.js` / `auth-cpf.zip`
-- CI OIDC: `.github/workflows/auth-lambda-ci-cd.yml`
+- CI OIDC: repo [autoservicemanager-auth-lambda](https://github.com/dinhogt/autoservicemanager-auth-lambda) → `.github/workflows/ci-cd.yml`
 
 ## Handoff
 

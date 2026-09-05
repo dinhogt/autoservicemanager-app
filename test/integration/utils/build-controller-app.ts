@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { APP_GUARD, Reflector } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
-import { isValidCpfCnpj, onlyDigits } from '@autoservicemanager/domain-shared';
+import { isValidCpfCnpj, onlyDigits } from '@dinhogt/domain-shared';
 import { AppRole } from '../../../src/domain/autenticacao/entities/app-role';
 import { RoleAdmin } from '../../../src/domain/autenticacao/entities/usuario-admin.entity';
 import { ClienteAuthGuard } from '../../../src/infrastructure/auth/cliente-auth.guard';

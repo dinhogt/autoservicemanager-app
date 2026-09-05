@@ -44,7 +44,7 @@ flowchart LR
 | Lambda / EKS → RDS | TLS; SG restrito; credenciais Secrets Manager | Private subnets |
 | App admin | JWT HS256 local + `RolesGuard` | Inalterado Fase 2 |
 | App cliente | Claims já validadas no Authorizer | Sem revalidação de assinatura no Nest |
-| Domínio compartilhado | Pacote [`@autoservicemanager/domain-shared`](../../packages/domain-shared/) — ver [domain-shared-package.md](../backend/domain-shared-package.md) | Yarn workspaces + GitHub Packages |
+| Domínio compartilhado | Pacote [`@dinhogt/domain-shared`](../../packages/domain-shared/) — ver [domain-shared-package.md](../backend/domain-shared-package.md) | Yarn workspaces + GitHub Packages |
 | Terraform db → k8s | `terraform_remote_state` outputs | ADR-008 |
 
 ## Escopo de autenticação (vs Fase 2)

@@ -4,4 +4,4 @@ export {
   isValidCpf,
   isValidCnpj,
   isValidCpfCnpj,
-} from '@autoservicemanager/domain-shared';
+} from '@dinhogt/domain-shared';

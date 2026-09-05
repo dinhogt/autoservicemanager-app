@@ -1,12 +1,19 @@
 name: Publish domain-shared
 
-# Publica @autoservicemanager/domain-shared no GitHub Packages.
-# Tag: domain-shared-v0.1.0 (versão deve bater com package.json)
+# Publica @dinhogt/domain-shared no GitHub Packages a partir deste repo (standalone).
+# Tag: domain-shared-v0.1.0 (versão deve bater com packages/domain-shared/package.json)
+# Escopo npm = owner GitHub (dinhogt). Plano FIAP citava @autoservicemanager/domain-shared.
 
 on:
   push:
     tags:
       - 'domain-shared-v*'
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Digite publish para confirmar publicação manual da versão em package.json'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -14,10 +21,8 @@ permissions:
 
 jobs:
   publish:
+    if: github.event_name == 'push' || github.event.inputs.confirm == 'publish'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/domain-shared
     steps:
       - uses: actions/checkout@v5
 
@@ -25,16 +30,17 @@ jobs:
         with:
           node-version: '22'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@autoservicemanager'
+          scope: '@dinhogt'
 
-      - name: Install
+      - name: Install (workspace root)
         run: yarn install --frozen-lockfile
-        working-directory: .
 
-      - name: Test & build
+      - name: Test & build domain-shared
+        working-directory: packages/domain-shared
         run: yarn test && yarn build
 
       - name: Publish
+        working-directory: packages/domain-shared
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

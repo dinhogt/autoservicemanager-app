@@ -1,7 +1,7 @@
 {
-  "name": "@autoservicemanager/domain-shared",
+  "name": "@dinhogt/domain-shared",
   "version": "0.1.0",
-  "description": "Validações compartilhadas de CPF/CNPJ e placa (antigo + Mercosul) para app NestJS e Lambda authCpf",
+  "description": "Validações compartilhadas de CPF/CNPJ e placa (antigo + Mercosul) para app NestJS e Lambda authCpf. Publicado no GitHub Packages como @dinhogt/domain-shared (escopo = owner; plano FIAP citava @autoservicemanager/domain-shared).",
   "license": "UNLICENSED",
   "private": false,
   "main": "./dist/index.js",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dinhogt/autoServiceManager.git",
+    "url": "https://github.com/dinhogt/autoservicemanager-app.git",
     "directory": "packages/domain-shared"
   },
   "engines": {

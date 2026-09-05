@@ -72,7 +72,7 @@ flowchart TB
 | ID | STRIDE | Ameaça | Impacto | Mitigação | Residual |
 |----|--------|--------|---------|-----------|----------|
 | T1 | Spoofing | Forjar header `x-cpf` / `x-scope` se NLB ou app forem alcançáveis fora do VPC Link | Alto | NLB interno + SG VPC Link→nodes; APIGW injeta `x-gateway-verified: 1`; Nest fail-closed com `REQUIRE_GATEWAY_HEADERS=true` em production | Baixo após smoke via APIGW |
-| T2 | Spoofing / Elevation | Emitir JWT cliente sem cliente válido ou com CPF malformado | Alto | Lambda usa `@autoservicemanager/domain-shared`; SELECT parametrizado; claims mínimas; Authorizer exige `iss`/`aud`/exp | Baixo |
+| T2 | Spoofing / Elevation | Emitir JWT cliente sem cliente válido ou com CPF malformado | Alto | Lambda usa `@dinhogt/domain-shared`; SELECT parametrizado; claims mínimas; Authorizer exige `iss`/`aud`/exp | Baixo |
 | T3 | Tampering | Comprometer chave privada RS256 ou JWKS | Alto | Privada em Secrets Manager; JWKS estático versionado; rotação com 2 `kid` ativos (ADR-007) | Médio (processo de rotação) |
 | T4 | Information disclosure | CPF/token em logs CloudWatch ou X-Ray | Médio | `JsonLogger` redact de password/token/authorization/cpf; Noop audit Mongo removido (ADR-010) | Baixo |
 | T5 | Elevation / Tampering | Deploy não autorizado via CI (AKIA vazada, OIDC em PR, ou leitura de tfstate) | Alto | OIDC only (ADR-009); job **`security-gate`** bloqueia CD/plan-apply; PR infra sem AWS; `plan→apply tfplan` | Baixo (trust IAM na conta ainda ops) |

@@ -13,10 +13,8 @@
   ],
   "scripts": {
     "build": "yarn domain-shared:build && nest build",
-    "domain-shared:build": "yarn workspace @autoservicemanager/domain-shared build",
-    "domain-shared:test": "yarn workspace @autoservicemanager/domain-shared test",
-    "auth-lambda:test": "yarn --cwd auth-lambda test",
-    "auth-lambda:build": "yarn domain-shared:build && yarn --cwd auth-lambda build",
+    "domain-shared:build": "yarn workspace @dinhogt/domain-shared build",
+    "domain-shared:test": "yarn workspace @dinhogt/domain-shared test",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"packages/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -45,7 +43,7 @@
     "qs": "^6.16.0"
   },
   "dependencies": {
-    "@autoservicemanager/domain-shared": "0.1.0",
+    "@dinhogt/domain-shared": "0.1.0",
     "@nestjs/common": "^11.1.19",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.1.19",

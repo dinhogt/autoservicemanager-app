@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
-import { isValidCpfCnpj, onlyDigits } from '@autoservicemanager/domain-shared';
+import { isValidCpfCnpj, onlyDigits } from '@dinhogt/domain-shared';
 import { AppRole } from '../../domain/autenticacao/entities/app-role';
 import { ROLES_KEY } from './roles.decorator';
 import { IS_PUBLIC_KEY } from './public.decorator';

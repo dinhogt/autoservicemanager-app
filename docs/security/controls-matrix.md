@@ -43,7 +43,7 @@
 |------|---------|----------------------|
 | Monólito (este repo) — prod | `yarn audit --groups dependencies --level moderate` | **0 moderate+**; 1 Low (`body-parser`) — ver triagem |
 | Monólito — árvore completa | `yarn audit --level moderate` | Dev-heavy (jest/cli); aceito residual acadêmico |
-| `@autoservicemanager/domain-shared` | Coberto pelo workspace atual | Sem deps vulneráveis próprias |
+| `@dinhogt/domain-shared` | Coberto pelo workspace atual + Packages | Sem deps vulneráveis próprias |
 | `autoservicemanager-auth-lambda` | `yarn audit --groups dependencies --level moderate` (após `yarn install --frozen-lockfile`) | **Met** — 0 moderate+ (2026-09-02) |
 | `autoservicemanager-infra-db` / `infra-k8s` | Sem npm runtime; revisar providers TF + sem secrets em `.tf` | **infra-db Met** ([hardening-infra-db.md](./hardening-infra-db.md)); `infra-k8s` pausado |
 

@@ -5,7 +5,7 @@
 | Role | `infrastructure` |
 | Todo | `repo-infra-k8s` |
 | Data | 2026-08-09 |
-| Código | [`infra-k8s/`](../../infra-k8s/) |
+| Código | [autoservicemanager-infra-k8s](https://github.com/dinhogt/autoservicemanager-infra-k8s) |
 | ADRs | [ADR-007](../architecture/adr-007-jwt-rs256-api-gateway-authorizer.md), [ADR-008](../architecture/adr-008-terraform-remote-state.md), [ADR-009](../architecture/adr-009-github-oidc-aws-iam.md) |
 | Upstream | [repo-infra-db.md](./repo-infra-db.md), [hardening-infra-db.md](../security/hardening-infra-db.md) |
 

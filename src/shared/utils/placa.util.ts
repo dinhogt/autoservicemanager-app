@@ -2,4 +2,4 @@
 export {
   normalizePlaca,
   isValidPlaca,
-} from '@autoservicemanager/domain-shared';
+} from '@dinhogt/domain-shared';

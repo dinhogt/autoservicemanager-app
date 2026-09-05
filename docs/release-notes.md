@@ -12,7 +12,7 @@
 - Cliente: autenticação por **CPF → JWT RS256**; rotas antes públicas exigem Bearer.  
 - Admin: JWT **HS256** inalterado em `/admin/*`.  
 - **MongoDB removido** do caminho crítico (auditoria → CloudWatch Logs).  
-- Quatro unidades de entrega: app, auth-lambda, infra-db, infra-k8s (monorepo até cisão).
+- Quatro repositórios: app, auth-lambda, infra-db, infra-k8s (cisão concluída).
 - **Security gate no CI** bloqueia deploy AWS sem audit + scan de secrets.
 - Hardening runtime: CORS allowlist, Swagger off em production, fail-closed T1, webhook timing-safe, log redaction.
 

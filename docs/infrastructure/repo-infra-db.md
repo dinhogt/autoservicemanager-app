@@ -5,7 +5,7 @@
 | Role | `infrastructure` |
 | Todo | `repo-infra-db` (+ hardening CI/state/SG) |
 | Data | 2026-08-08 |
-| Código | [`infra-db/`](../../infra-db/) |
+| Código | [autoservicemanager-infra-db](https://github.com/dinhogt/autoservicemanager-infra-db) |
 | ADRs | [ADR-008](../architecture/adr-008-terraform-remote-state.md), [ADR-009](../architecture/adr-009-github-oidc-aws-iam.md) |
 | Hardening | [hardening-infra-db.md](../security/hardening-infra-db.md) |
 

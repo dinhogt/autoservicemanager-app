@@ -1,8 +1,10 @@
-# `@autoservicemanager/domain-shared`
+# `@dinhogt/domain-shared`
 
 Validações puras (sem Nest/Prisma) de **CPF**, **CNPJ** e **placa** (padrão antigo + Mercosul).
 
-Consumido pelo app NestJS e, na Fase 3, pela Lambda `authCpf` — evita drift da regra de dígito verificador entre repositórios (ver ADR / solution-design Fase 3).
+Consumido pelo app NestJS (workspace) e pela Lambda `authCpf` via **GitHub Packages** — evita drift da regra de dígito verificador entre repositórios.
+
+> Publicado como `@dinhogt/domain-shared` (GitHub Packages exige escopo = owner). Plano FIAP citava `@autoservicemanager/domain-shared`.
 
 ## API
 
@@ -14,7 +16,7 @@ import {
   isValidCpfCnpj,
   normalizePlaca,
   isValidPlaca,
-} from '@autoservicemanager/domain-shared';
+} from '@dinhogt/domain-shared';
 ```
 
 | Função | Descrição |
@@ -26,30 +28,25 @@ import {
 | `normalizePlaca` | Uppercase, sem espaços/hífen |
 | `isValidPlaca` | Antigo `LLLNNNN` ou Mercosul `LLLNLNN` |
 
-## Desenvolvimento local (workspace)
-
-Na raiz do monorepo:
+## Desenvolvimento local (workspace no app)
 
 ```bash
 yarn install
-yarn workspace @autoservicemanager/domain-shared build
-yarn workspace @autoservicemanager/domain-shared test
+yarn workspace @dinhogt/domain-shared build
+yarn workspace @dinhogt/domain-shared test
 ```
-
-O app depende do workspace via Yarn; utilitários em `src/shared/utils/*` reexportam este pacote.
 
 ## Publicação (GitHub Packages)
 
-Escopo npm `@autoservicemanager` exige organização GitHub **homônima** (ou ajuste do `name` no `package.json` para `@<owner>/…`).
-
 ```bash
-# token com write:packages
-echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
-echo "@autoservicemanager:registry=https://npm.pkg.github.com" >> ~/.npmrc
-yarn workspace @autoservicemanager/domain-shared publish
+# Tag (preferido — CI)
+git tag domain-shared-v0.1.0
+git push origin domain-shared-v0.1.0
+
+# Ou workflow_dispatch em .github/workflows/publish-domain-shared.yml
 ```
 
-Workflow: [`.github/workflows/publish-domain-shared.yml`](../../.github/workflows/publish-domain-shared.yml) — dispara em tag `domain-shared-v*`.
+Consumo no auth-lambda: ver README desse repo (`.npmrc` + `NODE_AUTH_TOKEN`).
 
 ## Versionamento
 

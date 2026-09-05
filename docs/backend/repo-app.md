@@ -6,7 +6,7 @@
 | Todo | `repo-app` |
 | Data | 2026-08-08 |
 
-Este monorepo atua como **autoservicemanager-app** até a cisão dos 4 repos.
+Repositório **autoservicemanager-app** (pós-cisão). Docs canônicos e Spec-Skills ficam aqui.
 
 ## CI/CD (OIDC)
 
