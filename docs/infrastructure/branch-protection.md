@@ -61,7 +61,9 @@ Trust OIDC subjects (Fase C): `repo:dinhogt/autoservicemanager-{app,auth-lambda,
 | 1 | Criar `master` + `develop` nos 4 repos | **DONE** |
 | 2 | Remover paths monorepo dos workflows | **DONE** |
 | 3 | Docs / READMEs apontam para 4 remotes | **DONE** (Phase B) |
-| 4 | `domain-shared` via GitHub Packages (`@dinhogt/domain-shared`) | **DONE** / em publish (Phase B) |
+| 4 | `domain-shared` publicado (`@dinhogt/domain-shared` 0.1.0) | **DONE** (publish workflow) |
+| 4b | Package → Manage Actions access → auth-lambda | **Pendente** (UI; desbloqueia install CI) |
+| 4c | Commit `yarn.lock` auth-lambda com resolved Packages | **Pendente** (após 4b + token `read:packages`) |
 | 5 | Convidar `soat-architecture` (pull) nos 4 | **DONE** (Phase A) — aceite a confirmar |
 | 6 | Branch protection + environments por repo (gh API) | **Pendente Fase C** |
 | 7 | Trust OIDC IAM + secrets por repo | **Pendente Fase C** |
