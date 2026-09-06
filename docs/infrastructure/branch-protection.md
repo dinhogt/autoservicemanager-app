@@ -7,7 +7,8 @@
 | Data | 2026-09-05 |
 | Repos | [app](https://github.com/dinhogt/autoservicemanager-app) · [auth-lambda](https://github.com/dinhogt/autoservicemanager-auth-lambda) · [infra-db](https://github.com/dinhogt/autoservicemanager-infra-db) · [infra-k8s](https://github.com/dinhogt/autoservicemanager-infra-k8s) |
 | ADR | [ADR-009](../architecture/adr-009-github-oidc-aws-iam.md) |
-| Status Fase C | **GitHub ready / AWS deferred** (sem mutações AWS até aprovação explícita) |
+| Status Fase C | **GitHub ready** |
+| Status Fase E (2026-09-06) | **Sem terraform apply** (pedido do usuário). Prep OIDC + checklist: [aws-bootstrap-no-apply.md](./aws-bootstrap-no-apply.md) |
 
 ## Controles aplicados (GitHub — DONE)
 

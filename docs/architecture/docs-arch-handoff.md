@@ -23,7 +23,8 @@
 
 ## Handoff
 
-- **next_todo:** AWS bootstrap/smoke (**requer aprovação explícita de custo**) → QA GO → `delivery-pdf`
-- **next_role:** `infrastructure` / `qa` / `documentation`
-- **goal:** Vídeo ≤15 min + PDF final com links, docs e confirmação do colaborador
-- **open_risks:** OIDC IAM roles ainda deferred; secrets CD incompletos; `soat-architecture` pending accept; PNG raster opcional
+- **next_todo:** `delivery-pdf` **parcial** — portal-entrega + video-script prontos; URL vídeo e GO live após apply  
+- **next_role:** `documentation` / ops (apply quando aprovado)  
+- **goal:** Vídeo ≤15 min + PDF final com links, docs e confirmação do colaborador  
+- **open_risks:** apply não executado; OIDC roles não criadas (IAM denied no bootstrap user); `soat-architecture` pending accept; PNG raster opcional  
+- **Artefatos:** [delivery-index.md](./delivery-index.md) · [../delivery/portal-entrega.md](../delivery/portal-entrega.md) · [../infrastructure/aws-bootstrap-no-apply.md](../infrastructure/aws-bootstrap-no-apply.md)

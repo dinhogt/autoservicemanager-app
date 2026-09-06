@@ -55,6 +55,7 @@ Colaborador FIAP: `soat-architecture` (Read) — confirmar aceite nos 4 remotes.
 
 | Item | Status / link |
 |------|----------------|
-| Vídeo ≤15 min (YouTube/Vimeo) | _preencher após gravação_ |
-| PDF Portal (este índice + links acima) | _gerar a partir desta página_ |
-| Confirmação `soat-architecture` nos 4 repos | _pendente aceite_ |
+| Vídeo ≤15 min (YouTube/Vimeo) | Roteiro: [../delivery/video-script.md](../delivery/video-script.md) — URL _após gravação_ |
+| PDF Portal | [../delivery/portal-entrega.md](../delivery/portal-entrega.md) (+ Print/PDF) |
+| Confirmação `soat-architecture` nos 4 repos | Convites Read **enviados**; aceite **pendente** |
+| Bootstrap AWS sem apply | [../infrastructure/aws-bootstrap-no-apply.md](../infrastructure/aws-bootstrap-no-apply.md) |
