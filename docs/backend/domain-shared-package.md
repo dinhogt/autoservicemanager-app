@@ -18,8 +18,9 @@
 ## Fluxo publish → consume
 
 1. Bump versão em `packages/domain-shared/package.json`
-2. Tag `domain-shared-v0.1.0` neste repo (app) → workflow publica
-3. No auth-lambda: `"@dinhogt/domain-shared": "0.1.0"` + `.npmrc` apontando `@dinhogt` para `npm.pkg.github.com`
+2. Tag `domain-shared-v0.1.0` neste repo (app) **ou** `workflow_dispatch` em `publish-domain-shared.yml` → workflow publica
+3. No package GitHub: **Manage Actions access** → adicionar `autoservicemanager-auth-lambda` (read)
+4. No auth-lambda: `"@dinhogt/domain-shared": "0.1.0"` + `.npmrc` + `yarn install` (token `read:packages`) e commit do `yarn.lock`
 
 ## Comandos (app)
 
