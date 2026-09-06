@@ -14,6 +14,8 @@ Elevar o monólito NestJS hexagonal a operação corporativa: **API Gateway + La
 
 ## Diagrama de componentes
 
+Fonte canônica expandida (pós-cisão + Container Insights): [diagrams-fase3.md](./diagrams-fase3.md).
+
 ```mermaid
 flowchart LR
   Cliente[Cliente] --> APIGW[API Gateway HTTP API]
@@ -24,16 +26,16 @@ flowchart LR
   APIGW -->|JWT Authorizer JWKS| AuthZ[Authorizer]
   APIGW -->|VPC Link + NLB| EKS[EKS NestJS App]
   EKS --> RDS
-  EKS --> CW[CloudWatch Logs Metrics Insights]
+  EKS --> CW[CloudWatch Logs Metrics]
+  EKS --> CI[Container Insights]
   EKS --> XRay[X-Ray]
   Lambda --> CW
   Lambda --> XRay
   APIGW --> CW
-  GH[GitHub Actions OIDC] --> ECR[ECR]
+  GH[GitHub OIDC 4 repos] --> ECR[ECR]
   GH --> EKS
   GH --> TF[Terraform apply]
 ```
-
 ## Boundaries e contratos
 
 | Boundary | Contrato | Confiança |
@@ -73,9 +75,9 @@ flowchart LR
 | [ADR-008](./adr-008-terraform-remote-state.md) | State remoto S3 + DynamoDB |
 | [ADR-009](./adr-009-github-oidc-aws-iam.md) | GitHub OIDC → IAM |
 | [ADR-010](./adr-010-discontinue-mongodb-audit.md) | Fim do Mongo; audit via CloudWatch |
+| [ADR-011](./adr-011-sync-rest-api-gateway.md) | Comunicação sync HTTP/REST via API Gateway |
 
-RFCs: [001 AWS](./rfc-001-cloud-aws.md) · [002 RDS](./rfc-002-mysql-rds.md) · [003 Auth](./rfc-003-auth-lambda-rs256.md). Diagramas: [diagrams-fase3.md](./diagrams-fase3.md) · [er-diagram.md](./er-diagram.md) · [risk-map-fase3.md](./risk-map-fase3.md).
-
+RFCs: [001 AWS](./rfc-001-cloud-aws.md) · [002 RDS](./rfc-002-mysql-rds.md) · [003 Auth](./rfc-003-auth-lambda-rs256.md). Diagramas: [diagrams-fase3.md](./diagrams-fase3.md) · [er-diagram.md](./er-diagram.md) · [risk-map-fase3.md](./risk-map-fase3.md). Índice PDF: [delivery-index.md](./delivery-index.md).
 ## NFR
 
 | NFR | Abordagem |
@@ -110,8 +112,8 @@ RFCs: [001 AWS](./rfc-001-cloud-aws.md) · [002 RDS](./rfc-002-mysql-rds.md) · 
 
 ## Handoff
 
-- **next_todo:** `delivery-pdf`
-- **next_role:** `documentation`
-- **Artefatos docs-arch:** [docs-arch-handoff.md](./docs-arch-handoff.md)
+- **next_todo:** bootstrap AWS / smoke (após aprovação de custo) → QA GO → `delivery-pdf`
+- **next_role:** `infrastructure` / `qa` / `documentation`
+- **Artefatos docs-arch:** [docs-arch-handoff.md](./docs-arch-handoff.md) · [delivery-index.md](./delivery-index.md)
 - **Branch protection:** [../infrastructure/branch-protection.md](../infrastructure/branch-protection.md)
-- **Próximo todo do plano:** `delivery-pdf`
+- **Comunicação:** [ADR-011](./adr-011-sync-rest-api-gateway.md)

@@ -1,42 +1,42 @@
 # autoservicemanager-app
 
-Backend NestJS (hexagonal) para gestão de oficina mecânica — **Fase 3**: deploy em **EKS**, autenticação cliente via API Gateway + Lambda `authCpf` (JWT **RS256**), **RDS MySQL** (Prisma), **CloudWatch/X-Ray**.
+## Propósito
 
-Este é o repositório **app** pós-cisão (código Nest + `packages/domain-shared` + manifests `k8s/` + docs canônicos). Spec-Skills permanece aqui (`AGENTS.md`).
+Backend NestJS (hexagonal) para gestão de oficina mecânica — **Fase 3**: deploy em **EKS**, entrada via **API Gateway** (VPC Link), autenticação cliente na Lambda irmã (JWT **RS256**), **RDS MySQL** (Prisma), **CloudWatch / Container Insights / X-Ray**.
+
+Repositório **app** (código Nest + `packages/domain-shared` + manifests `k8s/` + **docs canônicos** da entrega FIAP). Spec-Skills: [`AGENTS.md`](AGENTS.md).
+
+## Tecnologias
+
+NestJS  · Prisma  · MySQL  · Docker  · Kubernetes (EKS)  · Yarn  · GitHub Actions OIDC  · GitHub Packages (`@dinhogt/domain-shared`)
 
 | Unidade irmã | Repo |
 |--------------|------|
 | Lambda auth CPF | [autoservicemanager-auth-lambda](https://github.com/dinhogt/autoservicemanager-auth-lambda) |
 | Terraform VPC + RDS | [autoservicemanager-infra-db](https://github.com/dinhogt/autoservicemanager-infra-db) |
 | Terraform EKS / APIGW / obs | [autoservicemanager-infra-k8s](https://github.com/dinhogt/autoservicemanager-infra-k8s) |
-| Validações CPF/CNPJ/placa | [`packages/domain-shared/`](packages/domain-shared/) → GitHub Packages (`@dinhogt/domain-shared`) |
 
 | Doc | Link |
 |-----|------|
-| Release notes | [docs/release-notes.md](docs/release-notes.md) |
+| **Índice PDF / Portal** | [docs/architecture/delivery-index.md](docs/architecture/delivery-index.md) |
 | Solution design Fase 3 | [docs/architecture/solution-design-fase3.md](docs/architecture/solution-design-fase3.md) |
 | Diagramas / ER / riscos | [diagramas](docs/architecture/diagrams-fase3.md) · [ER](docs/architecture/er-diagram.md) · [riscos](docs/architecture/risk-map-fase3.md) |
+| ADR-011 sync REST | [docs/architecture/adr-011-sync-rest-api-gateway.md](docs/architecture/adr-011-sync-rest-api-gateway.md) |
 | Runbook | [docs/runbook.md](docs/runbook.md) |
 | Contrato API | [docs/backend/api-contract.md](docs/backend/api-contract.md) |
 | Observabilidade | [docs/observability/](docs/observability/) |
 | Segurança | [docs/security/SECURITY.md](docs/security/SECURITY.md) |
 
-## Escopo neste repo
+## Escopo neste repo (diagrama)
 
 ```mermaid
-flowchart TB
-  subgraph appRepo [autoservicemanager-app]
-    Nest[NestJS hexagonal]
-    Prisma[Prisma / MySQL client]
-    K8s[k8s manifests]
-    DS[packages/domain-shared]
-  end
-  Nest --> Prisma
-  Nest --> DS
-  DS -->|tag domain-shared-v*| PKG[GitHub Packages]
-  PKG --> LambdaRepo[auth-lambda]
-  K8s --> EKS[EKS via CI OIDC]
-  Nest --> EKS
+flowchart LR
+  APIGW[API Gateway VPC Link] --> Nest[NestJS no EKS]
+  Nest --> RDS[(RDS MySQL)]
+  Nest --> CW[CloudWatch X-Ray]
+  Nest --> DS[domain-shared]
+  DS --> PKG[GitHub Packages]
+  Manifests[k8s HPA migrate] --> Nest
 ```
 
 ## Estrutura
@@ -128,7 +128,8 @@ Runbook: [docs/runbook.md](docs/runbook.md).
 
 | Área | Links |
 |------|-------|
-| ADRs Fase 3 | [004](docs/architecture/adr-004-api-gateway-vpc-link.md)–[010](docs/architecture/adr-010-discontinue-mongodb-audit.md) |
+| Índice entrega | [delivery-index.md](docs/architecture/delivery-index.md) |
+| ADRs Fase 3 | [004](docs/architecture/adr-004-api-gateway-vpc-link.md)–[011](docs/architecture/adr-011-sync-rest-api-gateway.md) |
 | RFCs | [001](docs/architecture/rfc-001-cloud-aws.md) · [002](docs/architecture/rfc-002-mysql-rds.md) · [003](docs/architecture/rfc-003-auth-lambda-rs256.md) |
 | Backend | [repo-app](docs/backend/repo-app.md) · [auth-lambda](docs/backend/auth-lambda.md) · [domain-shared](docs/backend/domain-shared-package.md) |
 | Infra | [repo-infra-db](docs/infrastructure/repo-infra-db.md) · [repo-infra-k8s](docs/infrastructure/repo-infra-k8s.md) |
