@@ -11,15 +11,15 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  /** Health/readiness — sem rate limit para probes K8s e demo de HPA. */
+  /** Liveness — sem dependência externa (probes K8s). */
   @Get()
   getHello(): string {
     return this.appService.getHello();
   }
 
-  /** Rota exposta no API Gateway (`GET /health`) — mesma resposta do readiness. */
+  /** Readiness exposto no API Gateway (`GET /health`) — ping MySQL. */
   @Get('health')
-  getHealth(): string {
-    return this.appService.getHello();
+  getHealth() {
+    return this.appService.checkReady();
   }
 }

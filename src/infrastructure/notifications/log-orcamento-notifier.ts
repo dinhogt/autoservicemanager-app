@@ -5,9 +5,8 @@ import {
 } from '../../domain/atendimento/ports';
 
 /**
- * Implementação default do `OrcamentoNotifierPort`. No MVP não há canal real
- * (e-mail/SMS), portanto apenas registra a tentativa via `Logger`. O histórico
- * de notificações continua sendo gravado pelo `OsMongoAuditPort`.
+ * Log notifier — fallback observável. Histórico de status vive no MySQL
+ * (`PrismaOsAuditRepository`); notificações serverless via SNS (RFC-004).
  */
 @Injectable()
 export class LogOrcamentoNotifier implements OrcamentoNotifierPort {
@@ -17,6 +16,7 @@ export class LogOrcamentoNotifier implements OrcamentoNotifierPort {
     this.logger.log(
       `OrcamentoEnviadoParaCliente osId=${notificacao.ordemServicoId} ` +
         `cliente="${notificacao.clienteNome}" total=${notificacao.total} ` +
+        `contato=${notificacao.clienteContato ?? 'n/d'} ` +
         `link=${notificacao.linkAprovacao}`,
     );
     return Promise.resolve();

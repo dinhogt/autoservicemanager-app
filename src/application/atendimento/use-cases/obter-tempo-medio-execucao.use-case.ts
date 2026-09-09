@@ -9,10 +9,18 @@ export interface TempoMedioPorServico {
   mediaMinutos: number;
 }
 
+export interface TempoMedioPorFase {
+  fase: 'Diagnostico' | 'Execucao' | 'Finalizacao';
+  status: string;
+  totalTransicoes: number;
+  mediaMinutos: number | null;
+}
+
 export interface TempoMedioExecucaoResult {
   totalOs: number;
   globalMinutos: number | null;
   porServico: TempoMedioPorServico[];
+  porFase: TempoMedioPorFase[];
   geradoEm: string;
 }
 
@@ -29,6 +37,7 @@ export class ObterTempoMedioExecucaoUseCase {
       totalOs: agg.totalOs,
       globalMinutos: agg.globalMinutos,
       porServico: agg.porServico,
+      porFase: agg.porFase,
       geradoEm: new Date().toISOString(),
     };
   }

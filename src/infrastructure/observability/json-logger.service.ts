@@ -49,17 +49,18 @@ export class JsonLogger implements LoggerService {
         : undefined;
 
     let textMessage: string;
-    let event: string | undefined;
+    let extras: Record<string, unknown> = {};
     if (
       typeof message === 'object' &&
       message !== null &&
       !Array.isArray(message)
     ) {
       const record = message as Record<string, unknown>;
-      event = typeof record.event === 'string' ? record.event : undefined;
+      const { message: nestedMessage, ...rest } = record;
+      extras = rest;
       textMessage =
-        typeof record.message === 'string'
-          ? redactLogText(record.message)
+        typeof nestedMessage === 'string'
+          ? redactLogText(nestedMessage)
           : redactLogText(JSON.stringify(message));
     } else {
       textMessage =
@@ -76,7 +77,7 @@ export class JsonLogger implements LoggerService {
       correlationId: getCorrelationId(),
       xrayTraceId: extractRootFromAmznTrace(traceHeader),
       timestamp: new Date().toISOString(),
-      ...(event ? { event } : {}),
+      ...extras,
       ...(typeof stack === 'string' ? { stack } : {}),
     };
     const line = `${JSON.stringify(payload)}\n`;

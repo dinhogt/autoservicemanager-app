@@ -34,6 +34,8 @@ Colaborador FIAP: `soat-architecture` (Read) — confirmar aceite nos 4 remotes.
 | ADR GitHub OIDC | [adr-009-github-oidc-aws-iam.md](./adr-009-github-oidc-aws-iam.md) |
 | ADR fim Mongo | [adr-010-discontinue-mongodb-audit.md](./adr-010-discontinue-mongodb-audit.md) |
 | ADR sync REST via APIGW | [adr-011-sync-rest-api-gateway.md](./adr-011-sync-rest-api-gateway.md) |
+| ADR CloudWatch (escolha livre vs Datadog) | [adr-012-cloudwatch-observability.md](./adr-012-cloudwatch-observability.md) |
+| RFC notificações SNS/SES | [rfc-004-notifications-sns-ses.md](./rfc-004-notifications-sns-ses.md) |
 | ER + justificativa + relacionamentos | [er-diagram.md](./er-diagram.md) |
 | Mapa de riscos | [risk-map-fase3.md](./risk-map-fase3.md) |
 | Observabilidade | [../observability/](../observability/) |

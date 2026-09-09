@@ -3,8 +3,19 @@ name: CI/CD
 on:
   push:
     branches: [master, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
   pull_request:
     branches: [master, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+concurrency:
+  group: app-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   NODE_VERSION: "22"
@@ -15,7 +26,6 @@ jobs:
     uses: ./.github/workflows/security-gate.yml
 
   ci:
-    needs: security-gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -41,22 +51,20 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Docker build
-        run: docker build -t autoservicemanager:ci .
-
   cd:
-    # master = prod demo; develop = homolog
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
     needs: [ci, security-gate]
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       id-token: write
       contents: read
     environment: ${{ github.ref == 'refs/heads/master' && 'production' || 'homolog' }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
 
-      # OIDC → IAM (ADR-009). Secrets: AWS_ROLE_ARN, ECR_REPOSITORY, EKS_CLUSTER_NAME.
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
@@ -67,26 +75,41 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
+      - name: Ensure metrics-server (HPA)
+        run: |
+          if ! kubectl get deploy metrics-server -n kube-system >/dev/null 2>&1; then
+            echo "Installing metrics-server for HPA"
+            kubectl apply -f k8s/metrics-server.yaml
+          else
+            echo "metrics-server already present — skip"
+          fi
+
       - name: Run database migrations
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          APP_IRSA_ROLE_ARN: ${{ secrets.APP_IRSA_ROLE_ARN }}
+          MIGRATE_IRSA_ROLE_ARN: ${{ secrets.MIGRATE_IRSA_ROLE_ARN }}
         run: |
           kubectl apply -f k8s/namespace.yaml
           kubectl apply -f k8s/configmap.yaml
-          # X-Ray UDP :2000 já vem do addon amazon-cloudwatch-observability (hostPort).
-          # Não aplicar k8s/xray-daemonset.yaml — conflita e força scale-out de nodes.
           kubectl delete daemonset xray-daemon -n autoservice --ignore-not-found
           kubectl delete service xray-daemon -n autoservice --ignore-not-found
           if [ -n "${APP_IRSA_ROLE_ARN:-}" ]; then
@@ -101,26 +124,32 @@ jobs:
           else
             kubectl apply -f k8s/serviceaccount-migrate.yaml
           fi
-          kubectl delete job autoservice-migrate -n autoservice --ignore-not-found
-          IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}"
-          sed "s|ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/autoservice-dev-api:latest|${IMAGE}|g" k8s/job-migrate.yaml | kubectl apply -f -
-          kubectl wait --for=condition=complete job/autoservice-migrate -n autoservice --timeout=180s
+
+          MIGRATIONS_CHANGED=1
+          if git rev-parse HEAD~1 >/dev/null 2>&1; then
+            if git diff --quiet HEAD~1 HEAD -- prisma/migrations; then
+              MIGRATIONS_CHANGED=0
+            fi
+          fi
+          if [ "$MIGRATIONS_CHANGED" = "0" ]; then
+            echo "prisma/migrations unchanged — skip migrate Job"
+          else
+            kubectl delete job autoservice-migrate -n autoservice --ignore-not-found
+            IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}"
+            sed "s|ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/autoservice-dev-api:latest|${IMAGE}|g" k8s/job-migrate.yaml | kubectl apply -f -
+            kubectl wait --for=condition=complete job/autoservice-migrate -n autoservice --timeout=180s
+          fi
+
+      - name: Deploy manifests
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          APP_IRSA_ROLE_ARN: ${{ secrets.APP_IRSA_ROLE_ARN }}
-          MIGRATE_IRSA_ROLE_ARN: ${{ secrets.MIGRATE_IRSA_ROLE_ARN }}
-
-      - name: Deploy manifests
         run: |
           IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}"
           sed "s|ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/autoservice-dev-api:latest|${IMAGE}|g" k8s/api-deployment.yaml | kubectl apply -f -
           kubectl apply -f k8s/api-service.yaml
           kubectl apply -f k8s/hpa.yaml
           kubectl rollout status deployment/autoservice-api -n autoservice --timeout=180s
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
 
       - name: Register pods on NLB target group
         env:
@@ -131,7 +160,6 @@ jobs:
             echo "TARGET_GROUP_ARN secret missing — skip (APIGW/NLB ficará 503 até registrar)"
             exit 0
           fi
-          # Substitui targets antigos pelos IPs atuais dos pods (target_type=ip)
           mapfile -t OLD < <(aws elbv2 describe-target-health \
             --target-group-arn "$TARGET_GROUP_ARN" \
             --query 'TargetHealthDescriptions[].Target.[Id,Port]' --output text | awk '{print $1","$2}')

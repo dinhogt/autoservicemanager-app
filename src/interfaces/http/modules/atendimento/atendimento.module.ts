@@ -29,6 +29,8 @@ import { EmailOsStatusNotifier } from '../../../../infrastructure/notifications/
 import { LogOrcamentoNotifier } from '../../../../infrastructure/notifications/log-orcamento-notifier';
 import { LogOsStatusNotifier } from '../../../../infrastructure/notifications/log-os-status-notifier';
 import { SmtpMailService } from '../../../../infrastructure/notifications/smtp-mail.service';
+import { SnsOrcamentoNotifier } from '../../../../infrastructure/notifications/sns-orcamento-notifier';
+import { SnsOsStatusNotifier } from '../../../../infrastructure/notifications/sns-os-status-notifier';
 import { WebhookSecretGuard } from '../../../../infrastructure/auth/webhook-secret.guard';
 import { OrdemServicoController } from './ordem-servico.controller';
 import { WebhookOsController } from './webhook-os.controller';
@@ -61,8 +63,10 @@ import { PrismaPecaEstoqueRepository } from '../../../../infrastructure/database
     SmtpMailService,
     LogOsStatusNotifier,
     EmailOsStatusNotifier,
+    SnsOsStatusNotifier,
     LogOrcamentoNotifier,
     EmailOrcamentoNotifier,
+    SnsOrcamentoNotifier,
     { provide: CLIENTE_REPOSITORY, useClass: PrismaClienteRepository },
     { provide: VEICULO_REPOSITORY, useClass: PrismaVeiculoRepository },
     {

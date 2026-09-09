@@ -26,7 +26,6 @@ function rejectForbiddenInProduction(
 
 /**
  * Validates environment variables at application bootstrap.
- * MONGODB_URI is optional until logs/audit (MongoDB) are wired in later phases.
  */
 export const envValidationSchema = Joi.object({
   NODE_ENV: Joi.string()
@@ -48,28 +47,16 @@ export const envValidationSchema = Joi.object({
       return value;
     }),
 
-  /** MongoDB for domain events / audit (optional in early phases). */
-  MONGODB_URI: Joi.string()
-    .optional()
-    .allow('')
-    .custom((value: string | undefined, helpers) => {
-      if (value === '' || value === undefined) {
-        return value as string | undefined;
-      }
-      const { error } = Joi.string()
-        .uri({ scheme: ['mongodb', 'mongodb+srv'] })
-        .validate(value);
-      if (error) {
-        return helpers.error('any.invalid');
-      }
-      return value;
-    }),
-
-  /** MongoDB database name (optional; default `autoservicemanager`). */
-  MONGODB_DATABASE: Joi.string().optional().allow(''),
-
   /** Shadow database for Prisma migrate dev (optional). */
   SHADOW_DATABASE_URL: Joi.string().optional().allow(''),
+
+  /** Namespace suffix for CloudWatch EMF (optional; default NODE_ENV). */
+  METRICS_ENVIRONMENT: Joi.string().optional().allow(''),
+  APP_ENVIRONMENT: Joi.string().optional().allow(''),
+
+  /** SNS topic for serverless notifications (optional — SMTP fallback local). */
+  OS_NOTIFICATIONS_TOPIC_ARN: Joi.string().optional().allow(''),
+  AWS_REGION: Joi.string().optional().allow(''),
 
   /** Minimum length enforced for JWT signing (auth phase). */
   JWT_SECRET: Joi.string()

@@ -43,6 +43,7 @@
     "qs": "^6.16.0"
   },
   "dependencies": {
+    "@aws-sdk/client-sns": "^3.787.0",
     "@dinhogt/domain-shared": "0.1.0",
     "@nestjs/common": "^11.1.19",
     "@nestjs/config": "^4.0.4",
@@ -61,7 +62,6 @@
     "dotenv": "^16.4.5",
     "helmet": "^8.1.0",
     "joi": "^18.2.1",
-    "mongodb": "^7.1.1",
     "nodemailer": "^9.0.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -118,8 +118,7 @@
       "!src/**/*.dto.ts",
       "!src/**/index.ts",
       "!src/main.ts",
-      "!src/infrastructure/database/mongo/mongo-connection.service.ts",
-      "!src/infrastructure/database/mongo/mongo-os-audit.repository.ts"
+      "!src/infrastructure/observability/business-metrics.ts"
     ],
     "coverageDirectory": "./coverage",
     "coverageReporters": [

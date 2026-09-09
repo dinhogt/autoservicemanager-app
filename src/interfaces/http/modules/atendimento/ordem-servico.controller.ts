@@ -158,7 +158,7 @@ export class OrdemServicoController {
   @ApiOperation({
     summary: 'Tempo médio de execução das OS finalizadas',
     description:
-      'Retorna o tempo médio (em minutos) entre dataCriacao e dataConclusao das OS em status FINALIZADA/ENTREGUE, agregado global e por serviço.',
+      'Retorna tempo médio global (dataCriacao→dataConclusao), por serviço e por fase (Diagnóstico / Execução / Finalização) a partir do histórico MySQL.',
   })
   @ApiResponse({ status: 200, description: 'Métricas de tempo médio' })
   metricasTempoMedio() {
@@ -250,7 +250,7 @@ export class OrdemServicoController {
   @ApiOperation({
     summary: 'Histórico de eventos da OS',
     description:
-      'Mudanças de status e notificações armazenados no MongoDB. Retorna array vazio se MONGODB_URI não configurado.',
+      'Trilha de status em MySQL (OrdemServicoStatusHistorico) + eventos estruturados em CloudWatch (ADR-010).',
   })
   @ApiParam({ name: 'id', description: 'UUID da ordem de serviço' })
   @ApiResponse({ status: 200, description: 'Lista de eventos/histórico da OS' })

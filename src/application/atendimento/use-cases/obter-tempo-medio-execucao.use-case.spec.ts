@@ -15,12 +15,14 @@ describe('ObterTempoMedioExecucaoUseCase', () => {
         totalOs: 0,
         globalMinutos: null,
         porServico: [],
+        porFase: [],
       }),
     );
     const result = await uc.execute();
     expect(result.totalOs).toBe(0);
     expect(result.globalMinutos).toBeNull();
     expect(result.porServico).toEqual([]);
+    expect(result.porFase).toEqual([]);
     expect(typeof result.geradoEm).toBe('string');
   });
 
@@ -43,11 +45,20 @@ describe('ObterTempoMedioExecucaoUseCase', () => {
             mediaMinutos: 60,
           },
         ],
+        porFase: [
+          {
+            fase: 'Diagnostico',
+            status: 'EM_DIAGNOSTICO',
+            totalTransicoes: 2,
+            mediaMinutos: 30,
+          },
+        ],
       }),
     );
     const result = await uc.execute();
     expect(result.totalOs).toBe(2);
     expect(result.globalMinutos).toBe(60);
+    expect(result.porFase[0].mediaMinutos).toBe(30);
     expect(result.porServico).toEqual([
       {
         servicoId: 'sc2',

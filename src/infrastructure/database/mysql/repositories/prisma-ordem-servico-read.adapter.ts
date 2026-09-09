@@ -64,28 +64,31 @@ export class PrismaOrdemServicoReadAdapter implements OrdemServicoReadPort {
   }
 
   async obterTempoMedioExecucao(): Promise<TempoMedioExecucaoAggregate> {
-    const ordens = await this.prisma.ordemServico.findMany({
-      where: {
-        status: {
-          in: STATUS_OS_TERMINAIS_PARA_METRICAS.map(statusOsToPrisma),
+    const [ordens, porFase] = await Promise.all([
+      this.prisma.ordemServico.findMany({
+        where: {
+          status: {
+            in: STATUS_OS_TERMINAIS_PARA_METRICAS.map(statusOsToPrisma),
+          },
+          dataConclusao: { not: null },
         },
-        dataConclusao: { not: null },
-      },
-      select: {
-        id: true,
-        dataCriacao: true,
-        dataConclusao: true,
-        itensServico: {
-          select: {
-            servicoCatalogoId: true,
-            servicoCatalogo: { select: { descricao: true } },
+        select: {
+          id: true,
+          dataCriacao: true,
+          dataConclusao: true,
+          itensServico: {
+            select: {
+              servicoCatalogoId: true,
+              servicoCatalogo: { select: { descricao: true } },
+            },
           },
         },
-      },
-    });
+      }),
+      this.obterTempoMedioPorFase(),
+    ]);
 
     if (ordens.length === 0) {
-      return { totalOs: 0, globalMinutos: null, porServico: [] };
+      return { totalOs: 0, globalMinutos: null, porServico: [], porFase };
     }
 
     let somaGlobal = 0;
@@ -125,7 +128,62 @@ export class PrismaOrdemServicoReadAdapter implements OrdemServicoReadPort {
       totalOs: ordens.length,
       globalMinutos: round1(somaGlobal / ordens.length),
       porServico,
+      porFase,
     };
+  }
+
+  /**
+   * Permanência média em Diagnóstico / Execução / Finalização:
+   * diff enteredAt(toStatus=fase) → enteredAt(próxima linha com fromStatus=fase).
+   */
+  private async obterTempoMedioPorFase(): Promise<
+    TempoMedioExecucaoAggregate['porFase']
+  > {
+    const fases: Array<{
+      fase: 'Diagnostico' | 'Execucao' | 'Finalizacao';
+      status: 'EM_DIAGNOSTICO' | 'EM_EXECUCAO' | 'FINALIZADA';
+    }> = [
+      { fase: 'Diagnostico', status: 'EM_DIAGNOSTICO' },
+      { fase: 'Execucao', status: 'EM_EXECUCAO' },
+      { fase: 'Finalizacao', status: 'FINALIZADA' },
+    ];
+
+    const result: TempoMedioExecucaoAggregate['porFase'] = [];
+
+    for (const { fase, status } of fases) {
+      const entradas = await this.prisma.ordemServicoStatusHistorico.findMany({
+        where: { toStatus: status },
+        select: { id: true, ordemServicoId: true, enteredAt: true },
+        orderBy: { enteredAt: 'asc' },
+      });
+
+      let soma = 0;
+      let total = 0;
+      for (const entrada of entradas) {
+        const saida = await this.prisma.ordemServicoStatusHistorico.findFirst({
+          where: {
+            ordemServicoId: entrada.ordemServicoId,
+            fromStatus: status,
+            enteredAt: { gt: entrada.enteredAt },
+          },
+          orderBy: { enteredAt: 'asc' },
+          select: { enteredAt: true },
+        });
+        if (!saida) continue;
+        soma +=
+          (saida.enteredAt.getTime() - entrada.enteredAt.getTime()) / MS_PER_MIN;
+        total += 1;
+      }
+
+      result.push({
+        fase,
+        status,
+        totalTransicoes: total,
+        mediaMinutos: total > 0 ? round1(soma / total) : null,
+      });
+    }
+
+    return result;
   }
 }
 

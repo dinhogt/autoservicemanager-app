@@ -45,9 +45,9 @@ bash scripts/security-smoke.sh "https://<APIGW_URL>"
 | CI security gate | Audit + secret scan antes de CD AWS. | `scripts/security-gate.sh`, workflows CI |
 | Validação de input | `class-validator` + `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`, `transform`, `enableImplicitConversion`); Value Objects `CpfCnpj` e `Placa` aplicam regras de domínio. | `src/main.ts`, `src/shared/utils/*` |
 | Validação de ENV | Schema Joi obrigatório em bootstrap. Falha rápido sem variáveis seguras. | `src/infrastructure/config/env.validation.ts` |
-| Segredos | Variáveis sensíveis (`JWT_SECRET`, `DATABASE_URL`, `MONGODB_URI`) consumidas via `ConfigService`; `.env` está em `.gitignore`. | `src/main.ts`, `.gitignore` |
-| Soft-delete | Cliente, Veículo, ServiçoCatálogo e PeçaEstoque marcam `ativo=false` ao invés de remoção física, evitando perda de histórico/auditoria. | `prisma/schema.prisma`, `src/domain/**` |
-| Auditoria | Todas as transições de OS, eventos de domínio e notificações são registradas via `OsMongoAuditPort`. Implementação `Noop` quando MongoDB não está configurado. | `src/infrastructure/database/mongo/*` |
+| Segredos | Variáveis sensíveis (`JWT_SECRET`, `DATABASE_URL`, `OS_NOTIFICATIONS_TOPIC_ARN`) via `ConfigService`; `.env` em `.gitignore`. | `src/main.ts`, `.gitignore` |
+| Soft-delete | Cliente, Veículo, ServiçoCatálogo e PeçaEstoque marcam `ativo=false` ao invés de remoção física. | `prisma/schema.prisma`, `src/domain/**` |
+| Auditoria | Transições de OS em MySQL (`OrdemServicoStatusHistorico`) + logs JSON CloudWatch (`PrismaOsAuditRepository`, ADR-010). | `src/infrastructure/database/mysql/repositories/prisma-os-audit.repository.ts` |
 | Testes | Threshold Jest em `package.json` (`statements/lines >= 80%`, `branches/functions >= 70%`); suíte atual cobre integração HTTP e domínio (ver `yarn test` / `yarn test:cov`). | `package.json`, `test/integration/` |
 | Container | Runtime **não-root** (uid/gid **10001**); K8s `runAsNonRoot` + `readOnlyRootFilesystem` + `capabilities.drop: [ALL]`; `emptyDir` em `/tmp`; migrations só no Job com SA `autoservice-migrate` (sem token de API). | `Dockerfile`, `k8s/api-deployment.yaml`, `k8s/job-migrate.yaml`, `k8s/serviceaccount-migrate.yaml` |
 

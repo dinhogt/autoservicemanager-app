@@ -102,11 +102,28 @@ model OrdemServico {
   veiculo   Veiculo  @relation(fields: [veiculoId], references: [id], onDelete: Restrict)
   itensServico ItemServicoOs[]
   itensPeca    ItemPecaOs[]
+  historicoStatus OrdemServicoStatusHistorico[]
 
   @@index([dataCriacao])
   @@index([status])
   @@index([clienteId])
   @@index([veiculoId])
+}
+
+/// Trilha de status no MySQL (ADR-010) — base para tempo médio por fase.
+model OrdemServicoStatusHistorico {
+  id             String     @id @default(uuid())
+  ordemServicoId String
+  fromStatus     StatusOs?
+  toStatus       StatusOs
+  eventType      String?
+  context        String?
+  enteredAt      DateTime   @default(now())
+
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id], onDelete: Cascade)
+
+  @@index([ordemServicoId, enteredAt])
+  @@index([toStatus, enteredAt])
 }
 
 model ItemServicoOs {

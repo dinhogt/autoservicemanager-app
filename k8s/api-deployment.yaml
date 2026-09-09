@@ -57,7 +57,7 @@ spec:
               memory: 768Mi
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: 3000
             initialDelaySeconds: 15
             periodSeconds: 10

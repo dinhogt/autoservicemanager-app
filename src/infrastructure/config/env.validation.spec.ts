@@ -23,30 +23,6 @@ describe('envValidationSchema', () => {
     expect(error).toBeDefined();
   });
 
-  it('aceita MONGODB_URI vazio ou undefined', () => {
-    const { error: e1 } = envValidationSchema.validate(
-      { ...baseEnv, MONGODB_URI: '' },
-      { allowUnknown: true },
-    );
-    expect(e1).toBeUndefined();
-  });
-
-  it('aceita MONGODB_URI mongodb+srv', () => {
-    const { error } = envValidationSchema.validate(
-      { ...baseEnv, MONGODB_URI: 'mongodb+srv://h/db' },
-      { allowUnknown: true },
-    );
-    expect(error).toBeUndefined();
-  });
-
-  it('rejeita MONGODB_URI com scheme inválido', () => {
-    const { error } = envValidationSchema.validate(
-      { ...baseEnv, MONGODB_URI: 'http://example.com' },
-      { allowUnknown: true },
-    );
-    expect(error).toBeDefined();
-  });
-
   it('rejeita NODE_ENV inválido', () => {
     const { error } = envValidationSchema.validate(
       { ...baseEnv, NODE_ENV: 'staging' },
@@ -81,18 +57,12 @@ describe('envValidationSchema', () => {
     expect(value.PORT).toBe(8080);
   });
 
-  it('aceita MONGODB_URI mongodb:// padrão', () => {
-    const { error } = envValidationSchema.validate(
-      { ...baseEnv, MONGODB_URI: 'mongodb://localhost:27017/db' },
+  it('aceita METRICS_ENVIRONMENT opcional', () => {
+    const { error, value } = envValidationSchema.validate(
+      { ...baseEnv, METRICS_ENVIRONMENT: 'homolog' },
       { allowUnknown: true },
     );
     expect(error).toBeUndefined();
-  });
-
-  it('aceita MONGODB_URI undefined (não fornecido)', () => {
-    const { error } = envValidationSchema.validate(baseEnv, {
-      allowUnknown: true,
-    });
-    expect(error).toBeUndefined();
+    expect(value.METRICS_ENVIRONMENT).toBe('homolog');
   });
 });

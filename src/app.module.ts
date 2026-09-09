@@ -8,7 +8,7 @@ import { ClienteAuthGuard } from './infrastructure/auth/cliente-auth.guard';
 import { JwtAuthGuard } from './infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from './infrastructure/auth/roles.guard';
 import { AppConfigModule } from './infrastructure/config/app-config.module';
-import { MongoModule } from './infrastructure/database/mongo/mongo.module';
+import { OsAuditModule } from './infrastructure/database/mysql/os-audit.module';
 import { PrismaModule } from './infrastructure/database/mysql/prisma.module';
 import { TraceMiddleware } from './infrastructure/observability/trace.middleware';
 import { CadastroModule } from './interfaces/http/modules/cadastro/cadastro.module';
@@ -23,7 +23,7 @@ import { AtendimentoModule } from './interfaces/http/modules/atendimento/atendim
       throttlers: [{ ttl: 60_000, limit: 100 }],
     }),
     PrismaModule,
-    MongoModule,
+    OsAuditModule,
     AuthModule,
     CadastroModule,
     CatalogoServicosModule,

@@ -14,11 +14,18 @@
 |------------------|----------|------------|------------------|
 | `*-apigw-p95-gt-1s` | Latency p95 > **1000 ms** (3×60s) | Alta | Ver X-Ray + pods; HPA; cold start Lambda só em `/auth/cpf` |
 | `*-apigw-5xx-gt-1pct` | `100 * 5xx/Count` > **1%** (3×60s) | Crítica | Logs app (`level=error`); NLB unhealthy; integração VPC Link |
-| `*-nlb-unhealthy-hosts` | `UnHealthyHostCount` > 0 | Crítica | Probes `/`, Deployment, Target Group binding, SG |
+| `*-nlb-unhealthy-hosts` | `UnHealthyHostCount` > 0 | Crítica | Probes `/` (liveness) e `/health` (readiness DB); Deployment; Target Group; SG |
 | `*-auth-cpf-errors` | Lambda `Errors` ≥ 1 | Alta | Logs `/aws/lambda/...`; DB secret; JWT secret |
 | `*-os-transicao-erro` | `OsTransicaoErro` ≥ 1 / min | Alta | Filtrar `event=os_transicao_erro`; correlacionar `correlationId` |
 
 Thresholds podem exigir calibração em produção (handoff observability).
+
+## Métricas de negócio (sem alarme por default)
+
+| Métrica EMF | Dimensão | Uso |
+|-------------|----------|-----|
+| `OsCriada` | — | Volume diário no dashboard |
+| `OsFaseDuracao` | `Fase` = Diagnostico \| Execucao \| Finalizacao | Tempo médio por fase |
 
 ## Procedimento de resposta (runbook curto)
 

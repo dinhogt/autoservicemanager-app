@@ -107,13 +107,15 @@ Variáveis: ver `.env.example` e `src/infrastructure/config/env.validation.ts`. 
 
 | Workflow | Escopo |
 |----------|--------|
-| [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) | `security-gate` → lint, arch, test:cov, build, docker; CD OIDC → ECR → migrate → EKS |
-| [`security-gate.yml`](.github/workflows/security-gate.yml) | Audit + secret scan |
+| [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) | PR: lint/arch/test/build (sem Docker). CD: BuildKit+cache GHA → ECR → migrate condicional → EKS + metrics-server |
+| [`security-gate.yml`](.github/workflows/security-gate.yml) | Audit + secret scan (paralelo ao CI) |
 | [`publish-domain-shared.yml`](.github/workflows/publish-domain-shared.yml) | Tag `domain-shared-v*` → Packages |
 
-Sem path filters de monorepo. `develop` → homolog; `master` → production.
+**Proteção de branches:** `master` só via Pull Request (sem commit direto); `develop` = homologação com deploy automático; `master` = production. Detalhe: [branch-protection.md](docs/infrastructure/branch-protection.md).
 
-Governança: [docs/infrastructure/branch-protection.md](docs/infrastructure/branch-protection.md) · [ci-cd.md](docs/infrastructure/ci-cd.md).
+**Dockerfile:** multi-stage Node 22 (BuildKit cache). Notificações em produção: SNS → Lambda `notify-os` (SMTP só local sem `OS_NOTIFICATIONS_TOPIC_ARN`).
+
+Push só de docs/Markdown não dispara CD (`paths-ignore`).
 
 ## Deploy (ordem Fase 3)
 
@@ -129,8 +131,8 @@ Runbook: [docs/runbook.md](docs/runbook.md).
 | Área | Links |
 |------|-------|
 | Índice entrega | [delivery-index.md](docs/architecture/delivery-index.md) |
-| ADRs Fase 3 | [004](docs/architecture/adr-004-api-gateway-vpc-link.md)–[011](docs/architecture/adr-011-sync-rest-api-gateway.md) |
-| RFCs | [001](docs/architecture/rfc-001-cloud-aws.md) · [002](docs/architecture/rfc-002-mysql-rds.md) · [003](docs/architecture/rfc-003-auth-lambda-rs256.md) |
+| ADRs Fase 3 | [004](docs/architecture/adr-004-api-gateway-vpc-link.md)–[012](docs/architecture/adr-012-cloudwatch-observability.md) |
+| RFCs | [001](docs/architecture/rfc-001-cloud-aws.md) · [002](docs/architecture/rfc-002-mysql-rds.md) · [003](docs/architecture/rfc-003-auth-lambda-rs256.md) · [004](docs/architecture/rfc-004-notifications-sns-ses.md) |
 | Backend | [repo-app](docs/backend/repo-app.md) · [auth-lambda](docs/backend/auth-lambda.md) · [domain-shared](docs/backend/domain-shared-package.md) |
 | Infra | [repo-infra-db](docs/infrastructure/repo-infra-db.md) · [repo-infra-k8s](docs/infrastructure/repo-infra-k8s.md) |
 | QA | [validation](docs/qa/validation-report.md) · [regression](docs/qa/regression-report.md) |

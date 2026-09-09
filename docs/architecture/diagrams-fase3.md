@@ -21,12 +21,15 @@ flowchart TB
   end
   subgraph compute [Compute]
     Lambda[Lambda authCpf]
+    Notify[Lambda notify-os]
     EKS[EKS NestJS monólito]
     NLB[NLB interno VPC Link]
+    SNS[SNS os-notifications]
   end
   subgraph data [Dados]
     RDS[(RDS MySQL 8)]
     SM[Secrets Manager]
+    SES[SES]
   end
   subgraph obs [Observabilidade]
     CW[CloudWatch Logs Metrics]
@@ -54,11 +57,15 @@ flowchart TB
   Lambda --> SM
   EKS --> RDS
   EKS --> SM
+  EKS --> SNS
+  SNS --> Notify
+  Notify --> SES
   Lambda -->|JWT| Cliente
   EKS --> CW
   EKS --> CI
   EKS --> XRay
   Lambda --> CW
+  Notify --> CW
   Lambda --> XRay
   APIGW --> CW
   GHapp --> OIDC
@@ -69,6 +76,7 @@ flowchart TB
   OIDC --> EKS
   OIDC --> TF
   OIDC --> Lambda
+  OIDC --> Notify
 ```
 
 ## Sequência — autenticação CPF
@@ -105,10 +113,26 @@ sequenceDiagram
   A->>D: validar Cliente Veiculo catalogo estoque
   A->>D: INSERT OrdemServico status RECEBIDA
   A->>D: INSERT ItemServicoOs ItemPecaOs
+  A->>D: INSERT OrdemServicoStatusHistorico
   D-->>A: OS criada
+  Note over A: EMF OsCriada
   A-->>G: 201 JSON OS X-Correlation-Id
   G-->>C: 201
   Note over A,D: Logs JSON + X-Ray trace
+```
+
+## Sequência — notificação serverless (status OS)
+
+```mermaid
+sequenceDiagram
+  participant A as NestJS EKS
+  participant SNS as SNS os-notifications
+  participant N as Lambda notify-os
+  participant SES as SES
+  A->>SNS: Publish JSON type=os_status
+  SNS->>N: invoke
+  N->>SES: SendEmail
+  N-->>N: log event=os_notification
 ```
 
 ## Sequência — consulta OS protegida (cliente)
@@ -137,13 +161,16 @@ sequenceDiagram
   participant G as API Gateway
   participant A as NestJS
   participant D as RDS
+  participant SNS as SNS
   S->>G: POST transição JWT admin ou X-Webhook-Secret
   G->>A: proxy sem JWT RS256 em admin webhooks
   A->>A: OrderStatusService assert
   alt transição inválida
     A-->>S: 409 log event=os_transicao_erro
   else OK
-    A->>D: UPDATE status
+    A->>D: UPDATE status + INSERT historico
+    A->>SNS: Publish notificação
+    Note over A: EMF OsFaseDuracao
     A-->>S: 200
   end
 ```

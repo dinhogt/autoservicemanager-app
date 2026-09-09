@@ -76,9 +76,12 @@ describe('Fluxos críticos OS (F1/F2/F4/F7)', () => {
     };
 
     const smtp = { sendMail } as unknown as SmtpMailService;
+    const config = { get: () => undefined } as never;
     statusNotifier = new CompositeOsStatusNotifier(
       new LogOsStatusNotifier(),
+      { notificarMudancaStatus: jest.fn() } as never,
       new EmailOsStatusNotifier(smtp),
+      config,
     );
     orderStatusService = new OrderStatusService();
 
@@ -259,6 +262,14 @@ describe('Fluxos críticos OS (F1/F2/F4/F7)', () => {
           descricao: 'Alinhamento',
           totalOs: 1,
           mediaMinutos: 180,
+        },
+      ],
+      porFase: [
+        {
+          fase: 'Diagnostico',
+          status: 'EM_DIAGNOSTICO',
+          totalTransicoes: 3,
+          mediaMinutos: 40,
         },
       ],
     });

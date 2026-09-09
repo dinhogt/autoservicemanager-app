@@ -7,10 +7,19 @@ export interface TempoMedioPorServicoRow {
   mediaMinutos: number;
 }
 
+/** Diagnóstico / Execução / Finalização — permanência média na fase. */
+export interface TempoMedioPorFaseRow {
+  fase: 'Diagnostico' | 'Execucao' | 'Finalizacao';
+  status: string;
+  totalTransicoes: number;
+  mediaMinutos: number | null;
+}
+
 export interface TempoMedioExecucaoAggregate {
   totalOs: number;
   globalMinutos: number | null;
   porServico: TempoMedioPorServicoRow[];
+  porFase: TempoMedioPorFaseRow[];
 }
 
 export interface OrdemServicoReadPort {

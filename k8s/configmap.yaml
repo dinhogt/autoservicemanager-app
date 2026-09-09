@@ -6,7 +6,7 @@ metadata:
 data:
   NODE_ENV: production
   PORT: "3000"
-  EMAIL_ENABLED: "true"
+  EMAIL_ENABLED: "false"
   LOG_FORMAT: "json"
   AWS_XRAY_ENABLED: "true"
   AWS_XRAY_CONTEXT_MISSING: "LOG_ERROR"
@@ -14,4 +14,7 @@ data:
   REQUIRE_GATEWAY_HEADERS: "true"
   # Defina por ambiente (ex.: https://app.homolog.example.com,https://admin.example.com)
   CORS_ORIGIN: "https://REPLACE_ME.example.com"
-  MONGODB_DATABASE: autoservicemanager
+  METRICS_ENVIRONMENT: "homolog"
+  # Preencher com output os_notifications_topic_arn do infra-k8s (ou Secret)
+  OS_NOTIFICATIONS_TOPIC_ARN: ""
+  AWS_REGION: "us-east-1"

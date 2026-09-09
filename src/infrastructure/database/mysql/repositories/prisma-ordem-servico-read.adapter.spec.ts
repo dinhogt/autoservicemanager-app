@@ -5,6 +5,7 @@ import { PrismaOrdemServicoReadAdapter } from './prisma-ordem-servico-read.adapt
 
 describe('PrismaOrdemServicoReadAdapter', () => {
   function makeAdapter(handlers: Record<string, jest.Mock>) {
+    const emptyFases = jest.fn().mockResolvedValue([]);
     const prisma = {
       ordemServico: {
         findUnique: handlers.findUnique ?? jest.fn(),
@@ -16,6 +17,10 @@ describe('PrismaOrdemServicoReadAdapter', () => {
       },
       itemPecaOs: {
         count: handlers.itemPecaCount ?? jest.fn(),
+      },
+      ordemServicoStatusHistorico: {
+        findMany: handlers.historicoFindMany ?? emptyFases,
+        findFirst: handlers.historicoFindFirst ?? jest.fn(),
       },
     } as unknown as PrismaService;
     return { adapter: new PrismaOrdemServicoReadAdapter(prisma), prisma };
@@ -97,6 +102,26 @@ describe('PrismaOrdemServicoReadAdapter', () => {
       totalOs: 0,
       globalMinutos: null,
       porServico: [],
+      porFase: [
+        {
+          fase: 'Diagnostico',
+          status: 'EM_DIAGNOSTICO',
+          totalTransicoes: 0,
+          mediaMinutos: null,
+        },
+        {
+          fase: 'Execucao',
+          status: 'EM_EXECUCAO',
+          totalTransicoes: 0,
+          mediaMinutos: null,
+        },
+        {
+          fase: 'Finalizacao',
+          status: 'FINALIZADA',
+          totalTransicoes: 0,
+          mediaMinutos: null,
+        },
+      ],
     });
   });
 
