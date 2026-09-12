@@ -16,3 +16,15 @@ eslint.config.*
 .editorconfig
 yarn-error.log
 terminals
+
+# Não entram no contexto de build da imagem
+k8s/.rendered
+k8s/local
+infra
+docs
+.github
+scripts
+codeAgentSpecs
+*.zip
+*.pkg
+.DS_Store

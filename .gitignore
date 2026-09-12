@@ -12,9 +12,11 @@ dist
 build
 *.tsbuildinfo
 
-
 # cobertura e relatórios locais (mantemos docs/security/* versionados)
 coverage
+
+# Manifests gerados por deploy-aws.sh (Account ID / ECR / ARNs de homolog)
+k8s/.rendered/
 
 # lambda zip artefact
 # auth-lambda removido deste repo
