@@ -24,7 +24,7 @@ export class PrismaOsAuditRepository implements OsMongoAuditPort {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async recordDomainEvent(input: RecordDomainEventInput): Promise<void> {
+  recordDomainEvent(input: RecordDomainEventInput): Promise<void> {
     this.logger.log({
       event: 'os_domain_event',
       message: input.eventType,
@@ -32,6 +32,7 @@ export class PrismaOsAuditRepository implements OsMongoAuditPort {
       eventType: input.eventType,
       payload: input.payload ?? {},
     });
+    return Promise.resolve();
   }
 
   async recordStatusChange(input: RecordStatusChangeInput): Promise<void> {
@@ -46,7 +47,7 @@ export class PrismaOsAuditRepository implements OsMongoAuditPort {
     });
   }
 
-  async recordNotification(input: RecordNotificationInput): Promise<void> {
+  recordNotification(input: RecordNotificationInput): Promise<void> {
     this.logger.log({
       event: 'os_notification',
       message: input.message,
@@ -54,6 +55,7 @@ export class PrismaOsAuditRepository implements OsMongoAuditPort {
       notificationKind: input.kind,
       channel: input.channel ?? 'internal',
     });
+    return Promise.resolve();
   }
 
   async recordOsTransition(input: RecordOsTransitionInput): Promise<void> {

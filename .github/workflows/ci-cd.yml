@@ -52,7 +52,12 @@ jobs:
         run: yarn build
 
   cd:
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+    # OIDC CD opcional: ative com repo variable ENABLE_OIDC_CD=true + secret AWS_ROLE_ARN.
+    # Sem isso, CI/security passam e o deploy homolog segue via deploy-aws.sh (já provisionado).
+    if: >-
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop') &&
+      vars.ENABLE_OIDC_CD == 'true'
     needs: [ci, security-gate]
     runs-on: ubuntu-latest
     timeout-minutes: 20
