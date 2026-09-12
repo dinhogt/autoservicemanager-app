@@ -1,0 +1,476 @@
+{
+  "info": {
+    "name": "AutoServiceManager — AWS Homolog",
+    "description": "Collection espec\u00edfica para o ambiente AWS deployado (homolog).\n\nAmbiente:\n- API Gateway: https://tiib2w2kb6.execute-api.us-east-1.amazonaws.com\n- EKS: autoservicemanager-homolog (us-east-1)\n- Lambda auth-cpf: RS256, JWKS em CloudFront\n\nDuas se\u00e7\u00f5es:\n1. 'AWS \u2014 P\u00fablico via APIGW': tudo que est\u00e1 exposto no API Gateway (cliente, webhooks, health).\n2. 'AWS \u2014 Admin (port-forward)': fluxos admin que hoje s\u00f3 s\u00e3o acess\u00edveis via `kubectl port-forward svc/autoservice-api 3000:80 -n autoservice` (usa baseUrlAdmin = http://localhost:3000).\n\nCredenciais seed:\n- CPF cliente: 52998224725 (Roberto Almeida)\n- Admin (login local): joao.silva@autoservice.local / Senha@1234\n\nUse: importar no Postman/Insomnia \u2192 setar vari\u00e1veis \u2192 rodar Login CPF \u2192 demais requests reaproveitam {{jwt_token}} automaticamente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://tiib2w2kb6.execute-api.us-east-1.amazonaws.com", "description": "API Gateway (rotas p\u00fablicas)" },
+    { "key": "baseUrlAdmin", "value": "http://localhost:3000", "description": "Admin via port-forward: kubectl port-forward -n autoservice svc/autoservice-api 3000:80" },
+    { "key": "cpf", "value": "52998224725", "description": "CPF do cliente Roberto Almeida (seed)" },
+    { "key": "jwt_token", "value": "", "description": "Preenchido automaticamente ap\u00f3s 'Auth CPF' (JWT RS256 do cliente)" },
+    { "key": "admin_token", "value": "", "description": "Preenchido automaticamente ap\u00f3s 'Login admin' (JWT HS256)" },
+    { "key": "webhook_secret", "value": "", "description": "Executar: kubectl get secret autoservice-secrets -n autoservice -o jsonpath='{.data.WEBHOOK_SECRET}' | base64 -d" },
+    { "key": "os_id", "value": "00000000-0000-4000-a000-000000000001", "description": "ID de OS seed. Ap\u00f3s 'Criar OS' \u00e9 sobrescrito com a nova OS." },
+    { "key": "cliente_id", "value": "550e8400-e29b-41d4-a716-446655440101", "description": "Roberto Almeida" },
+    { "key": "veiculo_id", "value": "550e8400-e29b-41d4-a716-446655440201", "description": "Fiat Uno do Roberto" },
+    { "key": "servico_id", "value": "550e8400-e29b-41d4-a716-446655440301", "description": "Troca de \u00f3leo (seed)" },
+    { "key": "peca_id", "value": "550e8400-e29b-41d4-a716-446655440401", "description": "Filtro de \u00f3leo (seed)" },
+    { "key": "usuario_id", "value": "550e8400-e29b-41d4-a716-446655440501", "description": "Jo\u00e3o Silva (admin seed)" }
+  ],
+  "item": [
+    {
+      "name": "1. AWS \u2014 P\u00fablico via APIGW",
+      "description": "Rotas expostas pelo API Gateway. Fluxo cliente autenticado por CPF (JWT RS256 emitido pela Lambda authCpf).",
+      "item": [
+        {
+          "name": "1.1 Health check (p\u00fablico)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health",
+            "description": "Rota p\u00fablica. Prova que APIGW \u2192 VPC Link \u2192 NLB \u2192 EKS pod \u2192 NestJS funciona. Esperado: 200 {\"status\":\"ok\"}."
+          }
+        },
+        {
+          "name": "1.2 Auth CPF (Lambda \u2192 RDS \u2192 JWT RS256)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('jwt_token', body.token);",
+                  "  console.log('JWT salvo. Expira em', body.expiresIn, 's');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cpf\": \"{{cpf}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/cpf",
+            "description": "Invoca a Lambda authCpf via APIGW. A Lambda l\u00ea Secrets Manager, consulta RDS MySQL, valida CPF e retorna JWT RS256 assinado com chave privada (JWKS em CloudFront). Esperado: 200 com {token, tokenType, expiresIn, expiresAt}."
+          }
+        },
+        {
+          "name": "1.3 [SEGURAN\u00c7A] Rota autenticada SEM token \u2192 401",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/ordens-servico/{{os_id}}/status",
+            "description": "Prova que o JWT Authorizer do APIGW bloqueia requests sem Bearer. Esperado: 401 Unauthorized."
+          }
+        },
+        {
+          "name": "1.4 Consultar status de OS (autenticado)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/ordens-servico/{{os_id}}/status",
+            "description": "Rota cliente autenticada por JWT RS256. Retorna status atual da OS + hist\u00f3rico. Se OS n\u00e3o existir: 404. Se OS existir: 200 com {status, dataAtualizacao}."
+          }
+        },
+        {
+          "name": "1.5 Criar OS (autenticado)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('os_id', pm.response.json().id);",
+                  "  console.log('OS criada:', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": \"{{cliente_id}}\",\n  \"veiculoId\": \"{{veiculo_id}}\",\n  \"itensServico\": [\n    { \"servicoCatalogoId\": \"{{servico_id}}\", \"quantidade\": 1 }\n  ],\n  \"itensPeca\": [\n    { \"pecaEstoqueId\": \"{{peca_id}}\", \"quantidade\": 1 }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/ordens-servico",
+            "description": "Cria uma nova Ordem de Servi\u00e7o. Requer JWT de cliente. Salva o `id` retornado em {{os_id}} para chamadas subsequentes. Esperado: 201 com {id, status: 'RECEBIDA', ...}."
+          }
+        },
+        {
+          "name": "1.6 Aprovar or\u00e7amento",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aprovado\": true\n}"
+            },
+            "url": "{{baseUrl}}/ordens-servico/{{os_id}}/aprovacoes",
+            "description": "Cliente aprova o or\u00e7amento gerado pelo admin. Transi\u00e7\u00e3o AGUARDANDO_APROVACAO \u2192 EM_EXECUCAO. Requer OS em status compat\u00edvel (409 se n\u00e3o estiver)."
+          }
+        },
+        {
+          "name": "1.7 Rejeitar or\u00e7amento",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aprovado\": false\n}"
+            },
+            "url": "{{baseUrl}}/ordens-servico/{{os_id}}/aprovacoes",
+            "description": "Cliente rejeita o or\u00e7amento. Transi\u00e7\u00e3o AGUARDANDO_APROVACAO \u2192 REJEITADA."
+          }
+        },
+        {
+          "name": "1.8 [SEGURAN\u00c7A] JWT cliente em rota admin \u2192 401",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "{{baseUrl}}/admin/clientes",
+            "description": "Prova que o scope 'cliente' \u00e9 rejeitado em rotas /admin/*. Esperado: 401 Unauthorized (separa\u00e7\u00e3o de scopes)."
+          }
+        },
+        {
+          "name": "1.9 Webhook externo (HMAC)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Webhook-Secret", "value": "{{webhook_secret}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"EM_DIAGNOSTICO\"\n}"
+            },
+            "url": "{{baseUrl}}/webhooks/os/{{os_id}}/status",
+            "description": "Sistema externo (ex: ERP) atualiza status da OS via webhook autenticado por segredo compartilhado (HMAC). Rode antes: kubectl get secret autoservice-secrets -n autoservice -o jsonpath='{.data.WEBHOOK_SECRET}' | base64 -d — e cole o valor em {{webhook_secret}}."
+          }
+        },
+        {
+          "name": "1.10 [SEGURAN\u00c7A] Root n\u00e3o mapeada \u2192 404 do APIGW",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/",
+            "description": "APIGW s\u00f3 exp\u00f5e rotas espec\u00edficas. Esperado: 404 {\"message\":\"Not Found\"}. Isso comprova que a superf\u00edcie de ataque \u00e9 m\u00ednima."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. AWS \u2014 Admin (port-forward)",
+      "description": "Rotas /admin/* n\u00e3o s\u00e3o expostas publicamente pelo APIGW. Para acessar em homolog, use kubectl port-forward:\n\n  kubectl port-forward -n autoservice svc/autoservice-api 3000:80\n\nDepois estas requests batem em localhost:3000 = pod dentro do EKS (via t\u00fanel).",
+      "item": [
+        {
+          "name": "2.1 Login admin (email/senha \u2192 JWT HS256)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "  const body = pm.response.json();",
+                  "  const token = body.access_token || body.token;",
+                  "  pm.collectionVariables.set('admin_token', token);",
+                  "  console.log('Admin token salvo');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"joao.silva@autoservice.local\",\n  \"password\": \"Senha@1234\"\n}"
+            },
+            "url": "{{baseUrlAdmin}}/auth/login",
+            "description": "Autentica\u00e7\u00e3o interna com email+senha. Retorna JWT HS256 com scope 'admin'. Requer que voc\u00ea tenha rodado `yarn db:seed` OU inserido admin manualmente (o job seed-clientes n\u00e3o cria admins)."
+          }
+        },
+        {
+          "name": "2.2 Listar OS (admin, priorizada)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": {
+              "raw": "{{baseUrlAdmin}}/admin/ordens-servico?page=1&limit=20",
+              "host": ["{{baseUrlAdmin}}"],
+              "path": ["admin", "ordens-servico"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.3 M\u00e9tricas \u2014 tempo m\u00e9dio",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{baseUrlAdmin}}/admin/ordens-servico/metricas/tempo-medio"
+          }
+        },
+        {
+          "name": "2.4 Obter OS por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{baseUrlAdmin}}/admin/ordens-servico/{{os_id}}"
+          }
+        },
+        {
+          "name": "2.5 Hist\u00f3rico da OS",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{baseUrlAdmin}}/admin/ordens-servico/{{os_id}}/historico"
+          }
+        },
+        {
+          "name": "2.6 Iniciar diagn\u00f3stico",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{baseUrlAdmin}}/admin/ordens-servico/{{os_id}}/diagnostico"
+          }
+        },
+        {
+          "name": "2.7 Gerar or\u00e7amento",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{baseUrlAdmin}}/admin/ordens-servico/{{os_id}}/orcamento"
+          }
+        },
+        {
+          "name": "2.8 Finalizar OS",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{baseUrlAdmin}}/admin/ordens-servico/{{os_id}}/finalizacao"
+          }
+        },
+        {
+          "name": "2.9 Entregar ve\u00edculo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{baseUrlAdmin}}/admin/ordens-servico/{{os_id}}/entrega"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. CRUDs Admin (port-forward)",
+      "description": "CRUDs internos de clientes, ve\u00edculos, pe\u00e7as, servi\u00e7os e usu\u00e1rios. Usam {{baseUrlAdmin}} + admin_token.",
+      "item": [
+        {
+          "name": "Clientes \u2014 Listar",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": {
+              "raw": "{{baseUrlAdmin}}/admin/clientes?page=1&limit=20&incluirInativos=false",
+              "host": ["{{baseUrlAdmin}}"],
+              "path": ["admin", "clientes"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "incluirInativos", "value": "false" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Clientes \u2014 Cadastrar",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('cliente_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Cliente Demo\",\n  \"cpfCnpj\": \"39053344705\",\n  \"contato\": \"demo@autoservice.local\",\n  \"enderecos\": \"Rua Teste, 123\"\n}"
+            },
+            "url": "{{baseUrlAdmin}}/admin/clientes"
+          }
+        },
+        {
+          "name": "Clientes \u2014 Obter por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{baseUrlAdmin}}/admin/clientes/{{cliente_id}}"
+          }
+        },
+        {
+          "name": "Clientes \u2014 Atualizar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Cliente Demo Atualizado\",\n  \"contato\": \"novo@autoservice.local\"\n}"
+            },
+            "url": "{{baseUrlAdmin}}/admin/clientes/{{cliente_id}}"
+          }
+        },
+        {
+          "name": "Clientes \u2014 Inativar",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": "{{baseUrlAdmin}}/admin/clientes/{{cliente_id}}"
+          }
+        },
+        {
+          "name": "Ve\u00edculos \u2014 Listar",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": {
+              "raw": "{{baseUrlAdmin}}/admin/veiculos?page=1&limit=20",
+              "host": ["{{baseUrlAdmin}}"],
+              "path": ["admin", "veiculos"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ve\u00edculos \u2014 Cadastrar",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('veiculo_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": \"{{cliente_id}}\",\n  \"placa\": \"DEM1O23\",\n  \"marca\": \"Fiat\",\n  \"modelo\": \"Uno 1.0 Fire\",\n  \"ano\": 2019\n}"
+            },
+            "url": "{{baseUrlAdmin}}/admin/veiculos"
+          }
+        },
+        {
+          "name": "Pe\u00e7as \u2014 Listar",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": {
+              "raw": "{{baseUrlAdmin}}/admin/pecas?page=1&limit=20",
+              "host": ["{{baseUrlAdmin}}"],
+              "path": ["admin", "pecas"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pe\u00e7as \u2014 Movimenta\u00e7\u00e3o (entrada)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"entrada\",\n  \"quantidade\": 10\n}"
+            },
+            "url": "{{baseUrlAdmin}}/admin/pecas/{{peca_id}}/movimentacoes"
+          }
+        },
+        {
+          "name": "Servi\u00e7os \u2014 Listar cat\u00e1logo",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": {
+              "raw": "{{baseUrlAdmin}}/admin/servicos?page=1&limit=20",
+              "host": ["{{baseUrlAdmin}}"],
+              "path": ["admin", "servicos"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Usu\u00e1rios \u2014 Listar",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{admin_token}}" }],
+            "url": {
+              "raw": "{{baseUrlAdmin}}/admin/usuarios?page=1&limit=20",
+              "host": ["{{baseUrlAdmin}}"],
+              "path": ["admin", "usuarios"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

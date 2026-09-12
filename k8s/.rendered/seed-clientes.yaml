@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: autoservice-seed-clientes
+  namespace: autoservice
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      serviceAccountName: autoservice-migrate
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+      containers:
+        - name: seed
+          image: 975769101856.dkr.ecr.us-east-1.amazonaws.com/autoservice-homolog-api:latest
+          command:
+            - node
+            - -e
+            - |
+              const { PrismaClient } = require('@prisma/client');
+              const prisma = new PrismaClient();
+              const clientes = [
+                { id: '550e8400-e29b-41d4-a716-446655440101', nome: 'Roberto Almeida', cpfCnpj: '52998224725', contato: 'roberto@demo.local', enderecos: 'Rua Augusta, 1200 - SP' },
+                { id: '550e8400-e29b-41d4-a716-446655440102', nome: 'Fernanda Costa', cpfCnpj: '83749612580', contato: 'fernanda@demo.local', enderecos: 'Av. Paulista, 900 - SP' },
+                { id: '550e8400-e29b-41d4-a716-446655440103', nome: 'Lucas Mendes', cpfCnpj: '19283746500', contato: 'lucas@demo.local', enderecos: 'Rua Copacabana, 350 - RJ' },
+                { id: '550e8400-e29b-41d4-a716-446655440104', nome: 'Patricia Lima', cpfCnpj: '67451289034', contato: 'patricia@demo.local', enderecos: 'Av. Afonso Pena, 1500 - MG' },
+                { id: '550e8400-e29b-41d4-a716-446655440105', nome: 'Auto Pecas Silva Ltda', cpfCnpj: '12345678000195', contato: 'contato@demo.local', enderecos: 'Rua da Mooca, 2500 - SP' },
+                { id: '550e8400-e29b-41d4-a716-446655440106', nome: 'Transportes Rapido', cpfCnpj: '98765432000188', contato: 'frota@demo.local', enderecos: 'Rod. Anhanguera Km 110 - SP' }
+              ];
+              (async () => {
+                for (const c of clientes) {
+                  await prisma.cliente.upsert({
+                    where: { cpfCnpj: c.cpfCnpj },
+                    create: c,
+                    update: { nome: c.nome, contato: c.contato, enderecos: c.enderecos }
+                  });
+                  console.log('upserted:', c.nome, c.cpfCnpj);
+                }
+                await prisma.$disconnect();
+                console.log('done: 6 clientes');
+              })().catch(e => { console.error(e); process.exit(1); });
+          envFrom:
+            - secretRef:
+                name: autoservice-secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: tmp
+          emptyDir: {}

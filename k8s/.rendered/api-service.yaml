@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: autoservice-api
+  namespace: autoservice
+  labels:
+    app: autoservice-api
+  annotations:
+    # Tráfego público entra pelo API Gateway → NLB interno (Terraform).
+    # Evitar type=LoadBalancer (cria ELB extra e custo). IPs dos pods vão no Target Group via CD.
+spec:
+  type: ClusterIP
+  selector:
+    app: autoservice-api
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
