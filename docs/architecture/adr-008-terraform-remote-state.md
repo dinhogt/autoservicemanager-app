@@ -9,7 +9,7 @@
 
 ## Contexto
 
-A Fase 3 exige **dois** repositórios de infraestrutura: `autoservicemanager-infra-db` (RDS) e `autoservicemanager-infra-k8s` (VPC, EKS, API Gateway, Lambda). State local (como em `infra/terraform/local` da Fase 2) não escala para CI multi-repo nem para colaboração com `soat-architecture`. É necessário contrato explícito de outputs entre stacks.
+A Fase 3 exige **dois** repositórios de infraestrutura: `autoservicemanager-infra-db` (RDS) e `autoservicemanager-infra-k8s` (VPC, EKS, API Gateway, Lambda). State local da Fase 2 (Terraform kind embutido no monorepo) não escala para CI multi-repo nem para colaboração com `soat-architecture`. É necessário contrato explícito de outputs entre stacks.
 
 ## Decisão
 

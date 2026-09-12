@@ -88,7 +88,7 @@ sequenceDiagram
 
 ## Path alternativo (cloud)
 
-Para produção acadêmica alternativa, ver [`solution-design.md`](./solution-design.md) e [`../runbook-deploy-eks.md`](../runbook-deploy-eks.md): AWS EKS + RDS + ECR via [`../../infra/terraform/environments/dev/`](../../infra/terraform/environments/dev/).
+Para produção acadêmica (Fase 3), ver [`solution-design.md`](./solution-design.md) e [`../runbook-deploy-eks.md`](../runbook-deploy-eks.md): AWS EKS + RDS + ECR via os repositórios `autoservicemanager-infra-db` e `autoservicemanager-infra-k8s`.
 
 ## Componentes por pasta
 
@@ -96,8 +96,7 @@ Para produção acadêmica alternativa, ver [`solution-design.md`](./solution-de
 |-------|----------|
 | `src/domain/` | Entidades, regras, ports |
 | `src/application/` | Use cases |
-| `src/infrastructure/` | Prisma, Mongo, e-mail, auth |
+| `src/infrastructure/` | Prisma, e-mail, auth |
 | `src/interfaces/http/` | Controllers REST |
 | `k8s/local/` | Manifestos kind |
-| `infra/terraform/local/` | Cluster kind + compose DB |
 | `.github/workflows/ci-cd.yml` | Pipeline CI (+ CD AWS opcional) |

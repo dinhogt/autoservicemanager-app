@@ -28,18 +28,17 @@ Internet → ALB/Service LB → EKS (Deployment API + HPA)
 
 ### Local (kind + Compose) — demo Fase 2
 
-1. `terraform apply` em `infra/terraform/local` (cluster + DB compose)
-2. `./scripts/kind-setup.sh` (build, secrets, manifests, migrate)
-3. CI GitHub Actions em push/PR (lint, testes, docker build)
-4. HPA escala pods conforme CPU/memória
+1. Cluster kind + MySQL Compose (`k8s/local/` + `./scripts/kind-setup.sh`)
+2. CI GitHub Actions em push/PR (lint, testes, docker build)
+3. HPA escala pods conforme CPU/memória
 
 Ver [`fase2-architecture-diagram.md`](./fase2-architecture-diagram.md) e [`../runbook-deploy-local-k8s.md`](../runbook-deploy-local-k8s.md).
 
-### AWS (alternativo)
+### AWS (Fase 3 — repositórios separados)
 
-1. `terraform apply` em `infra/terraform/environments/dev`
-2. Push na branch `master` dispara CI/CD
-3. Pipeline: lint → testes → build → push ECR → `kubectl apply` → job migrate
+1. `terraform apply` em `autoservicemanager-infra-db` e `autoservicemanager-infra-k8s` (ou `./deploy-aws.sh` no workspace)
+2. Push na branch `develop`/`master` dispara CI (+ CD OIDC opcional via `ENABLE_OIDC_CD`)
+3. Pipeline app: lint → testes → build → push ECR → `kubectl apply` → job migrate
 4. HPA escala pods conforme CPU/memória
 
 ## APIs críticas (Fase 2)

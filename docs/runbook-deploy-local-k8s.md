@@ -182,6 +182,7 @@ docker compose -f docker-compose.db.yml down
 
 ## Referências
 
-- [Terraform local (kind)](../infra/terraform/local/README.md)
-- [Manifestos AWS/EKS](../k8s/) — path cloud alternativo
+- [Manifestos kind (`k8s/local/`)](../k8s/local/)
+- [Manifestos AWS/EKS](../k8s/) — path cloud (templates; `.rendered/` gerado no deploy)
 - [Runbook EKS](./runbook-deploy-eks.md)
+- Infra AWS: repositórios `autoservicemanager-infra-db` e `autoservicemanager-infra-k8s`
