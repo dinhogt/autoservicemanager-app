@@ -19,6 +19,8 @@ NestJS  · Prisma  · MySQL  · Docker  · Kubernetes (EKS)  · Yarn  · GitHub 
 | Doc | Link |
 |-----|------|
 | **Índice PDF / Portal** | [docs/architecture/delivery-index.md](docs/architecture/delivery-index.md) |
+| **Fase 4 — índice / artefatos** | [delivery-index-fase4.md](docs/architecture/delivery-index-fase4.md) · [artifacts-fase4.md](docs/delivery/artifacts-fase4.md) |
+| Diagrama Geral / cobertura / Postman F4 | [diagrams-fase4.md](docs/architecture/diagrams-fase4.md) · [coverage-evidence-fase4.md](docs/qa/coverage-evidence-fase4.md) · [README-fase4.md](docs/postman/README-fase4.md) |
 | Solution design Fase 3 | [docs/architecture/solution-design-fase3.md](docs/architecture/solution-design-fase3.md) |
 | Diagramas / ER / riscos | [diagramas](docs/architecture/diagrams-fase3.md) · [ER](docs/architecture/er-diagram.md) · [riscos](docs/architecture/risk-map-fase3.md) |
 | ADR-011 sync REST | [docs/architecture/adr-011-sync-rest-api-gateway.md](docs/architecture/adr-011-sync-rest-api-gateway.md) |

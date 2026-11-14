@@ -171,7 +171,8 @@ export class PrismaOrdemServicoReadAdapter implements OrdemServicoReadPort {
         });
         if (!saida) continue;
         soma +=
-          (saida.enteredAt.getTime() - entrada.enteredAt.getTime()) / MS_PER_MIN;
+          (saida.enteredAt.getTime() - entrada.enteredAt.getTime()) /
+          MS_PER_MIN;
         total += 1;
       }
 

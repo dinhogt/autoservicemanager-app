@@ -15,6 +15,7 @@ import { CadastroModule } from './interfaces/http/modules/cadastro/cadastro.modu
 import { CatalogoServicosModule } from './interfaces/http/modules/catalogo-servicos/catalogo-servicos.module';
 import { EstoqueModule } from './interfaces/http/modules/estoque/estoque.module';
 import { AtendimentoModule } from './interfaces/http/modules/atendimento/atendimento.module';
+import { SagaModule } from './interfaces/http/modules/saga/saga.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AtendimentoModule } from './interfaces/http/modules/atendimento/atendim
     CatalogoServicosModule,
     EstoqueModule,
     AtendimentoModule,
+    SagaModule,
   ],
   controllers: [AppController],
   providers: [

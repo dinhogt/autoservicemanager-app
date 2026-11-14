@@ -1,0 +1,410 @@
+{
+  "info": {
+    "name": "AutoServiceManager — Fase 4 (Saga / Billing / Execution)",
+    "description": "Collection da Fase 4 para demonstrar microsserviços, Saga orquestrada e Mercado Pago.\n\nVariáveis:\n- baseUrlOs / baseUrlBilling / baseUrlExecution (local compose ou APIGW)\n- saga_secret (header x-saga-secret)\n- correlation_id, os_id, billing_id\n\nLocal (docker-compose.phase4.yml):\n- OS :3000 · Billing :3001 · Execution :3002 (ajuste as variáveis se as portas forem outras)\n\nAWS: use baseUrlOs = APIGW; Billing = {{baseUrl}}/billing; Execution health via port-forward se necessário.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrlOs",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "baseUrlBilling",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "baseUrlExecution",
+      "value": "http://localhost:3002"
+    },
+    {
+      "key": "baseUrl",
+      "value": "https://tiib2w2kb6.execute-api.us-east-1.amazonaws.com"
+    },
+    {
+      "key": "jwt_token",
+      "value": ""
+    },
+    {
+      "key": "saga_secret",
+      "value": "phase4-local-secret"
+    },
+    {
+      "key": "os_id",
+      "value": ""
+    },
+    {
+      "key": "correlation_id",
+      "value": ""
+    },
+    {
+      "key": "saga_id",
+      "value": ""
+    },
+    {
+      "key": "billing_id",
+      "value": ""
+    },
+    {
+      "key": "command_id",
+      "value": "01JDEMOCOMMAND000000000001"
+    },
+    {
+      "key": "cpf",
+      "value": "52998224725"
+    },
+    {
+      "key": "cliente_id",
+      "value": "550e8400-e29b-41d4-a716-446655440101"
+    },
+    {
+      "key": "veiculo_id",
+      "value": "550e8400-e29b-41d4-a716-446655440201"
+    },
+    {
+      "key": "mp_payment_id",
+      "value": "1234567890"
+    },
+    {
+      "key": "mp_request_id",
+      "value": "req-demo-001"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Health",
+      "item": [
+        {
+          "name": "OS health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrlOs}}/",
+            "description": "Health/hello do OS Service"
+          }
+        },
+        {
+          "name": "Billing live",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrlBilling}}/health/live",
+            "description": ""
+          }
+        },
+        {
+          "name": "Billing ready",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrlBilling}}/health/ready",
+            "description": ""
+          }
+        },
+        {
+          "name": "Execution health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrlExecution}}/health",
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Auth (opcional AWS)",
+      "item": [
+        {
+          "name": "Auth CPF",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('jwt_token', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cpf\": \"{{cpf}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/cpf",
+            "description": "JWT RS256 via Lambda (ambiente AWS)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Saga — OS Orchestrator",
+      "item": [
+        {
+          "name": "Iniciar Saga",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-saga-secret",
+                "value": "{{saga_secret}}"
+              }
+            ],
+            "url": "{{baseUrlOs}}/internal/sagas",
+            "description": "Inicia a Saga orquestrada para uma OS existente.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ordemServicoId\": \"{{os_id}}\",\n  \"correlationId\": \"{{correlation_id}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if ([200,201].includes(pm.response.code)) {",
+                  "  const b = pm.response.json();",
+                  "  if (b.correlationId) pm.collectionVariables.set('correlation_id', b.correlationId);",
+                  "  if (b.id) pm.collectionVariables.set('saga_id', b.id);",
+                  "  if (b.status) console.log('saga status', b.status);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar Saga por correlationId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-saga-secret",
+                "value": "{{saga_secret}}"
+              }
+            ],
+            "url": "{{baseUrlOs}}/internal/sagas/{{correlation_id}}",
+            "description": "Estado atual da Saga (passo, status, compensação)."
+          }
+        },
+        {
+          "name": "Injetar evento (demo falha/compensação)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-saga-secret",
+                "value": "{{saga_secret}}"
+              }
+            ],
+            "url": "{{baseUrlOs}}/internal/sagas/events",
+            "description": "Injeta evento de domínio para demonstrar compensação. Ajuste type conforme contrato RFC-007.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messageId\": \"evt-demo-{{$guid}}\",\n  \"type\": \"EXECUCAO_FALHOU\",\n  \"aggregateId\": \"{{os_id}}\",\n  \"correlationId\": \"{{correlation_id}}\",\n  \"occurredAt\": \"{{$isoTimestamp}}\",\n  \"payload\": { \"reason\": \"demo-failure\" }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Billing Service",
+      "item": [
+        {
+          "name": "Criar orçamento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrlBilling}}/billing/budgets",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"commandId\": \"{{command_id}}\",\n  \"orderId\": \"{{os_id}}\",\n  \"customerEmail\": \"cliente.demo@example.com\",\n  \"amount\": 199.9,\n  \"description\": \"Revisão Fase 4\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if ([200,201].includes(pm.response.code)) {",
+                  "  const b = pm.response.json();",
+                  "  const id = b.id || b.billingId;",
+                  "  if (id) pm.collectionVariables.set('billing_id', id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar billing",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrlBilling}}/billing/{{billing_id}}",
+            "description": ""
+          }
+        },
+        {
+          "name": "Solicitar pagamento PIX",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrlBilling}}/billing/{{billing_id}}/payment",
+            "description": ""
+          }
+        },
+        {
+          "name": "Webhook Mercado Pago (sandbox/mock)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-request-id",
+                "value": "{{mp_request_id}}"
+              },
+              {
+                "key": "x-signature",
+                "value": "ts=0,v1=local-disabled-or-valid-hmac"
+              }
+            ],
+            "url": "{{baseUrlBilling}}/billing/webhooks/mercado-pago",
+            "description": "Em local com WEBHOOK_SIGNATURE_ENABLED=false o signature pode ser dummy. Em AWS use HMAC válido.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"payment\",\n  \"data\": { \"id\": \"{{mp_payment_id}}\" }\n}"
+            }
+          }
+        },
+        {
+          "name": "Timeout de pagamento",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrlBilling}}/billing/{{billing_id}}/timeout",
+            "description": ""
+          }
+        },
+        {
+          "name": "Refund compensatório",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrlBilling}}/billing/{{billing_id}}/refund",
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Fluxo OS (API pública)",
+      "item": [
+        {
+          "name": "Criar OS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if ([200,201].includes(pm.response.code)) {",
+                  "  const b = pm.response.json();",
+                  "  if (b.id) pm.collectionVariables.set('os_id', b.id);",
+                  "  if (b.saga && b.saga.correlationId) pm.collectionVariables.set('correlation_id', b.saga.correlationId);",
+                  "  if (b.saga && b.saga.id) pm.collectionVariables.set('saga_id', b.saga.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": \"{{cliente_id}}\",\n  \"veiculoId\": \"{{veiculo_id}}\",\n  \"descricao\": \"Demo Fase 4 — fluxo Saga\"\n}"
+            },
+            "url": "{{baseUrlOs}}/ordens-servico",
+            "description": "Com SAGA_AUTO_START=true a resposta pode incluir saga.correlationId."
+          }
+        },
+        {
+          "name": "Consultar status OS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": "{{baseUrlOs}}/ordens-servico/{{os_id}}/status?cpfCnpj={{cpf}}",
+            "description": ""
+          }
+        },
+        {
+          "name": "Aprovar orçamento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": "{{baseUrlOs}}/ordens-servico/{{os_id}}/aprovacoes?cpfCnpj={{cpf}}",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aprovado\": true\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

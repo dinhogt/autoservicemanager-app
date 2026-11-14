@@ -65,4 +65,27 @@ describe('envValidationSchema', () => {
     expect(error).toBeUndefined();
     expect(value.METRICS_ENVIRONMENT).toBe('homolog');
   });
+
+  it('valida configuração opcional da saga', () => {
+    const valid = envValidationSchema.validate(
+      {
+        ...baseEnv,
+        EXECUTION_COMMAND_QUEUE_URL: 'https://sqs.us-east-1.amazonaws.com/1/e',
+        BILLING_COMMAND_QUEUE_URL: 'https://sqs.us-east-1.amazonaws.com/1/b',
+        SAGA_EVENTS_SECRET: 'a'.repeat(32),
+      },
+      { allowUnknown: true },
+    );
+    expect(valid.error).toBeUndefined();
+
+    const invalid = envValidationSchema.validate(
+      {
+        ...baseEnv,
+        EXECUTION_COMMAND_QUEUE_URL: 'not-a-url',
+        SAGA_EVENTS_SECRET: 'short',
+      },
+      { allowUnknown: true },
+    );
+    expect(invalid.error).toBeDefined();
+  });
 });

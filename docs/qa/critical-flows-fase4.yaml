@@ -1,0 +1,63 @@
+version: 2
+product: AutoServiceManager
+phase: 4
+
+quality_gates:
+  coverage_per_service:
+    statements: 90
+    lines: 90
+    branches: 90
+    functions: 90
+  sonar: blocking
+  critical_defects_allowed: 0
+
+flows:
+  - id: F1
+    name: Ciclo completo distribuído da OS
+    severity: critical
+    automation: bdd-e2e
+    expected: RECEBIDA -> EM_DIAGNOSTICO -> AGUARDANDO_APROVACAO -> EM_EXECUCAO -> FINALIZADA -> ENTREGUE
+  - id: F2
+    name: Rejeição de orçamento sem cobrança
+    severity: critical
+    automation: integration-e2e
+  - id: F3
+    name: Webhooks autenticados e idempotentes
+    severity: critical
+    automation: integration
+  - id: F4
+    name: Notificação única por mudança relevante
+    severity: high
+    automation: integration
+  - id: F5
+    name: RBAC administrativo
+    severity: critical
+    automation: integration
+  - id: F6
+    name: Validação CPF CNPJ e placa
+    severity: high
+    automation: unit
+  - id: F7
+    name: Tempo médio global e por serviço
+    severity: high
+    automation: integration
+  - id: F8
+    name: Autenticação CPF JWT RS256
+    severity: critical
+    automation: integration
+  - id: F9
+    name: Correlação e tracing distribuído
+    severity: high
+    automation: e2e-operational
+  - id: F10
+    name: Pagamento Mercado Pago sandbox
+    severity: critical
+    automation: integration-e2e
+  - id: F11
+    name: Compensações e refund
+    severity: critical
+    automation: bdd-e2e
+  - id: F12
+    name: Build teste e deploy independente
+    severity: critical
+    automation: ci-cd

@@ -14,9 +14,7 @@ describe('CompositeOsStatusNotifier', () => {
     statusNovo: StatusOs.EM_DIAGNOSTICO,
   };
 
-  function make(
-    topicArn: string | undefined,
-  ): {
+  function make(topicArn: string | undefined): {
     composite: CompositeOsStatusNotifier;
     log: jest.Mock;
     sns: jest.Mock;

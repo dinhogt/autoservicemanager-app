@@ -94,7 +94,10 @@ export class PrismaOsAuditRepository implements OsMongoAuditPort {
       payload: input.domainEvent.payload,
     });
 
-    if (input.domainEvent.eventType === 'OsCriada' || input.fromStatus == null) {
+    if (
+      input.domainEvent.eventType === 'OsCriada' ||
+      input.fromStatus == null
+    ) {
       emitOsCriadaMetric(input.ordemServicoId);
     }
 

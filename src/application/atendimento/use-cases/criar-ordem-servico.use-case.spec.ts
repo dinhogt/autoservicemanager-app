@@ -12,6 +12,8 @@ import { PecaEstoque } from '../../../domain/estoque/entities/peca-estoque.entit
 import type { PecaEstoqueRepository } from '../../../domain/estoque/repositories/peca-estoque.repository';
 import { mockOrdemServicoRepository } from '../../../../test/helpers/mock-ordem-servico.repository';
 import { CriarOrdemServicoUseCase } from './criar-ordem-servico.use-case';
+import { SagaOrchestratorService } from '../../saga/saga-orchestrator.service';
+import { ConfigService } from '@nestjs/config';
 
 describe('CriarOrdemServicoUseCase', () => {
   const now = new Date();
@@ -63,6 +65,8 @@ describe('CriarOrdemServicoUseCase', () => {
     servicos?: Partial<ServicoCatalogoRepository>;
     pecas?: Partial<PecaEstoqueRepository>;
     ordensOverrides?: Record<string, jest.Mock>;
+    saga?: SagaOrchestratorService;
+    config?: ConfigService;
   }) {
     const clientes = {
       findById: jest.fn().mockResolvedValue(cliente),
@@ -91,11 +95,42 @@ describe('CriarOrdemServicoUseCase', () => {
       pecasEstoque,
       ordens,
       audit,
+      deps.saga,
+      deps.config,
     );
   }
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('starts the orchestrated saga when the adapter is enabled', async () => {
+    const start = jest.fn().mockResolvedValue({
+      id: 'saga-1',
+      correlationId: 'corr-1',
+      status: 'AWAITING_DIAGNOSIS',
+    });
+    const useCase = makeUseCase({
+      saga: { start } as unknown as SagaOrchestratorService,
+      config: {
+        get: jest.fn().mockReturnValue('true'),
+      } as unknown as ConfigService,
+    });
+    await expect(
+      useCase.execute({
+        clienteId: 'c1',
+        veiculoId: 'v1',
+        itensServico: [],
+        itensPeca: [],
+      }),
+    ).resolves.toEqual(
+      expect.objectContaining({
+        saga: expect.objectContaining({ correlationId: 'corr-1' }),
+      }),
+    );
+    expect(start).toHaveBeenCalledWith(
+      expect.objectContaining({ ordemServicoId: 'os-new' }),
+    );
   });
 
   it('404 quando cliente não existe', async () => {

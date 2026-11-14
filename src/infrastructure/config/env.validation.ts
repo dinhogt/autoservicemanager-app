@@ -57,6 +57,15 @@ export const envValidationSchema = Joi.object({
   /** SNS topic for serverless notifications (optional — SMTP fallback local). */
   OS_NOTIFICATIONS_TOPIC_ARN: Joi.string().optional().allow(''),
   AWS_REGION: Joi.string().optional().allow(''),
+  AWS_ENDPOINT_URL: Joi.string().uri().optional().allow(''),
+  EXECUTION_COMMAND_QUEUE_URL: Joi.string().uri().optional().allow(''),
+  BILLING_COMMAND_QUEUE_URL: Joi.string().uri().optional().allow(''),
+  SAGA_EVENTS_QUEUE_URL: Joi.string().uri().optional().allow(''),
+  SAGA_EVENTS_POLLING_ENABLED: Joi.string()
+    .valid('true', 'false')
+    .default('false'),
+  SAGA_AUTO_START: Joi.string().valid('true', 'false').default('false'),
+  SAGA_EVENTS_SECRET: Joi.string().min(16).optional().allow(''),
 
   /** Minimum length enforced for JWT signing (auth phase). */
   JWT_SECRET: Joi.string()

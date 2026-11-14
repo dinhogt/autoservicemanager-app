@@ -100,3 +100,59 @@ Máximo operacional OPC: ameaças **T1–T5** são as críticas para o gate; T6�
 | Smoke pós-deploy documentado | **PASS** → [runbook-deploy-eks.md](../runbook-deploy-eks.md), `scripts/security-smoke.sh` |
 
 **Decisão do gate:** **PASS** para entrega/deploy AWS (homolog/production), com riscos residuais limitados a 3 itens ops.
+
+---
+
+# Extensão Fase 4 — boundaries distribuídas
+
+Esta seção preserva o modelo Fase 3 e adiciona as boundaries de OS, Billing, Execution, SQS/SNS, DynamoDB e Mercado Pago descritas em [solution-design-fase4.md](../architecture/solution-design-fase4.md).
+
+## Assets e trust boundaries novos
+
+| Asset/boundary | Classificação | Controle esperado |
+|---|---|---|
+| Estado da Saga e histórico OS | negócio/auditoria | MySQL, lock otimista, transições válidas |
+| Cobrança, provider ID e refund | financeiro | DynamoDB Billing, criptografia, acesso só Billing |
+| Work items de diagnóstico/reparo | negócio | DynamoDB Execution, acesso só Execution |
+| Comandos SQS e eventos SNS | integridade | IRSA mínimo, schema, idempotência, DLQ |
+| Token/segredo webhook Mercado Pago | segredo | Secrets Manager, rotação, nunca em log/mensagem |
+| CPF/correlation/trace | PII/metadado | minimização e redação em logs/traces |
+
+```mermaid
+flowchart LR
+  I[Internet] --> G[API Gateway]
+  G --> OS[OS Service]
+  G --> BL[Billing Service]
+  MP[Mercado Pago] -->|webhook não confiável| BL
+  OS -->|comando| Q[SQS]
+  Q --> BL
+  Q --> EX[Execution Service]
+  BL -->|evento| N[SNS]
+  EX -->|evento| N
+  N -->|SQS subscription| OS
+  OS --> MY[(MySQL)]
+  BL --> DB[(DynamoDB Billing)]
+  EX --> DE[(DynamoDB Execution)]
+```
+
+## Ameaças Fase 4 (STRIDE-lite)
+
+| ID | STRIDE | Ameaça | Mitigação obrigatória | Residual |
+|---|---|---|---|---|
+| T10 | Spoofing/Tampering | Webhook forjado ou replay confirma pagamento falso | validar assinatura/timestamp, dedup, consultar MP e comparar valor/moeda antes do evento | Médio até teste sandbox |
+| T11 | Tampering | Mensagem duplicada/out-of-order avança Saga duas vezes | schema/version, inbox, idempotência, lock otimista e matriz de transição | Baixo após e2e |
+| T12 | Elevation/Disclosure | Serviço acessa fila, tópico ou banco alheio | IRSA por workload, policy por ARN/tabela, sem credencial compartilhada | Médio até IaC review |
+| T13 | DoS | Poison message/retry storm enche fila ou trava Saga | retry limitado, DLQ, alarmes, visibility timeout, circuit breaker e reconciliação | Médio |
+| T14 | Repudiation/Disclosure | Refund inconclusivo ou payload/log expõe PII/segredo | trilha imutável de passos, alerta de refund, payload mínimo e redaction | Médio |
+
+## Gate Fase 4
+
+| Critério | Estado | Condição |
+|---|---|---|
+| Threat model para boundaries alteradas | **PASS** | esta extensão |
+| ASVS aplicável listado | **PASS** | [controls-matrix.md](./controls-matrix.md) |
+| Segredos no diff | **PASS documental** | nenhum valor secreto nos artefatos |
+| IAM/IRSA, webhook e DLQ implementados | **PENDENTE — Entrega 2/4** | bloqueia produção, não bloqueia documentação |
+| Audit de dependências dos 3 serviços | **PENDENTE — Entregas 3–5** | executar quando os repositórios/deps existirem |
+
+**Decisão:** `gate-security-review` **PASS para avançar ao desenho de infraestrutura**, condicionado à validação dos controles de runtime antes de deploy. Riscos abertos: policy IRSA ainda não implementada, validação real do webhook depende do sandbox e refund/replay dependem dos e2e.

@@ -1,0 +1,25 @@
+yarn run v1.22.22
+$ jest --coverage --runInBand '--coverageDirectory=/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/docs/qa/coverage-artifacts/execution' --coverageReporters=json-summary --coverageReporters=text-summary --coverageReporters=lcov --coverageReporters=html
+warning Cannot find a suitable global folder. Tried these: "/usr/local, /Users/janderson/.yarn"
+{"_aws":{"Timestamp":1794660833771,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"QueueMessageAge","Unit":"Milliseconds"}]}]},"Service":"execution","Operation":"execution.cancel","Outcome":"received","QueueMessageAge":27435233771,"level":"info","timestamp":"2026-11-14T12:53:53.771Z","service":"execution","environment":"test","correlationId":"c1","sagaId":"none","messageId":"e1","aggregateId":"o1","durationMs":0,"event":"execution_command_received","outcome":"received"}
+{"_aws":{"Timestamp":1794660833771,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"ExecutionDuration","Unit":"Milliseconds"}]}]},"Service":"execution","Operation":"execution.cancel","Outcome":"processed","ExecutionDuration":0,"level":"info","timestamp":"2026-11-14T12:53:53.771Z","service":"execution","environment":"test","correlationId":"c1","sagaId":"none","messageId":"e1","aggregateId":"o1","durationMs":0,"event":"execution_command_processed","outcome":"processed"}
+[Nest] 70065  - 11/14/2026, 9:53:53 AM    WARN [SqsConsumer] Discarding invalid command: Error: Invalid command field: messageId
+{"_aws":{"Timestamp":1794660834549,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"ExecutionOutcome","Unit":"Count"}]}]},"Service":"execution","Operation":"diagnosis.start","Outcome":"success","ExecutionOutcome":1,"level":"info","timestamp":"2026-11-14T12:53:54.549Z","service":"execution","environment":"test","correlationId":"system","sagaId":"none","messageId":"none","aggregateId":"none","durationMs":0,"event":"diagnosis.completed","outcome":"success"}
+{"_aws":{"Timestamp":1794660834552,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"ExecutionOutcome","Unit":"Count"}]}]},"Service":"execution","Operation":"execution.start","Outcome":"success","ExecutionOutcome":1,"level":"info","timestamp":"2026-11-14T12:53:54.552Z","service":"execution","environment":"test","correlationId":"system","sagaId":"none","messageId":"none","aggregateId":"none","durationMs":0,"event":"execution.completed","outcome":"success"}
+{"_aws":{"Timestamp":1794660834553,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"ExecutionOutcome","Unit":"Count"}]}]},"Service":"execution","Operation":"execution.cancel","Outcome":"failed","ExecutionOutcome":1,"level":"error","timestamp":"2026-11-14T12:53:54.553Z","service":"execution","environment":"test","correlationId":"system","sagaId":"none","messageId":"none","aggregateId":"none","durationMs":0,"event":"execution.failed","outcome":"failed"}
+{"_aws":{"Timestamp":1794660834554,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"ExecutionOutcome","Unit":"Count"}]}]},"Service":"execution","Operation":"diagnosis.start","Outcome":"failed","ExecutionOutcome":1,"level":"error","timestamp":"2026-11-14T12:53:54.554Z","service":"execution","environment":"test","correlationId":"system","sagaId":"none","messageId":"none","aggregateId":"none","durationMs":0,"event":"diagnosis.failed","outcome":"failed"}
+{"_aws":{"Timestamp":1794660834554,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"ExecutionOutcome","Unit":"Count"}]}]},"Service":"execution","Operation":"execution.start","Outcome":"failed","ExecutionOutcome":1,"level":"error","timestamp":"2026-11-14T12:53:54.554Z","service":"execution","environment":"test","correlationId":"system","sagaId":"none","messageId":"none","aggregateId":"none","durationMs":0,"event":"execution.failed","outcome":"failed"}
+
+=============================== Coverage summary ===============================
+Statements   : 97.57% ( 201/206 )
+Branches     : 92.72% ( 102/110 )
+Functions    : 97.61% ( 41/42 )
+Lines        : 97.82% ( 180/184 )
+================================================================================
+
+Test Suites: 5 passed, 5 total
+Tests:       35 passed, 35 total
+Snapshots:   0 total
+Time:        4.39 s, estimated 5 s
+Ran all test suites.
+Done in 4.83s.

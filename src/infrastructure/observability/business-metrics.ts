@@ -11,7 +11,9 @@ const FASE_BY_STATUS: Record<string, OsFaseLabel> = {
   FINALIZADA: 'Finalizacao',
 };
 
-export function faseLabelFromStatus(status: string | null | undefined): OsFaseLabel | null {
+export function faseLabelFromStatus(
+  status: string | null | undefined,
+): OsFaseLabel | null {
   if (!status) return null;
   return FASE_BY_STATUS[status] ?? null;
 }
@@ -27,6 +29,55 @@ function metricsNamespace(): string {
 
 function emitEmfLine(payload: Record<string, unknown>): void {
   process.stdout.write(`${JSON.stringify(payload)}\n`);
+}
+
+type JourneyMetric = {
+  event: string;
+  metric: string;
+  unit?: 'Count' | 'Milliseconds';
+  value: number;
+  operation: string;
+  outcome: string;
+  correlationId: string;
+  sagaId: string;
+  messageId: string;
+  aggregateId: string;
+  durationMs?: number;
+  service?: string;
+};
+
+/** Log operacional JSON e métrica EMF de uma etapa assíncrona da Saga. */
+export function emitJourneyMetric(input: JourneyMetric): void {
+  const now = Date.now();
+  const service = input.service ?? 'os';
+  emitEmfLine({
+    _aws: {
+      Timestamp: now,
+      CloudWatchMetrics: [
+        {
+          Namespace: metricsNamespace(),
+          Dimensions: [['Service'], ['Service', 'Operation', 'Outcome']],
+          Metrics: [{ Name: input.metric, Unit: input.unit ?? 'Count' }],
+        },
+      ],
+    },
+    Service: service,
+    Operation: input.operation,
+    Outcome: input.outcome,
+    [input.metric]: input.value,
+    timestamp: new Date(now).toISOString(),
+    level: input.outcome === 'failed' ? 'error' : 'info',
+    service,
+    environment:
+      process.env.METRICS_ENVIRONMENT ?? process.env.NODE_ENV ?? 'development',
+    event: input.event,
+    correlationId: input.correlationId,
+    sagaId: input.sagaId,
+    messageId: input.messageId,
+    aggregateId: input.aggregateId,
+    durationMs: input.durationMs ?? 0,
+    outcome: input.outcome,
+  });
 }
 
 /** Contagem de OS criada (dashboard volume diário). */

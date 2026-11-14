@@ -72,3 +72,48 @@
   1. Headers `x-cpf` confiáveis só com SG/VPC Link corretos (T1)
   2. AUDIT-002 Low `body-parser` até bump upstream
   3. Trust OIDC IAM na conta AWS ainda manual (T5 ops)
+
+---
+
+# Extensão de controles — Fase 4
+
+Os controles Fase 3 acima permanecem válidos. A matriz abaixo cobre apenas as novas boundaries distribuídas.
+
+## ASVS e controles técnicos
+
+| Controle | Requisito Fase 4 | Estado | Evidência/critério |
+|---|---|---|---|
+| V1.2/V1.4 | Requisitos e threat model de pagamento/mensageria | **Met (desenho)** | requisitos, ADR-013–018, extensão do threat model |
+| V2.1 | Validar REST, webhook e envelope de mensagens | **Planejado** | ValidationPipe + JSON schema versionado |
+| V4.1/V4.2 | Menor privilégio em filas, tópicos e tabelas | **Planejado** | IRSA por OS/Billing/Execution; deny-by-default |
+| V6.1 | Tokens MP e segredos de webhook fora do código | **Met (política)** | Secrets Manager; CI secret scan |
+| V7.1 | Lockfile e audit por serviço | **Planejado** | audit prod em OS/Billing/Execution/auth |
+| V8.1 | Dados em trânsito/repouso e segregados | **Planejado** | TLS; RDS/DynamoDB/SQS/SNS criptografados; database-per-service |
+| V10.1 | Auditabilidade sem PII/segredo | **Planejado** | logs JSON com redaction, `sagaId` e `correlationId` |
+| V14.1 | Boundary HTTP e webhook endurecida | **Planejado** | HTTPS, assinatura, timestamp, rate limit e body limit |
+
+## Controles por componente
+
+| Componente | Controles bloqueantes |
+|---|---|
+| OS Service | lock otimista da Saga; outbox; transições allowlist; IRSA publish/consume mínimo |
+| Billing Service | idempotência; confirmação server-to-server; segredo MP; refund/reconciliação; sem PAN/CVV |
+| Execution Service | inbox; validação de passo; cancelamento idempotente; tabela própria |
+| SQS/SNS | policies por ARN, TLS, criptografia, DLQ, redrive autorizado, payload mínimo |
+| DynamoDB | tabela/role por serviço, PITR quando persistente, TTL só técnico, sem scan crítico |
+| Observabilidade | redaction de CPF/token; trace/correlation; alarmes DLQ, Saga parada e refund |
+| CI/CD | OIDC, scans, coverage/Sonar 90%, imagem não-root e promoção independente |
+
+## Security release checklist Fase 4
+
+- [x] Threat model e controls matrix atualizados antes da implementação.
+- [x] Nenhum segredo real adicionado na Entrega 0–1.
+- [ ] Contract tests cobrem schema, duplicidade, replay e out-of-order.
+- [ ] Testes sandbox cobrem assinatura inválida, divergência de valor e refund.
+- [ ] IaC comprova IRSA mínimo, criptografia, DLQ e isolamento de tabelas.
+- [ ] Audits dos três serviços e auth sem vulnerabilidade crítica não aceita.
+- [ ] Smoke confirma acesso negado a banco/fila de outro serviço.
+
+## Gate
+
+`gate-security-review`: **PASS de desenho, condicionado**. Entrega 2 deve converter controles planejados em IaC; Entregas 3–5 devem produzir audit/testes. Qualquer segredo no diff, acesso cross-service ou webhook sem validação reabre o gate e bloqueia deploy.

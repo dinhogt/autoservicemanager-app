@@ -1,0 +1,86 @@
+[Nest] 71085  - 11/14/2026, 9:56:31 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Recebida → Em diagnóstico contato=maria@oficina.test
+[Nest] 71085  - 11/14/2026, 9:56:31 AM     LOG [GerarOrcamentoUseCase] OrcamentoGerado osId=os-critico-1 total=150
+[Nest] 71085  - 11/14/2026, 9:56:31 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Em diagnóstico → Aguardando aprovação contato=maria@oficina.test
+[Nest] 71085  - 11/14/2026, 9:56:31 AM     LOG [AprovarOrcamentoUseCase] OrcamentoAprovado osId=os-critico-1
+[Nest] 71085  - 11/14/2026, 9:56:31 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Aguardando aprovação → Em execução contato=maria@oficina.test
+[Nest] 71085  - 11/14/2026, 9:56:31 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Em execução → Finalizada contato=maria@oficina.test
+[Nest] 71085  - 11/14/2026, 9:56:31 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Finalizada → Entregue contato=maria@oficina.test
+[Nest] 71085  - 11/14/2026, 9:56:31 AM     LOG [AprovarOrcamentoUseCase] OrcamentoRejeitado osId=os-critico-1
+[Nest] 71085  - 11/14/2026, 9:56:31 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Aguardando aprovação → Rejeitada contato=maria@oficina.test
+{"_aws":{"Timestamp":1794660992803,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStarted","Unit":"Count"}]}]},"Service":"os","Operation":"start","Outcome":"started","SagaStarted":1,"timestamp":"2026-11-14T12:56:32.803Z","level":"info","service":"os","environment":"test","event":"saga_started","correlationId":"corr-1","sagaId":"saga-1","messageId":"saga-1","aggregateId":"os-1","durationMs":0,"outcome":"started"}
+{"_aws":{"Timestamp":1794660992804,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStarted","Unit":"Count"}]}]},"Service":"os","Operation":"start","Outcome":"started","SagaStarted":1,"timestamp":"2026-11-14T12:56:32.804Z","level":"info","service":"os","environment":"test","event":"saga_started","correlationId":"8fc1ea57-b15c-4940-8322-0e9b8a10cecb","sagaId":"saga-1","messageId":"saga-1","aggregateId":"os-1","durationMs":0,"outcome":"started"}
+{"_aws":{"Timestamp":1794660992805,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStepDuration","Unit":"Milliseconds"}]}]},"Service":"os","Operation":"diagnosis.completed","Outcome":"applied","SagaStepDuration":1,"timestamp":"2026-11-14T12:56:32.805Z","level":"info","service":"os","environment":"test","event":"saga_step_processed","correlationId":"corr-1","sagaId":"saga-1","messageId":"evt-1","aggregateId":"os-1","durationMs":1,"outcome":"applied"}
+{"_aws":{"Timestamp":1794660992805,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStepDuration","Unit":"Milliseconds"}]}]},"Service":"os","Operation":"diagnosis.completed","Outcome":"duplicate","SagaStepDuration":0,"timestamp":"2026-11-14T12:56:32.805Z","level":"info","service":"os","environment":"test","event":"saga_step_processed","correlationId":"corr-1","sagaId":"saga-1","messageId":"evt-1","aggregateId":"os-1","durationMs":0,"outcome":"duplicate"}
+{"_aws":{"Timestamp":1794660992806,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStepDuration","Unit":"Milliseconds"}]}]},"Service":"os","Operation":"budget.approved","Outcome":"applied","SagaStepDuration":0,"timestamp":"2026-11-14T12:56:32.806Z","level":"info","service":"os","environment":"test","event":"saga_step_processed","correlationId":"corr-1","sagaId":"saga-1","messageId":"5647b282-c34a-4c35-8f08-2847d2d19131","aggregateId":"os-1","durationMs":0,"outcome":"applied"}
+[Nest] 71085  - 11/14/2026, 9:56:33 AM   ERROR [SqsSagaEventConsumer] Saga event polling failed
+Error: SQS unavailable
+    at /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/src/infrastructure/messaging/sqs-saga-event.consumer.spec.ts:63:12
+    at _dispatchDescribe (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-circus/build/jestAdapterInit.js:604:26)
+    at describe (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-circus/build/jestAdapterInit.js:572:44)
+    at Object.<anonymous> (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/src/infrastructure/messaging/sqs-saga-event.consumer.spec.ts:6:1)
+    at Runtime._execModule (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runtime/build/index.js:1264:24)
+    at Runtime._loadModule (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runtime/build/index.js:940:12)
+    at Runtime.requireModule (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runtime/build/index.js:828:12)
+    at jestAdapter (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-circus/build/runner.js:95:13)
+    at runTestInternal (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runner/build/index.js:275:16)
+    at runTest (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runner/build/index.js:343:7)
+[Nest] 71085  - 11/14/2026, 9:56:33 AM   ERROR [SqsSagaEventConsumer] Saga event polling failed
+SQS unavailable
+[Nest] 71085  - 11/14/2026, 9:56:33 AM     LOG [AprovarOrcamentoUseCase] OrcamentoRejeitado osId=os-1
+[Nest] 71085  - 11/14/2026, 9:56:33 AM     LOG [AprovarOrcamentoUseCase] OrcamentoAprovado osId=os-1
+[Nest] 71085  - 11/14/2026, 9:56:33 AM     LOG [AprovarOrcamentoUseCase] OrcamentoRejeitado osId=os-1
+[Nest] 71085  - 11/14/2026, 9:56:33 AM     LOG [AprovarOrcamentoUseCase] OrcamentoAprovado osId=os-1
+[Nest] 71085  - 11/14/2026, 9:56:34 AM    WARN [SmtpMailService] Destinatário sem e-mail válido: telefone
+[Nest] 71085  - 11/14/2026, 9:56:34 AM    WARN [SmtpMailService] Destinatário sem e-mail válido:    
+[Nest] 71085  - 11/14/2026, 9:56:34 AM    WARN [SmtpMailService] SMTP_HOST não configurado; e-mail não enviado
+[Nest] 71085  - 11/14/2026, 9:56:34 AM     LOG [SmtpMailService] E-mail enviado para cliente@test.com: Assunto
+[Nest] 71085  - 11/14/2026, 9:56:34 AM     LOG [SmtpMailService] E-mail enviado para a@b.com: s
+[Nest] 71085  - 11/14/2026, 9:56:34 AM     LOG [SmtpMailService] E-mail enviado para a@b.com: s
+[Nest] 71085  - 11/14/2026, 9:56:34 AM   ERROR [SmtpMailService] Falha ao enviar e-mail para a@b.com: SMTP down
+[Nest] 71085  - 11/14/2026, 9:56:34 AM     LOG [PrismaOsAuditRepository] Object(5) {
+  event: 'os_domain_event',
+  message: 'OsCriada',
+  ordemServicoId: 'os-1',
+  eventType: 'OsCriada',
+  payload: {}
+}
+[Nest] 71085  - 11/14/2026, 9:56:34 AM     LOG [PrismaOsAuditRepository] Object(7) {
+  event: 'os_status_changed',
+  message: 'null → RECEBIDA',
+  ordemServicoId: 'os-1',
+  fromStatus: null,
+  toStatus: 'RECEBIDA',
+  context: 'CriarOrdemServico',
+  eventType: 'OsCriada'
+}
+[Nest] 71085  - 11/14/2026, 9:56:34 AM     LOG [PrismaOsAuditRepository] Object(5) {
+  event: 'os_domain_event',
+  message: 'OsEmExecucao',
+  ordemServicoId: 'os-1',
+  eventType: 'OsEmExecucao',
+  payload: {}
+}
+[Nest] 71085  - 11/14/2026, 9:56:34 AM     LOG [PrismaOsAuditRepository] Object(7) {
+  event: 'os_status_changed',
+  message: 'EM_DIAGNOSTICO → AGUARDANDO_APROVACAO',
+  ordemServicoId: 'os-1',
+  fromStatus: 'EM_DIAGNOSTICO',
+  toStatus: 'AGUARDANDO_APROVACAO',
+  context: 'GerarOrcamento',
+  eventType: 'OsEmExecucao'
+}
+[Nest] 71085  - 11/14/2026, 9:56:36 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-1 cliente="Maria" Recebida → Em diagnóstico contato=maria@test.com
+[Nest] 71085  - 11/14/2026, 9:56:36 AM     LOG [GerarOrcamentoUseCase] OrcamentoGerado osId=os-1 total=130
+
+=============================== Coverage summary ===============================
+Statements   : 98.91% ( 1098/1110 )
+Branches     : 90.04% ( 416/462 )
+Functions    : 99.45% ( 183/184 )
+Lines        : 98.98% ( 980/990 )
+================================================================================
+
+Test Suites: 98 passed, 98 total
+Tests:       439 passed, 439 total
+Snapshots:   0 total
+Time:        8.371 s, estimated 97 s
+Ran all test suites.

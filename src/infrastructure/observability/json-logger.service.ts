@@ -74,7 +74,18 @@ export class JsonLogger implements LoggerService {
       level,
       message: textMessage,
       context,
-      correlationId: getCorrelationId(),
+      service: 'os',
+      environment:
+        process.env.METRICS_ENVIRONMENT ??
+        process.env.NODE_ENV ??
+        'development',
+      event: 'application_log',
+      correlationId: getCorrelationId() ?? 'system',
+      sagaId: 'none',
+      messageId: 'none',
+      aggregateId: 'none',
+      durationMs: 0,
+      outcome: level === 'error' ? 'failed' : 'logged',
       xrayTraceId: extractRootFromAmznTrace(traceHeader),
       timestamp: new Date().toISOString(),
       ...extras,

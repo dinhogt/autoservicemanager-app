@@ -42,8 +42,10 @@ import { PrismaClienteRepository } from '../../../../infrastructure/database/mys
 import { PrismaVeiculoRepository } from '../../../../infrastructure/database/mysql/repositories/prisma-veiculo.repository';
 import { PrismaServicoCatalogoRepository } from '../../../../infrastructure/database/mysql/repositories/prisma-servico-catalogo.repository';
 import { PrismaPecaEstoqueRepository } from '../../../../infrastructure/database/mysql/repositories/prisma-peca-estoque.repository';
+import { SagaModule } from '../saga/saga.module';
 
 @Module({
+  imports: [SagaModule],
   controllers: [OrdemServicoController, WebhookOsController],
   providers: [
     CriarOrdemServicoUseCase,

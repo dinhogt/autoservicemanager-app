@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
 import { StatusOs } from '../../../domain/atendimento/value-objects/status-os.enum';
 import { runOrderStatusAssertion } from '../helpers/run-order-status-assertion';
 import { OsDomainEventType } from '../../../domain/atendimento/events/os-domain-events';
@@ -15,6 +15,7 @@ import { AprovacaoOrcamentoDto } from '../dto/aprovacao-orcamento.dto';
 import { ConsultarStatusOsDto } from '../dto/consultar-status-os.dto';
 import { carregarOrdemServicoComValidacaoPublica } from '../helpers/ordem-servico-public-access';
 import { notificarMudancaStatus } from '../helpers/notificar-mudanca-status';
+import { SagaOrchestratorService } from '../../saga/saga-orchestrator.service';
 
 @Injectable()
 export class AprovarOrcamentoUseCase {
@@ -27,6 +28,7 @@ export class AprovarOrcamentoUseCase {
     @Inject(OS_MONGO_AUDIT) private readonly audit: OsMongoAuditPort,
     @Inject(OS_STATUS_NOTIFIER)
     private readonly statusNotifier: OsStatusNotifierPort,
+    @Optional() private readonly saga?: SagaOrchestratorService,
   ) {}
 
   async execute(
@@ -64,6 +66,12 @@ export class AprovarOrcamentoUseCase {
         toStatus: StatusOs.REJEITADA,
         context: 'AprovarOrcamento',
       });
+      if (this.saga) {
+        await this.saga.budgetDecision({
+          ordemServicoId: id,
+          approved: false,
+        });
+      }
       return {
         id: rejeitada.id,
         status: rejeitada.status,
@@ -106,6 +114,13 @@ export class AprovarOrcamentoUseCase {
       toStatus: StatusOs.EM_EXECUCAO,
       context: 'AprovarOrcamento',
     });
+    if (this.saga) {
+      await this.saga.budgetDecision({
+        ordemServicoId: id,
+        approved: true,
+        amount: Number(os.total),
+      });
+    }
 
     return {
       id: resultado.id,

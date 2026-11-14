@@ -18,3 +18,8 @@ data:
   # Preencher com output os_notifications_topic_arn do infra-k8s (ou Secret)
   OS_NOTIFICATIONS_TOPIC_ARN: ""
   AWS_REGION: "us-east-1"
+  # Fase 4 — Saga orquestrada (outputs infra-k8s: os-events queue)
+  SAGA_AUTO_START: "true"
+  SAGA_EVENTS_POLLING_ENABLED: "true"
+  SAGA_EVENTS_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/ACCOUNT_ID/autoservicemanager-ENV-os-events"
+  # SAGA_EVENTS_SECRET vem de Secret (não versionar)

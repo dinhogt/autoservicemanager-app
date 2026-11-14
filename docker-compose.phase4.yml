@@ -1,0 +1,166 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: autoservice
+      MYSQL_USER: autoservice
+      MYSQL_PASSWORD: autoservice
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      # Use TCP: the image starts a temporary socket-only server during init,
+      # which must not release the migration job prematurely.
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  localstack:
+    image: localstack/localstack:4.8
+    environment:
+      SERVICES: sqs,sns,dynamodb
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - ./scripts/localstack-init.sh:/etc/localstack/init/ready.d/phase4.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "awslocal sqs get-queue-url --queue-name os-events >/dev/null"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  migrate:
+    build:
+      context: .
+    entrypoint: ["sh", "-c"]
+    command: ["npx prisma migrate deploy"]
+    environment:
+      DATABASE_URL: mysql://autoservice:autoservice@mysql:3306/autoservice
+      SHADOW_DATABASE_URL: mysql://autoservice:autoservice@mysql:3306/autoservice_shadow
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  seed:
+    image: mysql:8.4
+    command:
+      - sh
+      - -c
+      - mysql -hmysql -uautoservice -pautoservice autoservice < /seed.sql
+    volumes:
+      - ./scripts/phase4-seed.sql:/seed.sql:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  mercado-pago-mock:
+    image: node:22-alpine
+    command: ["node", "/mock.js"]
+    volumes:
+      - ./scripts/mercado-pago-mock.js:/mock.js:ro
+    ports:
+      - "3003:3000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  os:
+    build:
+      context: .
+    environment:
+      PORT: 3000
+      DATABASE_URL: mysql://autoservice:autoservice@mysql:3306/autoservice
+      SHADOW_DATABASE_URL: mysql://autoservice:autoservice@mysql:3306/autoservice_shadow
+      JWT_SECRET: phase4-local-jwt-secret
+      CORS_ORIGIN: http://localhost:3000
+      SAGA_EVENTS_SECRET: phase4-local-secret
+      SAGA_EVENTS_POLLING_ENABLED: "true"
+      SAGA_EVENTS_QUEUE_URL: http://localstack:4566/000000000000/os-events
+      EXECUTION_COMMAND_QUEUE_URL: http://localstack:4566/000000000000/execution-commands
+      BILLING_COMMAND_QUEUE_URL: http://localstack:4566/000000000000/billing-commands
+      AWS_REGION: us-east-1
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      EMAIL_ENABLED: "false"
+    ports:
+      - "3000:3000"
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+      localstack:
+        condition: service_healthy
+
+  billing:
+    build:
+      context: ../autoservicemanager-billing
+    environment:
+      PORT: 3000
+      AWS_REGION: us-east-1
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      DYNAMODB_TABLE: billing
+      SQS_COMMAND_QUEUE_URL: http://localstack:4566/000000000000/billing-commands
+      SNS_EVENTS_TOPIC_ARN: arn:aws:sns:us-east-1:000000000000:saga-events
+      MERCADO_PAGO_BASE_URL: http://mercado-pago-mock:3000
+      MERCADO_PAGO_ACCESS_TOKEN: test
+      MERCADO_PAGO_WEBHOOK_SECRET: ""
+      WEBHOOK_SIGNATURE_ENABLED: "false"
+      SQS_POLLING_ENABLED: "true"
+    ports:
+      - "3001:3000"
+    depends_on:
+      localstack:
+        condition: service_healthy
+      mercado-pago-mock:
+        condition: service_healthy
+
+  execution:
+    build:
+      context: ../autoservicemanager-execution
+    environment:
+      PORT: 3000
+      AWS_REGION: us-east-1
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      DYNAMODB_TABLE: execution
+      SQS_QUEUE_URL: http://localstack:4566/000000000000/execution-commands
+      SNS_TOPIC_ARN: arn:aws:sns:us-east-1:000000000000:saga-events
+      SWAGGER_ENABLED: "false"
+    ports:
+      - "3002:3000"
+    depends_on:
+      localstack:
+        condition: service_healthy
+
+  bdd:
+    build:
+      context: .
+      target: builder
+    command: ["yarn", "test:bdd"]
+    environment:
+      # The one-shot `docker compose run` container is intentionally
+      # independent from service dependencies; published ports make this
+      # reliable both on Docker Desktop and Linux (host-gateway below).
+      OS_URL: http://host.docker.internal:3000
+      BILLING_URL: http://host.docker.internal:3001
+      EXECUTION_URL: http://host.docker.internal:3002
+      MP_URL: http://host.docker.internal:3003
+      SAGA_EVENTS_SECRET: phase4-local-secret
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      os:
+        condition: service_started
+      billing:
+        condition: service_started
+      execution:
+        condition: service_started

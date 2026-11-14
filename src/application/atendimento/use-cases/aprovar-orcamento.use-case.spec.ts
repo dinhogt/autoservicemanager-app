@@ -6,6 +6,7 @@ import type { OsStatusNotifierPort } from '../../../domain/atendimento/ports/os-
 import { OrderStatusService } from '../../../domain/atendimento/services';
 import { mockOrdemServicoRepository } from '../../../../test/helpers/mock-ordem-servico.repository';
 import { AprovarOrcamentoUseCase } from './aprovar-orcamento.use-case';
+import { SagaOrchestratorService } from '../../saga/saga-orchestrator.service';
 
 describe('AprovarOrcamentoUseCase', () => {
   const osPublica = {
@@ -13,6 +14,7 @@ describe('AprovarOrcamentoUseCase', () => {
     status: StatusOs.AGUARDANDO_APROVACAO,
     cliente: { cpfCnpj: '52998224725', nome: 'Maria', contato: 'a@b.com' },
     veiculo: { placa: 'ABC1D23' },
+    total: 100,
   };
 
   const recordDomainEvent = jest.fn().mockResolvedValue(undefined);
@@ -31,7 +33,10 @@ describe('AprovarOrcamentoUseCase', () => {
 
   beforeEach(() => jest.clearAllMocks());
 
-  function makeUseCase(ordensOverrides: Record<string, jest.Mock> = {}) {
+  function makeUseCase(
+    ordensOverrides: Record<string, jest.Mock> = {},
+    saga?: SagaOrchestratorService,
+  ) {
     const ordens = mockOrdemServicoRepository({
       findWithClienteVeiculoById: jest.fn().mockResolvedValue(osPublica),
       ...ordensOverrides,
@@ -41,6 +46,7 @@ describe('AprovarOrcamentoUseCase', () => {
       orderStatusService,
       audit,
       statusNotifier,
+      saga,
     );
   }
 
@@ -111,5 +117,43 @@ describe('AprovarOrcamentoUseCase', () => {
       }),
     );
     expect(statusNotifier.notificarMudancaStatus).toHaveBeenCalled();
+  });
+
+  it('notifica a saga para aprovação e rejeição', async () => {
+    const budgetDecision = jest.fn().mockResolvedValue({});
+    const saga = { budgetDecision } as unknown as SagaOrchestratorService;
+    const rejeitarOrcamento = jest.fn().mockResolvedValue({
+      id: 'os-1',
+      status: StatusOs.REJEITADA,
+      cliente: { nome: 'Maria', contato: 'a@b.com' },
+    });
+    await makeUseCase({ rejeitarOrcamento }, saga).execute(
+      'os-1',
+      { cpfCnpj: '52998224725' },
+      { aprovado: false },
+    );
+    expect(budgetDecision).toHaveBeenLastCalledWith({
+      ordemServicoId: 'os-1',
+      approved: false,
+    });
+
+    const aprovarOrcamentoComReserva = jest.fn().mockResolvedValue({
+      resultado: {
+        id: 'os-1',
+        status: StatusOs.EM_EXECUCAO,
+        cliente: { nome: 'Maria', contato: 'a@b.com' },
+      },
+      pecasReservadas: [],
+    });
+    await makeUseCase({ aprovarOrcamentoComReserva }, saga).execute(
+      'os-1',
+      { cpfCnpj: '52998224725' },
+      { aprovado: true },
+    );
+    expect(budgetDecision).toHaveBeenLastCalledWith({
+      ordemServicoId: 'os-1',
+      approved: true,
+      amount: 100,
+    });
   });
 });

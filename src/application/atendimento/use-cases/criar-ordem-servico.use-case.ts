@@ -3,7 +3,9 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  Optional,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CLIENTE_REPOSITORY } from '../../../domain/cadastro/repositories/cliente.repository';
 import type { ClienteRepository } from '../../../domain/cadastro/repositories/cliente.repository';
 import { VEICULO_REPOSITORY } from '../../../domain/cadastro/repositories/veiculo.repository';
@@ -18,6 +20,7 @@ import { OS_MONGO_AUDIT } from '../../../domain/atendimento/ports';
 import type { OsMongoAuditPort } from '../../../domain/atendimento/ports';
 import { ORDEM_SERVICO_REPOSITORY } from '../../../domain/atendimento/repositories/ordem-servico.repository';
 import type { OrdemServicoRepository } from '../../../domain/atendimento/repositories/ordem-servico.repository';
+import { SagaOrchestratorService } from '../../saga/saga-orchestrator.service';
 
 @Injectable()
 export class CriarOrdemServicoUseCase {
@@ -33,6 +36,8 @@ export class CriarOrdemServicoUseCase {
     @Inject(ORDEM_SERVICO_REPOSITORY)
     private readonly ordens: OrdemServicoRepository,
     @Inject(OS_MONGO_AUDIT) private readonly audit: OsMongoAuditPort,
+    @Optional() private readonly saga?: SagaOrchestratorService,
+    @Optional() private readonly config?: ConfigService,
   ) {}
 
   async execute(dto: CreateOrdemServicoDto) {
@@ -117,6 +122,25 @@ export class CriarOrdemServicoUseCase {
       toStatus: created.status,
       context: 'CriarOrdemServico',
     });
+
+    if (this.config?.get<string>('SAGA_AUTO_START') === 'true' && this.saga) {
+      const saga = await this.saga.start({
+        ordemServicoId: created.id,
+        metadata: {
+          amount: Number(created.total ?? total),
+          customerEmail: cliente.contato,
+          description: `Ordem de serviço ${created.id}`,
+        },
+      });
+      return {
+        ...created,
+        saga: {
+          id: saga.id,
+          correlationId: saga.correlationId,
+          status: saga.status,
+        },
+      };
+    }
 
     return created;
   }

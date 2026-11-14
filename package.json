@@ -20,12 +20,14 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main.js",
-    "lint": "yarn domain-shared:build && eslint \"{src,apps,libs,test,packages}/**/*.ts\" --fix",
+    "lint": "yarn domain-shared:build && eslint \"{src,apps,libs,test,packages}/**/*.ts\" --ignore-pattern \"packages/**/dist/**\"",
     "test": "yarn domain-shared:build && jest && yarn domain-shared:test",
     "test:watch": "jest --watch",
-    "test:cov": "yarn domain-shared:build && jest --coverage",
+    "test:cov": "yarn domain-shared:build && jest --coverage && yarn workspace @dinhogt/domain-shared test --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:bdd": "cucumber-js --config cucumber.js",
+    "test:phase4": "bash scripts/run-phase4-e2e.sh",
     "arch:check": "depcruise src --config .dependency-cruiser.cjs",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -45,6 +47,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sns": "^3.787.0",
+    "@aws-sdk/client-sqs": "^3.787.0",
     "@dinhogt/domain-shared": "0.1.0",
     "@nestjs/common": "^11.1.19",
     "@nestjs/config": "^4.0.4",
@@ -75,6 +78,7 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@cucumber/cucumber": "^12.2.0",
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
@@ -114,12 +118,16 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "src/**/*.(t|j)s",
+      "src/application/**/*.(t|j)s",
+      "src/domain/**/*.(t|j)s",
+      "src/infrastructure/messaging/**/*.(t|j)s",
+      "src/infrastructure/auth/saga-events-secret.guard.ts",
+      "src/infrastructure/database/mysql/repositories/prisma-saga.repository.ts",
+      "src/interfaces/http/modules/saga/saga-events.controller.ts",
       "!src/**/*.module.ts",
       "!src/**/*.dto.ts",
       "!src/**/index.ts",
-      "!src/main.ts",
-      "!src/infrastructure/observability/business-metrics.ts"
+      "!src/**/*.spec.ts"
     ],
     "coverageDirectory": "./coverage",
     "coverageReporters": [
@@ -129,10 +137,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 80,
-        "lines": 80,
-        "branches": 70,
-        "functions": 70
+        "statements": 90,
+        "lines": 90,
+        "branches": 90,
+        "functions": 90
       }
     },
     "testEnvironment": "node"

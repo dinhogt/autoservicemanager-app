@@ -88,6 +88,62 @@ enum StatusOs {
   REJEITADA
 }
 
+enum SagaStatus {
+  AWAITING_DIAGNOSIS
+  AWAITING_BUDGET_APPROVAL
+  AWAITING_PAYMENT
+  AWAITING_EXECUTION
+  AWAITING_REFUND
+  COMPLETED
+  COMPENSATED
+  FAILED
+  CANCELLED
+}
+
+model SagaInstance {
+  id             String     @id @default(uuid())
+  ordemServicoId String     @unique
+  correlationId  String     @unique
+  status         SagaStatus @default(AWAITING_DIAGNOSIS)
+  version        Int        @default(0)
+  paymentId      String?
+  failureReason  String?
+  metadata       Json?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  processedEvents SagaProcessedEvent[]
+  outboxMessages  SagaOutboxMessage[]
+
+  @@index([status, updatedAt])
+}
+
+model SagaProcessedEvent {
+  id          String   @id @default(uuid())
+  eventId     String   @unique
+  sagaId      String
+  eventType   String
+  processedAt DateTime @default(now())
+
+  saga SagaInstance @relation(fields: [sagaId], references: [id], onDelete: Cascade)
+
+  @@index([sagaId, processedAt])
+}
+
+model SagaOutboxMessage {
+  id          String   @id
+  sagaId      String
+  destination String
+  payload     Json
+  attempts    Int      @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  saga SagaInstance @relation(fields: [sagaId], references: [id], onDelete: Cascade)
+
+  @@index([sagaId, publishedAt, createdAt])
+}
+
 model OrdemServico {
   id            String    @id @default(uuid())
   clienteId     String

@@ -1,0 +1,304 @@
+yarn run v1.22.22
+$ yarn domain-shared:build && jest --coverage && yarn workspace @dinhogt/domain-shared test --coverage '--coverageDirectory=/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/docs/qa/coverage-artifacts/os' --coverageReporters=json-summary --coverageReporters=text-summary --coverageReporters=lcov --coverageReporters=html
+warning Cannot find a suitable global folder. Tried these: "/usr/local, /Users/janderson/.yarn"
+$ yarn workspace @dinhogt/domain-shared build
+warning Cannot find a suitable global folder. Tried these: "/usr/local, /Users/janderson/.yarn"
+$ tsc -p tsconfig.json
+warning Cannot find a suitable global folder. Tried these: "/usr/local, /Users/janderson/.yarn"
+{"_aws":{"Timestamp":1794660895962,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStarted","Unit":"Count"}]}]},"Service":"os","Operation":"start","Outcome":"started","SagaStarted":1,"timestamp":"2026-11-14T12:54:55.962Z","level":"info","service":"os","environment":"test","event":"saga_started","correlationId":"corr-1","sagaId":"saga-1","messageId":"saga-1","aggregateId":"os-1","durationMs":0,"outcome":"started"}
+{"_aws":{"Timestamp":1794660895964,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStarted","Unit":"Count"}]}]},"Service":"os","Operation":"start","Outcome":"started","SagaStarted":1,"timestamp":"2026-11-14T12:54:55.964Z","level":"info","service":"os","environment":"test","event":"saga_started","correlationId":"e05ffaab-cd17-4979-a7d8-d2c76e39eddb","sagaId":"saga-1","messageId":"saga-1","aggregateId":"os-1","durationMs":0,"outcome":"started"}
+{"_aws":{"Timestamp":1794660895989,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStepDuration","Unit":"Milliseconds"}]}]},"Service":"os","Operation":"diagnosis.completed","Outcome":"applied","SagaStepDuration":0,"timestamp":"2026-11-14T12:54:55.989Z","level":"info","service":"os","environment":"test","event":"saga_step_processed","correlationId":"corr-1","sagaId":"saga-1","messageId":"evt-1","aggregateId":"os-1","durationMs":0,"outcome":"applied"}
+{"_aws":{"Timestamp":1794660895990,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStepDuration","Unit":"Milliseconds"}]}]},"Service":"os","Operation":"diagnosis.completed","Outcome":"duplicate","SagaStepDuration":0,"timestamp":"2026-11-14T12:54:55.990Z","level":"info","service":"os","environment":"test","event":"saga_step_processed","correlationId":"corr-1","sagaId":"saga-1","messageId":"evt-1","aggregateId":"os-1","durationMs":0,"outcome":"duplicate"}
+{"_aws":{"Timestamp":1794660896057,"CloudWatchMetrics":[{"Namespace":"AutoServiceManager/test","Dimensions":[["Service"],["Service","Operation","Outcome"]],"Metrics":[{"Name":"SagaStepDuration","Unit":"Milliseconds"}]}]},"Service":"os","Operation":"budget.approved","Outcome":"applied","SagaStepDuration":0,"timestamp":"2026-11-14T12:54:56.057Z","level":"info","service":"os","environment":"test","event":"saga_step_processed","correlationId":"corr-1","sagaId":"saga-1","messageId":"0c2814ee-2f68-4e68-b2eb-daf3f1a2fdf2","aggregateId":"os-1","durationMs":0,"outcome":"applied"}
+[Nest] 70459  - 11/14/2026, 9:54:57 AM    WARN [SmtpMailService] Destinatário sem e-mail válido: telefone
+[Nest] 70459  - 11/14/2026, 9:54:57 AM    WARN [SmtpMailService] Destinatário sem e-mail válido:    
+[Nest] 70459  - 11/14/2026, 9:54:57 AM    WARN [SmtpMailService] SMTP_HOST não configurado; e-mail não enviado
+[Nest] 70459  - 11/14/2026, 9:54:57 AM     LOG [SmtpMailService] E-mail enviado para cliente@test.com: Assunto
+[Nest] 70459  - 11/14/2026, 9:54:57 AM     LOG [SmtpMailService] E-mail enviado para a@b.com: s
+[Nest] 70459  - 11/14/2026, 9:54:57 AM     LOG [SmtpMailService] E-mail enviado para a@b.com: s
+[Nest] 70459  - 11/14/2026, 9:54:57 AM   ERROR [SmtpMailService] Falha ao enviar e-mail para a@b.com: SMTP down
+[Nest] 70467  - 11/14/2026, 9:54:57 AM     LOG [AprovarOrcamentoUseCase] OrcamentoRejeitado osId=os-1
+[Nest] 70467  - 11/14/2026, 9:54:57 AM     LOG [AprovarOrcamentoUseCase] OrcamentoAprovado osId=os-1
+[Nest] 70467  - 11/14/2026, 9:54:57 AM     LOG [AprovarOrcamentoUseCase] OrcamentoRejeitado osId=os-1
+[Nest] 70467  - 11/14/2026, 9:54:57 AM     LOG [AprovarOrcamentoUseCase] OrcamentoAprovado osId=os-1
+[Nest] 70462  - 11/14/2026, 9:54:58 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Recebida → Em diagnóstico contato=maria@oficina.test
+[Nest] 70462  - 11/14/2026, 9:54:58 AM     LOG [GerarOrcamentoUseCase] OrcamentoGerado osId=os-critico-1 total=150
+[Nest] 70462  - 11/14/2026, 9:54:58 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Em diagnóstico → Aguardando aprovação contato=maria@oficina.test
+[Nest] 70462  - 11/14/2026, 9:54:58 AM     LOG [AprovarOrcamentoUseCase] OrcamentoAprovado osId=os-critico-1
+[Nest] 70462  - 11/14/2026, 9:54:58 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Aguardando aprovação → Em execução contato=maria@oficina.test
+[Nest] 70462  - 11/14/2026, 9:54:58 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Em execução → Finalizada contato=maria@oficina.test
+[Nest] 70462  - 11/14/2026, 9:54:58 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Finalizada → Entregue contato=maria@oficina.test
+[Nest] 70462  - 11/14/2026, 9:54:58 AM     LOG [AprovarOrcamentoUseCase] OrcamentoRejeitado osId=os-critico-1
+[Nest] 70462  - 11/14/2026, 9:54:58 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-critico-1 cliente="Maria Silva" Aguardando aprovação → Rejeitada contato=maria@oficina.test
+[Nest] 70467  - 11/14/2026, 9:54:58 AM     LOG [GerarOrcamentoUseCase] OrcamentoGerado osId=os-1 total=130
+[Nest] 70469  - 11/14/2026, 9:55:02 AM     LOG [PrismaOsAuditRepository] Object(5) {
+  event: 'os_domain_event',
+  message: 'OsCriada',
+  ordemServicoId: 'os-1',
+  eventType: 'OsCriada',
+  payload: {}
+}
+[Nest] 70469  - 11/14/2026, 9:55:02 AM     LOG [PrismaOsAuditRepository] Object(7) {
+  event: 'os_status_changed',
+  message: 'null → RECEBIDA',
+  ordemServicoId: 'os-1',
+  fromStatus: null,
+  toStatus: 'RECEBIDA',
+  context: 'CriarOrdemServico',
+  eventType: 'OsCriada'
+}
+[Nest] 70469  - 11/14/2026, 9:55:02 AM     LOG [PrismaOsAuditRepository] Object(5) {
+  event: 'os_domain_event',
+  message: 'OsEmExecucao',
+  ordemServicoId: 'os-1',
+  eventType: 'OsEmExecucao',
+  payload: {}
+}
+[Nest] 70469  - 11/14/2026, 9:55:02 AM     LOG [PrismaOsAuditRepository] Object(7) {
+  event: 'os_status_changed',
+  message: 'EM_DIAGNOSTICO → AGUARDANDO_APROVACAO',
+  ordemServicoId: 'os-1',
+  fromStatus: 'EM_DIAGNOSTICO',
+  toStatus: 'AGUARDANDO_APROVACAO',
+  context: 'GerarOrcamento',
+  eventType: 'OsEmExecucao'
+}
+[Nest] 70465  - 11/14/2026, 9:55:02 AM   ERROR [SqsSagaEventConsumer] Saga event polling failed
+Error: SQS unavailable
+    at /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/src/infrastructure/messaging/sqs-saga-event.consumer.spec.ts:63:12
+    at _dispatchDescribe (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-circus/build/jestAdapterInit.js:604:26)
+    at describe (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-circus/build/jestAdapterInit.js:572:44)
+    at Object.<anonymous> (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/src/infrastructure/messaging/sqs-saga-event.consumer.spec.ts:6:1)
+    at Runtime._execModule (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runtime/build/index.js:1264:24)
+    at Runtime._loadModule (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runtime/build/index.js:940:12)
+    at Runtime.requireModule (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runtime/build/index.js:828:12)
+    at jestAdapter (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-circus/build/runner.js:95:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runTestInternal (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runner/build/testWorker.js:275:16)
+    at runTest (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runner/build/testWorker.js:343:7)
+    at Object.worker (/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/jest-runner/build/testWorker.js:497:12)
+[Nest] 70465  - 11/14/2026, 9:55:02 AM   ERROR [SqsSagaEventConsumer] Saga event polling failed
+SQS unavailable
+[Nest] 70467  - 11/14/2026, 9:55:08 AM     LOG [LogOsStatusNotifier] OsStatusAlterado osId=os-1 cliente="Maria" Recebida → Em diagnóstico contato=maria@test.com
+/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/@prisma/client/runtime/library.js:111
+${r}`,R(t,!0))}};x(Mt,"RequestError");async function dr(e,r,t=n=>n){let{clientVersion:n,...i}=r,o=t(fetch);try{return await o(e,i)}catch(s){let a=s.message??"Unknown error";throw new Mt(a,{clientVersion:n,cause:s})}}var pf=/^[1-9][0-9]*\.[0-9]+\.[0-9]+$/,kl=N("prisma:client:dataproxyEngine");async function df(e,r){let t=Il["@prisma/engines-version"],n=r.clientVersion??"unknown";if(process.env.PRISMA_CLIENT_DATA_PROXY_CLIENT_VERSION||globalThis.PRISMA_CLIENT_DATA_PROXY_CLIENT_VERSION)return process.env.PRISMA_CLIENT_DATA_PROXY_CLIENT_VERSION||globalThis.PRISMA_CLIENT_DATA_PROXY_CLIENT_VERSION;if(e.includes("accelerate")&&n!=="0.0.0"&&n!=="in-memory")return n;let[i,o]=n?.split("-")??[];if(o===void 0&&pf.test(i))return i;if(o!==void 0||n==="0.0.0"||n==="in-memory"){let[s]=t.split("-")??[],[a,l,u]=s.split("."),c=mf(`<=${a}.${l}.${u}`),p=await dr(c,{clientVersion:n});if(!p.ok)throw new Error(`Failed to fetch stable Prisma version, unpkg.com status ${p.status} ${p.statusText}, response body: ${await p.text()||"<empty body>"}`);let d=await p.text();kl("length of body fetched from unpkg.com",d.length);let f;try{f=JSON.parse(d)}catch(g){throw console.error("JSON.parse error: body fetched from unpkg.com: ",d),g}return f.version}throw new cr("Only `major.minor.patch` versions are supported by Accelerate.",{clientVersion:n})}async function Ol(e,r){let t=await df(e,r);return kl("version",t),t}function mf(e){return encodeURI(`https://unpkg.com/prisma@${e}/package.json`)}var Dl=3,$t=N("prisma:client:dataproxyEngine"),wo=class{apiKey;tracingHelper;logLevel;logQueries;engineHash;constructor({apiKey:r,tracingHelper:t,logLevel:n,logQueries:i,engineHash:o}){this.apiKey=r,this.tracingHelper=t,this.logLevel=n,this.logQueries=i,this.engineHash=o}build({traceparent:r,interactiveTransaction:t}={}){let n={Authorization:`Bearer ${this.apiKey}`,"Prisma-Engine-Hash":this.engineHash};this.tracingHelper.isEnabled()&&(n.traceparent=r??this.tracingHelper.getTraceParent()),t&&(n["X-transaction-id"]=t.id);let i=this.buildCaptureSettings();return i.length>0&&(n["X-capture-telemetry"]=i.join(", ")),n}buildCaptureSettings(){let r=[];return this.tracingHelper.isEnabled()&&r.push("tracing"),this.logLevel&&r.push(this.logLevel),this.logQueries&&r.push("query"),r}},qt=class{name="DataProxyEngine";inlineSchema;inlineSchemaHash;inlineDatasources;config;logEmitter;env;clientVersion;engineHash;tracingHelper;remoteClientVersion;host;headerBuilder;startPromise;protocol;constructor(r){Al(r),this.config=r,this.env={...r.env,...typeof process<"u"?process.env:{}},this.inlineSchema=Cl(r.inlineSchema),this.inlineDatasources=r.inlineDatasources,this.inlineSchemaHash=r.inlineSchemaHash,this.clientVersion=r.clientVersion,this.engineHash=r.engineVersion,this.logEmitter=r.logEmitter,this.tracingHelper=r.tracingHelper}apiKey(){return this.headerBuilder.apiKey}version(){return this.engineHash}async start(){this.startPromise!==void 0&&await this.startPromise,this.startPromise=(async()=>{let{apiKey:r,url:t}=this.getURLAndAPIKey();this.host=t.host,this.headerBuilder=new wo({apiKey:r,tracingHelper:this.tracingHelper,logLevel:this.config.logLevel,logQueries:this.config.logQueries,engineHash:this.engineHash}),this.protocol=Ri(t)?"http":"https",this.remoteClientVersion=await Ol(this.host,this.config),$t("host",this.host),$t("protocol",this.protocol)})(),await this.startPromise}async stop(){}propagateResponseExtensions(r){r?.logs?.length&&r.logs.forEach(t=>{switch(t.level){case"debug":case"trace":$t(t);break;case"error":case"warn":case"info":{this.logEmitter.emit(t.level,{timestamp:Eo(t.timestamp),message:t.attributes.message??"",target:t.target});break}case"query":{this.logEmitter.emit("query",{query:t.attributes.query??"",timestamp:Eo(t.timestamp),duration:t.attributes.duration_ms??0,params:t.attributes.params??"",target:t.target});break}default:t.level}}),r?.traces?.length&&this.tracingHelper.dispatchEngineSpans(r.traces)}onBeforeExit(){throw new Error('"beforeExit" hook is not applicable to the remote query engine')}async url(r){return await this.start(),`${this.protocol}://${this.host}/${this.remoteClientVersion}/${this.inlineSchemaHash}/${r}`}async uploadSchema(){let r={name:"schemaUpload",internal:!0};return this.tracingHelper.runInChildSpan(r,async()=>{let t=await dr(await this.url("schema"),{method:"PUT",headers:this.headerBuilder.build(),body:this.inlineSchema,clientVersion:this.clientVersion});t.ok||$t("schema response status",t.status);let n=await Ft(t,this.clientVersion);if(n)throw this.logEmitter.emit("warn",{message:`Error while uploading schema: ${n.message}`,timestamp:new Date,target:""}),n;this.logEmitter.emit("info",{message:`Schema (re)uploaded (hash: ${this.inlineSchemaHash})`,timestamp:new Date,target:""})})}request(r,{traceparent:t,interactiveTransaction:n,customDataProxyFetch:i}){return this.requestInternal({body:r,traceparent:t,interactiveTransaction:n,customDataProxyFetch:i})}async requestBatch(r,{traceparent:t,transaction:n,customDataProxyFetch:i}){let o=n?.kind==="itx"?n.options:void 0,s=Mr(r,n);return(await this.requestInternal({body:s,customDataProxyFetch:i,interactiveTransaction:o,traceparent:t})).map(l=>(l.extensions&&this.propagateResponseExtensions(l.extensions),"errors"in l?this.convertProtocolErrorsToClientError(l.errors):l))}requestInternal({body:r,traceparent:t,customDataProxyFetch:n,interactiveTransaction:i}){return this.withRetry({actionGerund:"querying",callback:async({logHttpCall:o})=>{let s=i?`${i.payload.endpoint}/graphql`:await this.url("graphql");o(s);let a=await dr(s,{method:"POST",headers:this.headerBuilder.build({traceparent:t,interactiveTransaction:i}),body:JSON.stringify(r),clientVersion:this.clientVersion},n);a.ok||$t("graphql response status",a.status),await this.handleError(await Ft(a,this.clientVersion));let l=await a.json();if(l.extensions&&this.propagateResponseExtensions(l.extensions),"errors"in l)throw this.convertProtocolErrorsToClientError(l.errors);return"batchResult"in l?l.batchResult:l}})}async transaction(r,t,n){let i={start:"starting",commit:"committing",rollback:"rolling back"};return this.withRetry({actionGerund:`${i[r]} transaction`,callback:async({logHttpCall:o})=>{if(r==="start"){let s=JSON.stringify({max_wait:n.maxWait,timeout:n.timeout,isolation_level:n.isolationLevel}),a=await this.url("transaction/start");o(a);let l=await dr(a,{method:"POST",headers:this.headerBuilder.build({traceparent:t.traceparent}),body:s,clientVersion:this.clientVersion});await this.handleError(await Ft(l,this.clientVersion));let u=await l.json(),{extensions:c}=u;c&&this.propagateResponseExtensions(c);let p=u.id,d=u["data-proxy"].endpoint;return{id:p,payload:{endpoint:d}}}else{let s=`${n.payload.endpoint}/${r}`;o(s);let a=await dr(s,{method:"POST",headers:this.headerBuilder.build({traceparent:t.traceparent}),clientVersion:this.clientVersion});await this.handleError(await Ft(a,this.clientVersion));let l=await a.json(),{extensions:u}=l;u&&this.propagateResponseExtensions(u);return}}})}getURLAndAPIKey(){let r={clientVersion:this.clientVersion},t=Object.keys(this.inlineDatasources)[0],n=jr({inlineDatasources:this.inlineDatasources,overrideDatasources:this.config.overrideDatasources,clientVersion:this.clientVersion,env:this.env}),i;try{i=new URL(n)}catch{throw new ur(`Error validating datasource \`${t}\`: the URL must start with the protocol \`prisma://\``,r)}let{protocol:o,searchParams:s}=i;if(o!=="prisma:"&&o!==tn)throw new ur(`Error validating datasource \`${t}\`: the URL must start with the protocol \`prisma://\` or \`prisma+postgres://\``,r);let a=s.get("api_key");if(a===null||a.length<1)throw new ur(`Error validating datasource \`${t}\`: the URL must contain a valid API key`,r);return{apiKey:a,url:i}}metrics(){throw new cr("Metrics are not yet supported for Accelerate",{clientVersion:this.clientVersion})}async withRetry(r){for(let t=0;;t++){let n=i=>{this.logEmitter.emit("info",{message:`Calling ${i} (n=${t})`,timestamp:new Date,target:""})};try{return await r.callback({logHttpCall:n})}catch(i){if(!(i instanceof se)||!i.isRetryable)throw i;if(t>=Dl)throw i instanceof Vr?i.cause:i;this.logEmitter.emit("warn",{message:`Attempt ${t+1}/${Dl} failed for ${r.actionGerund}: ${i.message??"(unknown)"}`,timestamp:new Date,target:""});let o=await Rl(t);this.logEmitter.emit("warn",{message:`Retrying after ${o}ms`,timestamp:new Date,target:""})}}}async handleError(r){if(r instanceof pr)throw await this.uploadSchema(),new Vr({clientVersion:this.clientVersion,cause:r});if(r)throw r}convertProtocolErrorsToClientError(r){return r.length===1?$r(r[0],this.config.clientVersion,this.config.activeProvider):new j(JSON.stringify(r),{clientVersion:this.config.clientVersion})}applyPendingMigrations(){throw new Error("Method not implemented.")}};function _l(e){if(e?.kind==="itx")return e.options.id}var vo=k(require("node:os")),Nl=k(require("node:path"));var xo=Symbol("PrismaLibraryEngineCache");function ff(){let e=globalThis;return e[xo]===void 0&&(e[xo]={}),e[xo]}function gf(e){let r=ff();if(r[e]!==void 0)return r[e];let t=Nl.default.toNamespacedPath(e),n={exports:{}},i=0;return process.platform!=="win32"&&(i=vo.default.constants.dlopen.RTLD_LAZY|vo.default.constants.dlopen.RTLD_DEEPBIND),process.dlopen(n,t,i),r[e]=n.exports,n.exports}var Ll={async loadLibrary(e){let r=await di(),t=await yl("library",e);try{return e.tracingHelper.runInChildSpan({name:"loadLibrary",internal:!0},()=>gf(t))}catch(n){let i=Ti({e:n,platformInfo:r,id:t});throw new T(i,e.clientVersion)}}};var Po,Fl={async loadLibrary(e){let{clientVersion:r,adapter:t,engineWasm:n}=e;if(t===void 0)throw new T(`The \`adapter\` option for \`PrismaClient\` is required in this context (${Vn().prettyName})`,r);if(n===void 0)throw new T("WASM engine was unexpectedly `undefined`",r);Po===void 0&&(Po=(async()=>{let o=await n.getRuntime(),s=await n.getQueryEngineWasmModule();if(s==null)throw new T("The loaded wasm module was unexpectedly `undefined` or `null` once loaded",r);let a={"./query_engine_bg.js":o},l=new WebAssembly.Instance(s,a),u=l.exports.__wbindgen_start;return o.__wbg_set_wasm(l.exports),u(),o.QueryEngine})());let i=await Po;return{debugPanic(){return Promise.reject("{}")},dmmf(){return Promise.resolve("{}")},version(){return{commit:"unknown",version:"unknown"}},QueryEngine:i}}};var hf="P2036",Ce=N("prisma:client:libraryEngine");function yf(e){return e.item_type==="query"&&"query"in e}function bf(e){return"level"in e?e.level==="error"&&e.message==="PANIC":!1}var Ml=[...si,"native"],Ef=0xffffffffffffffffn,To=1n;function wf(){let e=To++;return To>Ef&&(To=1n),e}var Qr=class{name="LibraryEngine";engine;libraryInstantiationPromise;libraryStartingPromise;libraryStoppingPromise;libraryStarted;executingQueryPromise;config;QueryEngineConstructor;libraryLoader;library;logEmitter;libQueryEnginePath;binaryTarget;datasourceOverrides;datamodel;logQueries;logLevel;lastQuery;loggerRustPanic;tracingHelper;adapterPromise;versionInfo;constructor(r,t){this.libraryLoader=t??Ll,r.engineWasm!==void 0&&(this.libraryLoader=t??Fl),this.config=r,this.libraryStarted=!1,this.logQueries=r.logQueries??!1,this.logLevel=r.logLevel??"error",this.logEmitter=r.logEmitter,this.datamodel=r.inlineSchema,this.tracingHelper=r.tracingHelper,r.enableDebugLogs&&(this.logLevel="debug");let n=Object.keys(r.overrideDatasources)[0],i=r.overrideDatasources[n]?.url;n!==void 0&&i!==void 0&&(this.datasourceOverrides={[n]:i}),this.libraryInstantiationPromise=this.instantiateLibrary()}wrapEngine(r){return{applyPendingMigrations:r.applyPendingMigrations?.bind(r),commitTransaction:this.withRequestId(r.commitTransaction.bind(r)),connect:this.withRequestId(r.connect.bind(r)),disconnect:this.withRequestId(r.disconnect.bind(r)),metrics:r.metrics?.bind(r),query:this.withRequestId(r.query.bind(r)),rollbackTransaction:this.withRequestId(r.rollbackTransaction.bind(r)),sdlSchema:r.sdlSchema?.bind(r),startTransaction:this.withRequestId(r.startTransaction.bind(r)),trace:r.trace.bind(r)}}withRequestId(r){return async(...t)=>{let n=wf().toString();try{return await r(...t,n)}finally{if(this.tracingHelper.isEnabled()){let i=await this.engine?.trace(n);if(i){let o=JSON.parse(i);this.tracingHelper.dispatchEngineSpans(o.spans)}}}}}async applyPendingMigrations(){throw new Error("Cannot call this method from this type of engine instance")}async transaction(r,t,n){await this.start();let i=await this.adapterPromise,o=JSON.stringify(t),s;if(r==="start"){let l=JSON.stringify({max_wait:n.maxWait,timeout:n.timeout,isolation_level:n.isolationLevel});s=await this.engine?.startTransaction(l,o)}else r==="commit"?s=await this.engine?.commitTransaction(n.id,o):r==="rollback"&&(s=await this.engine?.rollbackTransaction(n.id,o));let a=this.parseEngineResponse(s);if(xf(a)){let l=this.getExternalAdapterError(a,i?.errorRegistry);throw l?l.error:new z(a.message,{code:a.error_code,clientVersion:this.config.clientVersion,meta:a.meta})}else if(typeof a.message=="string")throw new j(a.message,{clientVersion:this.config.clientVersion});return a}async instantiateLibrary(){if(Ce("internalSetup"),this.libraryInstantiationPromise)return this.libraryInstantiationPromise;oi(),this.binaryTarget=await this.getCurrentBinaryTarget(),await this.tracingHelper.runInChildSpan("load_engine",()=>this.loadEngine()),this.version()}async getCurrentBinaryTarget(){{if(this.binaryTarget)return this.binaryTarget;let r=await this.tracingHelper.runInChildSpan("detect_platform",()=>ir());if(!Ml.includes(r))throw new T(`Unknown ${ce("PRISMA_QUERY_ENGINE_LIBRARY")} ${ce(W(r))}. Possible binaryTargets: ${qe(Ml.join(", "))} or a path to the query engine library.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+
+[PrismaClientInitializationError: Unable to require(`/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node`).
+The Prisma engines do not seem to be compatible with your system. Please refer to the documentation about Prisma's system requirements: https://pris.ly/d/system-requirements
+
+Details: dlopen(/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node, 0x0001): tried: '/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node' (code signature in <EF8BD00B-8DD7-30D1-A920-D3A4A1B033DD> '/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node' not valid for use in process: library load disallowed by system policy), '/System/Volumes/Preboot/Cryptexes/OS/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node' (no such file), '/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node' (no such file)] {
+  clientVersion: '6.8.2',
+  errorCode: undefined,
+  retryable: undefined
+}
+
+Node.js v22.17.0
+/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/@prisma/client/runtime/library.js:64
+${er(e)}`}var Xm=N("prisma:client:engines:resolveEnginePath"),ef=()=>new RegExp("runtime[\\\\/]library\\.m?js$");async function yl(e,r){let t={binary:process.env.PRISMA_QUERY_ENGINE_BINARY,library:process.env.PRISMA_QUERY_ENGINE_LIBRARY}[e]??r.prismaPath;if(t!==void 0)return t;let{enginePath:n,searchedLocations:i}=await rf(e,r);if(Xm("enginePath",n),n!==void 0&&e==="binary"&&Pi(n),n!==void 0)return r.prismaPath=n;let o=await ir(),s=r.generator?.binaryTargets??[],a=s.some(d=>d.native),l=!s.some(d=>d.value===o),u=__filename.match(ef())===null,c={searchedLocations:i,generatorBinaryTargets:s,generator:r.generator,runtimeBinaryTarget:o,queryEngineName:bl(e,o),expectedLocation:St.default.relative(process.cwd(),r.dirname),errorStack:new Error().stack},p;throw a&&l?p=fl(c):l?p=dl(c):u?p=ml(c):p=gl(c),new T(p,r.clientVersion)}async function rf(e,r){let t=await ir(),n=[],i=[r.dirname,St.default.resolve(__dirname,".."),r.generator?.output?.value??__dirname,St.default.resolve(__dirname,"../../../.prisma/client"),"/tmp/prisma-engines",r.cwd];__filename.includes("resolveEnginePath")&&i.push(fs());for(let o of i){let s=bl(e,t),a=St.default.join(o,s);if(n.push(o),hl.default.existsSync(a))return{enginePath:a,searchedLocations:n}}return{enginePath:void 0,searchedLocations:n}}function bl(e,r){return e==="library"?Qt(r,"fs"):`query-engine-${r}${r==="windows"?".exe":""}`}var lo=k(Oi());function El(e){return e?e.replace(/".*"/g,'"X"').replace(/[\s:\[]([+-]?([0-9]*[.])?[0-9]+)/g,r=>`${r[0]}5`):""}function wl(e){return e.split(`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^
+
+[PrismaClientInitializationError: Prisma Client could not locate the Query Engine for runtime "darwin-arm64".
+
+This is likely caused by tooling that has not copied "libquery_engine-darwin-arm64.dylib.node" to the deployment folder.
+Ensure that you ran `prisma generate` and that "libquery_engine-darwin-arm64.dylib.node" has been copied to "node_modules/.prisma/client".
+
+We would appreciate if you could take the time to share some information with us.
+Please help us by answering a few questions: https://pris.ly/engine-not-found-tooling-investigation
+
+The following locations have been searched:
+  /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/.prisma/client
+  /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/@prisma/client
+  /tmp/prisma-engines
+  /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/prisma] {
+  clientVersion: '6.8.2',
+  errorCode: undefined,
+  retryable: undefined
+}
+
+Node.js v22.17.0
+/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/@prisma/client/runtime/library.js:64
+${er(e)}`}var Xm=N("prisma:client:engines:resolveEnginePath"),ef=()=>new RegExp("runtime[\\\\/]library\\.m?js$");async function yl(e,r){let t={binary:process.env.PRISMA_QUERY_ENGINE_BINARY,library:process.env.PRISMA_QUERY_ENGINE_LIBRARY}[e]??r.prismaPath;if(t!==void 0)return t;let{enginePath:n,searchedLocations:i}=await rf(e,r);if(Xm("enginePath",n),n!==void 0&&e==="binary"&&Pi(n),n!==void 0)return r.prismaPath=n;let o=await ir(),s=r.generator?.binaryTargets??[],a=s.some(d=>d.native),l=!s.some(d=>d.value===o),u=__filename.match(ef())===null,c={searchedLocations:i,generatorBinaryTargets:s,generator:r.generator,runtimeBinaryTarget:o,queryEngineName:bl(e,o),expectedLocation:St.default.relative(process.cwd(),r.dirname),errorStack:new Error().stack},p;throw a&&l?p=fl(c):l?p=dl(c):u?p=ml(c):p=gl(c),new T(p,r.clientVersion)}async function rf(e,r){let t=await ir(),n=[],i=[r.dirname,St.default.resolve(__dirname,".."),r.generator?.output?.value??__dirname,St.default.resolve(__dirname,"../../../.prisma/client"),"/tmp/prisma-engines",r.cwd];__filename.includes("resolveEnginePath")&&i.push(fs());for(let o of i){let s=bl(e,t),a=St.default.join(o,s);if(n.push(o),hl.default.existsSync(a))return{enginePath:a,searchedLocations:n}}return{enginePath:void 0,searchedLocations:n}}function bl(e,r){return e==="library"?Qt(r,"fs"):`query-engine-${r}${r==="windows"?".exe":""}`}var lo=k(Oi());function El(e){return e?e.replace(/".*"/g,'"X"').replace(/[\s:\[]([+-]?([0-9]*[.])?[0-9]+)/g,r=>`${r[0]}5`):""}function wl(e){return e.split(`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^
+
+[PrismaClientInitializationError: Prisma Client could not locate the Query Engine for runtime "darwin-arm64".
+
+This is likely caused by tooling that has not copied "libquery_engine-darwin-arm64.dylib.node" to the deployment folder.
+Ensure that you ran `prisma generate` and that "libquery_engine-darwin-arm64.dylib.node" has been copied to "node_modules/.prisma/client".
+
+We would appreciate if you could take the time to share some information with us.
+Please help us by answering a few questions: https://pris.ly/engine-not-found-tooling-investigation
+
+The following locations have been searched:
+  /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/.prisma/client
+  /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/@prisma/client
+  /tmp/prisma-engines
+  /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/prisma] {
+  clientVersion: '6.8.2',
+  errorCode: undefined,
+  retryable: undefined
+}
+
+Node.js v22.17.0
+/Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/@prisma/client/runtime/library.js:64
+${er(e)}`}var Xm=N("prisma:client:engines:resolveEnginePath"),ef=()=>new RegExp("runtime[\\\\/]library\\.m?js$");async function yl(e,r){let t={binary:process.env.PRISMA_QUERY_ENGINE_BINARY,library:process.env.PRISMA_QUERY_ENGINE_LIBRARY}[e]??r.prismaPath;if(t!==void 0)return t;let{enginePath:n,searchedLocations:i}=await rf(e,r);if(Xm("enginePath",n),n!==void 0&&e==="binary"&&Pi(n),n!==void 0)return r.prismaPath=n;let o=await ir(),s=r.generator?.binaryTargets??[],a=s.some(d=>d.native),l=!s.some(d=>d.value===o),u=__filename.match(ef())===null,c={searchedLocations:i,generatorBinaryTargets:s,generator:r.generator,runtimeBinaryTarget:o,queryEngineName:bl(e,o),expectedLocation:St.default.relative(process.cwd(),r.dirname),errorStack:new Error().stack},p;throw a&&l?p=fl(c):l?p=dl(c):u?p=ml(c):p=gl(c),new T(p,r.clientVersion)}async function rf(e,r){let t=await ir(),n=[],i=[r.dirname,St.default.resolve(__dirname,".."),r.generator?.output?.value??__dirname,St.default.resolve(__dirname,"../../../.prisma/client"),"/tmp/prisma-engines",r.cwd];__filename.includes("resolveEnginePath")&&i.push(fs());for(let o of i){let s=bl(e,t),a=St.default.join(o,s);if(n.push(o),hl.default.existsSync(a))return{enginePath:a,searchedLocations:n}}return{enginePath:void 0,searchedLocations:n}}function bl(e,r){return e==="library"?Qt(r,"fs"):`query-engine-${r}${r==="windows"?".exe":""}`}var lo=k(Oi());function El(e){return e?e.replace(/".*"/g,'"X"').replace(/[\s:\[]([+-]?([0-9]*[.])?[0-9]+)/g,r=>`${r[0]}5`):""}function wl(e){return e.split(`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^
+
+[PrismaClientInitializationError: Prisma Client could not locate the Query Engine for runtime "darwin-arm64".
+
+This is likely caused by tooling that has not copied "libquery_engine-darwin-arm64.dylib.node" to the deployment folder.
+Ensure that you ran `prisma generate` and that "libquery_engine-darwin-arm64.dylib.node" has been copied to "node_modules/.prisma/client".
+
+We would appreciate if you could take the time to share some information with us.
+Please help us by answering a few questions: https://pris.ly/engine-not-found-tooling-investigation
+
+The following locations have been searched:
+  /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/.prisma/client
+  /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/node_modules/@prisma/client
+  /tmp/prisma-engines
+  /Users/janderson/Desktop/FIAP/Arquitetura de Software/Software/autoservicemanager-repos/autoservicemanager-app/prisma] {
+  clientVersion: '6.8.2',
+  errorCode: undefined,
+  retryable: undefined
+}
+
+Node.js v22.17.0
+FAIL src/infrastructure/database/mysql/prisma.service.spec.ts
+  ● Test suite failed to run
+
+    Jest worker encountered 4 child process exceptions, exceeding retry limit
+
+      at ChildProcessWorker.initialize (node_modules/jest-worker/build/index.js:805:21)
+
+--------------------------------------------|---------|----------|---------|---------|-------------------
+File                                        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+--------------------------------------------|---------|----------|---------|---------|-------------------
+All files                                   |   98.91 |    90.04 |   99.45 |   98.98 |                   
+ application/atendimento/errors             |     100 |      100 |     100 |     100 |                   
+  order-status-conflict.exception.ts        |     100 |      100 |     100 |     100 |                   
+ application/atendimento/helpers            |     100 |      100 |     100 |     100 |                   
+  notificar-mudanca-status.ts               |     100 |      100 |     100 |     100 |                   
+  ordem-servico-public-access.ts            |     100 |      100 |     100 |     100 |                   
+  run-order-status-assertion.ts             |     100 |      100 |     100 |     100 |                   
+ application/atendimento/use-cases          |   98.34 |    82.35 |     100 |   98.16 |                   
+  aprovar-orcamento.use-case.ts             |     100 |    85.71 |     100 |     100 | 27                
+  consultar-status-os.use-case.ts           |     100 |      100 |     100 |     100 |                   
+  criar-ordem-servico.use-case.ts           |     100 |    86.36 |     100 |     100 | 39,93-111         
+  entregar-veiculo.use-case.ts              |     100 |    83.33 |     100 |     100 | 21                
+  finalizar-os.use-case.ts                  |     100 |    83.33 |     100 |     100 | 21                
+  gerar-orcamento.use-case.ts               |     100 |    83.33 |     100 |     100 | 26                
+  iniciar-diagnostico.use-case.ts           |     100 |    83.33 |     100 |     100 | 21                
+  listar-historico-os.use-case.ts           |     100 |      100 |     100 |     100 |                   
+  listar-ordens-servico.use-case.ts         |     100 |      100 |     100 |     100 |                   
+  obter-ordem-servico.use-case.ts           |     100 |      100 |     100 |     100 |                   
+  obter-tempo-medio-execucao.use-case.ts    |     100 |      100 |     100 |     100 |                   
+  processar-webhook-status-os.use-case.ts   |   86.48 |     62.5 |     100 |   85.71 | 47,50,54,56,66    
+ application/autenticacao/use-cases         |     100 |    96.42 |     100 |     100 |                   
+  alterar-senha.use-case.ts                 |     100 |      100 |     100 |     100 |                   
+  atualizar-usuario.use-case.ts             |     100 |      100 |     100 |     100 |                   
+  criar-usuario.use-case.ts                 |     100 |      100 |     100 |     100 |                   
+  listar-usuarios.use-case.ts               |     100 |      100 |     100 |     100 |                   
+  login-admin.use-case.ts                   |     100 |       90 |     100 |     100 | 26                
+  obter-usuario.use-case.ts                 |     100 |      100 |     100 |     100 |                   
+ application/cadastro/use-cases             |     100 |    98.48 |     100 |     100 |                   
+  atualizar-cliente.use-case.ts             |     100 |      100 |     100 |     100 |                   
+  atualizar-veiculo.use-case.ts             |     100 |      100 |     100 |     100 |                   
+  cadastrar-cliente.use-case.ts             |     100 |      100 |     100 |     100 |                   
+  cadastrar-veiculo.use-case.ts             |     100 |      100 |     100 |     100 |                   
+  inativar-cliente.use-case.ts              |     100 |      100 |     100 |     100 |                   
+  inativar-veiculo.use-case.ts              |     100 |      100 |     100 |     100 |                   
+  listar-clientes.use-case.ts               |     100 |      100 |     100 |     100 |                   
+  listar-veiculos.use-case.ts               |     100 |       90 |     100 |     100 | 41                
+  obter-cliente.use-case.ts                 |     100 |      100 |     100 |     100 |                   
+  obter-veiculo.use-case.ts                 |     100 |      100 |     100 |     100 |                   
+ application/catalogo-servicos/use-cases    |   98.38 |       95 |     100 |     100 |                   
+  atualizar-servico-catalogo.use-case.ts    |   94.73 |       90 |     100 |     100 | 27                
+  cadastrar-servico-catalogo.use-case.ts    |     100 |      100 |     100 |     100 |                   
+  inativar-servico-catalogo.use-case.ts     |     100 |      100 |     100 |     100 |                   
+  listar-servicos-catalogo.use-case.ts      |     100 |      100 |     100 |     100 |                   
+  obter-servico-catalogo.use-case.ts        |     100 |      100 |     100 |     100 |                   
+ application/estoque/use-cases              |   98.78 |       90 |     100 |     100 |                   
+  atualizar-peca.use-case.ts                |   94.11 |     87.5 |     100 |     100 | 23                
+  cadastrar-peca.use-case.ts                |     100 |       75 |     100 |     100 | 24                
+  inativar-peca.use-case.ts                 |     100 |      100 |     100 |     100 |                   
+  listar-pecas.use-case.ts                  |     100 |      100 |     100 |     100 |                   
+  movimentar-estoque-peca.use-case.ts       |     100 |     87.5 |     100 |     100 | 35                
+  obter-peca.use-case.ts                    |     100 |      100 |     100 |     100 |                   
+ application/saga                           |   95.77 |    88.37 |     100 |   95.45 |                   
+  saga-orchestrator.service.ts              |   95.77 |    88.37 |     100 |   95.45 | 175-176,193       
+ domain/atendimento/entities                |     100 |      100 |     100 |     100 |                   
+  item-peca-os.entity.ts                    |     100 |      100 |     100 |     100 |                   
+  item-servico-os.entity.ts                 |     100 |      100 |     100 |     100 |                   
+  ordem-servico.entity.ts                   |     100 |      100 |     100 |     100 |                   
+ domain/atendimento/errors                  |     100 |      100 |     100 |     100 |                   
+  status-transition.exception.ts            |     100 |      100 |     100 |     100 |                   
+ domain/atendimento/events                  |     100 |      100 |     100 |     100 |                   
+  os-domain-events.ts                       |     100 |      100 |     100 |     100 |                   
+ domain/atendimento/ports                   |     100 |      100 |     100 |     100 |                   
+  orcamento-notifier.port.ts                |     100 |      100 |     100 |     100 |                   
+  ordem-servico-read.port.ts                |     100 |      100 |     100 |     100 |                   
+  os-mongo-audit.port.ts                    |     100 |      100 |     100 |     100 |                   
+  os-status-notifier.port.ts                |     100 |      100 |     100 |     100 |                   
+ domain/atendimento/repositories            |     100 |      100 |     100 |     100 |                   
+  ordem-servico.repository.ts               |     100 |      100 |     100 |     100 |                   
+ domain/atendimento/services                |     100 |    83.33 |     100 |     100 |                   
+  order-status.service.ts                   |     100 |       90 |     100 |     100 | 52                
+  webhook-status-event.mapper.ts            |     100 |       50 |     100 |     100 | 18                
+ domain/atendimento/value-objects           |     100 |      100 |     100 |     100 |                   
+  status-os-label.ts                        |     100 |      100 |     100 |     100 |                   
+  status-os.enum.ts                         |     100 |      100 |     100 |     100 |                   
+  total-os.vo.ts                            |     100 |      100 |     100 |     100 |                   
+ domain/autenticacao/constants              |     100 |      100 |     100 |     100 |                   
+  jwt-expiration.constants.ts               |     100 |      100 |     100 |     100 |                   
+ domain/autenticacao/entities               |     100 |      100 |     100 |     100 |                   
+  app-role.ts                               |     100 |      100 |     100 |     100 |                   
+  usuario-admin.entity.ts                   |     100 |      100 |     100 |     100 |                   
+ domain/autenticacao/repositories           |     100 |      100 |     100 |     100 |                   
+  usuario-admin.repository.ts               |     100 |      100 |     100 |     100 |                   
+ domain/cadastro/entities                   |     100 |      100 |     100 |     100 |                   
+  cliente.entity.ts                         |     100 |      100 |     100 |     100 |                   
+  veiculo.entity.ts                         |     100 |      100 |     100 |     100 |                   
+ domain/cadastro/repositories               |     100 |      100 |     100 |     100 |                   
+  cliente.repository.ts                     |     100 |      100 |     100 |     100 |                   
+  veiculo.repository.ts                     |     100 |      100 |     100 |     100 |                   
+ domain/cadastro/value-objects              |     100 |      100 |     100 |     100 |                   
+  cpf-cnpj.vo.ts                            |     100 |      100 |     100 |     100 |                   
+  placa.vo.ts                               |     100 |      100 |     100 |     100 |                   
+ domain/catalogo-servicos/entities          |     100 |      100 |     100 |     100 |                   
+  servico-catalogo.entity.ts                |     100 |      100 |     100 |     100 |                   
+ domain/catalogo-servicos/repositories      |     100 |      100 |     100 |     100 |                   
+  servico-catalogo.repository.ts            |     100 |      100 |     100 |     100 |                   
+ domain/estoque/entities                    |     100 |      100 |     100 |     100 |                   
+  peca-estoque.entity.ts                    |     100 |      100 |     100 |     100 |                   
+ domain/estoque/repositories                |     100 |      100 |     100 |     100 |                   
+  peca-estoque.repository.ts                |     100 |      100 |     100 |     100 |                   
+ domain/saga                                |     100 |      100 |     100 |     100 |                   
+  saga-state-machine.ts                     |     100 |      100 |     100 |     100 |                   
+  saga.ports.ts                             |     100 |      100 |     100 |     100 |                   
+  saga.types.ts                             |     100 |      100 |     100 |     100 |                   
+ infrastructure/auth                        |     100 |     90.9 |     100 |     100 |                   
+  saga-events-secret.guard.ts               |     100 |     90.9 |     100 |     100 | 13                
+ infrastructure/database/mysql/repositories |   97.95 |    88.37 |     100 |   97.77 |                   
+  prisma-saga.repository.ts                 |   97.95 |    88.37 |     100 |   97.77 | 173               
+ infrastructure/messaging                   |     100 |       84 |     100 |     100 |                   
+  sqs-command.publisher.ts                  |     100 |    80.76 |     100 |     100 | 13-29,75          
+  sqs-saga-event.consumer.ts                |     100 |     87.5 |     100 |     100 | 23-24             
+ interfaces/http/modules/saga               |   93.33 |       75 |      75 |    92.3 |                   
+  saga-events.controller.ts                 |   93.33 |       75 |      75 |    92.3 | 33                
+--------------------------------------------|---------|----------|---------|---------|-------------------
+Summary of all failing tests
+FAIL src/infrastructure/database/mysql/prisma.service.spec.ts
+  ● Test suite failed to run
+
+    Jest worker encountered 4 child process exceptions, exceeding retry limit
+
+      at ChildProcessWorker.initialize (node_modules/jest-worker/build/index.js:805:21)
+
+
+Test Suites: 1 failed, 97 passed, 98 total
+Tests:       437 passed, 437 total
+Snapshots:   0 total
+Time:        73.309 s
+Ran all test suites.
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

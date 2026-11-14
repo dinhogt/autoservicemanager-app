@@ -13,9 +13,14 @@ export class SnsOrcamentoNotifier implements OrcamentoNotifierPort {
   private readonly topicArn: string | undefined;
 
   constructor(private readonly config: ConfigService) {
-    this.topicArn = this.config.get<string>('OS_NOTIFICATIONS_TOPIC_ARN')?.trim();
+    this.topicArn = this.config
+      .get<string>('OS_NOTIFICATIONS_TOPIC_ARN')
+      ?.trim();
     this.sns = new SNSClient({
-      region: this.config.get<string>('AWS_REGION') || process.env.AWS_REGION || 'us-east-1',
+      region:
+        this.config.get<string>('AWS_REGION') ||
+        process.env.AWS_REGION ||
+        'us-east-1',
     });
   }
 
