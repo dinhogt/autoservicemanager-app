@@ -36,3 +36,4 @@ AWSCLIV2.pkg
 # specs locais do agente (não faz parte da entrega)
 codeAgentSpecs/
 # spec-skills-lib/ (contrato Spec-Skills no app)
+docs/delivery/assets/puppeteer.json
