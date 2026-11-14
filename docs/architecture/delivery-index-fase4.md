@@ -42,5 +42,7 @@
 
 - Documento-base: [portal-entrega-fase4.md](../delivery/portal-entrega-fase4.md)
 - Roteiro: [video-script-fase4.md](../delivery/video-script-fase4.md)
-- Os links públicos dos novos repositórios e do vídeo devem ser preenchidos somente após publicação.
+- Links dos repositórios: ver [portal-entrega-fase4.md](../delivery/portal-entrega-fase4.md) (preenchidos).
+- Link do vídeo: preencher após upload.
 - O smoke AWS permanece condicionado à autorização de `terraform apply`; não declarar execução ao vivo sem evidência.
+- Branch protection formal em billing/execution exige GitHub Pro (repos privados) ou tornar os repos públicos; default branch já é `develop`.

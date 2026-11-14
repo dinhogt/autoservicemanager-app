@@ -5,7 +5,7 @@
 | Role | `infrastructure` |
 | Todo | `branch-protection` / `oidc-secrets-review` (GitHub side) |
 | Data | 2026-09-05 |
-| Repos | [app](https://github.com/dinhogt/autoservicemanager-app) · [auth-lambda](https://github.com/dinhogt/autoservicemanager-auth-lambda) · [infra-db](https://github.com/dinhogt/autoservicemanager-infra-db) · [infra-k8s](https://github.com/dinhogt/autoservicemanager-infra-k8s) |
+| Repos | [app](https://github.com/dinhogt/autoservicemanager-app) · [billing](https://github.com/dinhogt/autoservicemanager-billing) · [execution](https://github.com/dinhogt/autoservicemanager-execution) · [auth-lambda](https://github.com/dinhogt/autoservicemanager-auth-lambda) · [infra-db](https://github.com/dinhogt/autoservicemanager-infra-db) · [infra-k8s](https://github.com/dinhogt/autoservicemanager-infra-k8s) |
 | ADR | [ADR-009](../architecture/adr-009-github-oidc-aws-iam.md) |
 | Status Fase C | **GitHub ready** |
 | Status Fase E (2026-09-06) | **Sem terraform apply** (pedido do usuário). Prep OIDC + checklist: [aws-bootstrap-no-apply.md](./aws-bootstrap-no-apply.md) |
@@ -32,8 +32,19 @@
 | [autoservicemanager-auth-lambda](https://github.com/dinhogt/autoservicemanager-auth-lambda) | [settings/branches](https://github.com/dinhogt/autoservicemanager-auth-lambda/settings/branches) | [settings/environments](https://github.com/dinhogt/autoservicemanager-auth-lambda/settings/environments) |
 | [autoservicemanager-infra-db](https://github.com/dinhogt/autoservicemanager-infra-db) | [settings/branches](https://github.com/dinhogt/autoservicemanager-infra-db/settings/branches) | [settings/environments](https://github.com/dinhogt/autoservicemanager-infra-db/settings/environments) |
 | [autoservicemanager-infra-k8s](https://github.com/dinhogt/autoservicemanager-infra-k8s) | [settings/branches](https://github.com/dinhogt/autoservicemanager-infra-k8s/settings/branches) | [settings/environments](https://github.com/dinhogt/autoservicemanager-infra-k8s/settings/environments) |
+| [autoservicemanager-billing](https://github.com/dinhogt/autoservicemanager-billing) | [settings/branches](https://github.com/dinhogt/autoservicemanager-billing/settings/branches) | [settings/environments](https://github.com/dinhogt/autoservicemanager-billing/settings/environments) |
+| [autoservicemanager-execution](https://github.com/dinhogt/autoservicemanager-execution) | [settings/branches](https://github.com/dinhogt/autoservicemanager-execution/settings/branches) | [settings/environments](https://github.com/dinhogt/autoservicemanager-execution/settings/environments) |
 
-## Superfícies CI (4 remotes)
+### Fase 4 — billing / execution (2026-11-14)
+
+| Controle | Estado |
+|----------|--------|
+| Default branch | `develop` |
+| Branch `master` publicada | Sim (espelho de `develop` no bootstrap) |
+| Branch protection rules (API) | **Bloqueado** em conta free + repo privado — exige GitHub Pro ou repo público |
+| Workaround | Manter `master` só via PR por processo do time; ou publicar os repos / upgrade Pro |
+
+## Superfícies CI (4 remotes + Fase 4)
 
 | Repo | Workflow | Push `develop` / `master` |
 |------|----------|---------------------------|
@@ -41,6 +52,8 @@
 | [auth-lambda](https://github.com/dinhogt/autoservicemanager-auth-lambda) | `ci-cd.yml` | OIDC → `lambda:UpdateFunctionCode` |
 | [infra-db](https://github.com/dinhogt/autoservicemanager-infra-db) | `ci-cd.yml` | OIDC → `plan -out` → `apply tfplan` |
 | [infra-k8s](https://github.com/dinhogt/autoservicemanager-infra-k8s) | `ci-cd.yml` | OIDC → `plan -out` → `apply tfplan` |
+| [billing](https://github.com/dinhogt/autoservicemanager-billing) | `ci.yml` | OIDC → ECR → EKS (gated `ENABLE_OIDC_CD`) |
+| [execution](https://github.com/dinhogt/autoservicemanager-execution) | `ci.yml` | OIDC → ECR → EKS (gated `ENABLE_OIDC_CD`) |
 
 PR: validação + **`security-gate`**. Nenhum job `cd` / `plan-apply` sem `security-gate` verde.
 

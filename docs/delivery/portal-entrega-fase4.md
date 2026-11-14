@@ -8,9 +8,9 @@ Preencher nomes, RM e turma dos participantes antes da exportação para PDF.
 
 | Item | URL |
 |---|---|
-| OS Service | preencher após publicação |
-| Billing Service | preencher após publicação |
-| Execution Service | preencher após publicação |
+| OS Service | https://github.com/dinhogt/autoservicemanager-app |
+| Billing Service | https://github.com/dinhogt/autoservicemanager-billing |
+| Execution Service | https://github.com/dinhogt/autoservicemanager-execution |
 | Auth Lambda | https://github.com/dinhogt/autoservicemanager-auth-lambda |
 | Infra DB | https://github.com/dinhogt/autoservicemanager-infra-db |
 | Infra Kubernetes | https://github.com/dinhogt/autoservicemanager-infra-k8s |
