@@ -1,0 +1,64 @@
+flowchart TB
+  subgraph Clients["Clientes"]
+    CLI[Cliente_Admin_Postman]
+  end
+  subgraph Edge["Borda_AWS"]
+    APIGW[API_Gateway_HTTP]
+    AUTH[auth_lambda_CPF_JWT]
+    NLB[NLB_VPC_Link]
+  end
+  subgraph EKS["EKS_autoservice"]
+    OS[OS_Service_Saga]
+    BL[Billing_Service]
+    EX[Execution_Service]
+  end
+  subgraph Data["Database_per_service"]
+    MY[(RDS_MySQL)]
+    DDB1[(DynamoDB_Billing)]
+    DDB2[(DynamoDB_Execution)]
+  end
+  subgraph Messaging["Mensageria"]
+    SQS[SQS_commands_DLQ]
+    SNS[SNS_events]
+    OSEVT[SQS_os_events]
+  end
+  subgraph External["Externos"]
+    MP[Mercado_Pago_sandbox]
+  end
+  subgraph Obs["Observabilidade"]
+    CW[CloudWatch]
+    XR[X_Ray]
+  end
+  subgraph Cicd["CICD"]
+    GH[GitHub_Actions]
+    ECR[ECR]
+    DEP[Deploy_EKS]
+  end
+  CLI -->|HTTPS| APIGW
+  APIGW --> AUTH
+  APIGW --> NLB
+  NLB --> OS
+  NLB --> BL
+  NLB --> EX
+  OS --> MY
+  BL --> DDB1
+  EX --> DDB2
+  OS -->|comandos| SQS
+  SQS --> BL
+  SQS --> EX
+  BL -->|eventos| SNS
+  EX -->|eventos| SNS
+  SNS --> OSEVT
+  OSEVT --> OS
+  BL <-->|PIX_webhook| MP
+  OS --> CW
+  BL --> CW
+  EX --> CW
+  OS --> XR
+  BL --> XR
+  EX --> XR
+  GH --> ECR
+  ECR --> DEP
+  DEP --> OS
+  DEP --> BL
+  DEP --> EX

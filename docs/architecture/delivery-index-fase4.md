@@ -40,9 +40,10 @@
 
 ## Entrega no portal
 
-- Documento-base: [portal-entrega-fase4.md](../delivery/portal-entrega-fase4.md)
-- Roteiro: [video-script-fase4.md](../delivery/video-script-fase4.md)
-- Links dos repositórios: ver [portal-entrega-fase4.md](../delivery/portal-entrega-fase4.md) (preenchidos).
-- Link do vídeo: preencher após upload.
-- O smoke AWS permanece condicionado à autorização de `terraform apply`; não declarar execução ao vivo sem evidência.
-- Branch protection formal em billing/execution exige GitHub Pro (repos privados) ou tornar os repos públicos; default branch já é `develop`.
+- **PDF canônico (P4):** [portal-entrega-fase4.md](../delivery/portal-entrega-fase4.md) — cenário final Opção B (diagrama, Saga, cobertura, Docker/K8s, Postman).
+- Diagrama PNG: [delivery/assets/diagrama-geral-fase4.png](../delivery/assets/diagrama-geral-fase4.png).
+- Roteiro do vídeo: [video-script-fase4.md](../delivery/video-script-fase4.md).
+- Links dos 6 repositórios: preenchidos no portal.
+- Participantes e link do vídeo: `[PREENCHER]` no portal (P5/time).
+- Smoke AWS / deploy EKS: após P2–P3; anexar evidência no PDF antes da submissão.
+- Branch protection formal em billing/execution exige GitHub Pro (repos privados) ou repos públicos; default branch = `develop`.
