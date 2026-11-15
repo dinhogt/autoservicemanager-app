@@ -4,7 +4,7 @@
 |-------|-------|
 | Role | `qa` |
 | Data | 2026-09-06 |
-| Baseline | 4 remotes + docs ADR-011 / diagrams / ER / delivery-index |
+| Baseline | 4 remotes + docs ADR-011 / diagrams / ER |
 | Resultado automático | **Mantém PASS** do regression 2026-08-08 (não re-executado nesta sessão de docs/bootstrap) |
 | Cloud smoke | **HOLD** — sem terraform apply |
 

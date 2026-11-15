@@ -77,7 +77,7 @@ flowchart LR
 | [ADR-010](./adr-010-discontinue-mongodb-audit.md) | Fim do Mongo; audit via CloudWatch |
 | [ADR-011](./adr-011-sync-rest-api-gateway.md) | Comunicação sync HTTP/REST via API Gateway |
 
-RFCs: [001 AWS](./rfc-001-cloud-aws.md) · [002 RDS](./rfc-002-mysql-rds.md) · [003 Auth](./rfc-003-auth-lambda-rs256.md). Diagramas: [diagrams-fase3.md](./diagrams-fase3.md) · [er-diagram.md](./er-diagram.md) · [risk-map-fase3.md](./risk-map-fase3.md). Índice PDF: [delivery-index.md](./delivery-index.md).
+RFCs: [001 AWS](./rfc-001-cloud-aws.md) · [002 RDS](./rfc-002-mysql-rds.md) · [003 Auth](./rfc-003-auth-lambda-rs256.md). Diagramas: [diagrams-fase3.md](./diagrams-fase3.md) · [er-diagram.md](./er-diagram.md) · [risk-map-fase3.md](./risk-map-fase3.md).
 ## NFR
 
 | NFR | Abordagem |
@@ -114,6 +114,6 @@ RFCs: [001 AWS](./rfc-001-cloud-aws.md) · [002 RDS](./rfc-002-mysql-rds.md) · 
 
 - **next_todo:** bootstrap AWS / smoke (após aprovação de custo) → QA GO → `delivery-pdf`
 - **next_role:** `infrastructure` / `qa` / `documentation`
-- **Artefatos docs-arch:** [docs-arch-handoff.md](./docs-arch-handoff.md) · [delivery-index.md](./delivery-index.md)
+- **Artefatos docs-arch:** [docs-arch-handoff.md](./docs-arch-handoff.md)
 - **Branch protection:** [../infrastructure/branch-protection.md](../infrastructure/branch-protection.md)
 - **Comunicação:** [ADR-011](./adr-011-sync-rest-api-gateway.md)

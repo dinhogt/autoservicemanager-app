@@ -10,8 +10,7 @@ Checklist do enunciado: **Dockerfile**, **manifestos Kubernetes**, **evidência 
 | Solution design | [`docs/architecture/solution-design-fase4.md`](../architecture/solution-design-fase4.md) |
 
 Use o diagrama Mermaid “Diagrama Geral” no PDF do portal.  
-PNG pronto: [`docs/delivery/assets/diagrama-geral-fase4.png`](./assets/diagrama-geral-fase4.png).  
-Documento PDF canônico: [`portal-entrega-fase4.md`](./portal-entrega-fase4.md).
+PNG pronto: [`docs/delivery/assets/diagrama-geral-fase4.png`](./assets/diagrama-geral-fase4.png).
 
 ## Dockerfile por microsserviço
 

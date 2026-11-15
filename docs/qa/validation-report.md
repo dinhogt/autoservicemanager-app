@@ -12,7 +12,7 @@
 | Gate | Decisão | Escopo |
 |------|---------|--------|
 | Qualidade Fase 2 (fluxos F1–F7) | **GO** | Testes automatizados + regressão |
-| Entrega acadêmica docs / 4 repos / CI GitHub | **GO** | Cisão, READMEs, ADRs/RFCs/diagramas/ER, delivery-index, branch protection |
+| Entrega acadêmica docs / 4 repos / CI GitHub | **GO** | Cisão, READMEs, ADRs/RFCs/diagramas/ER, branch protection |
 | Release live homolog (APIGW + EKS + smoke) | **CONDITIONAL / HOLD** | Usuário pediu **sem terraform apply**; profile `asm-bootstrap` sem IAM admin; smoke ao vivo **não executado** |
 
 **Go/no-go Fase 3 (docs + repos):** **GO** para rubrica documental e estrutura de remotes.  
@@ -54,4 +54,4 @@
 ## Handoff
 
 - **next:** liberar apply → smoke → atualizar este report para **GO live**  
-- **delivery:** [delivery-index.md](../architecture/delivery-index.md) · [portal-entrega.md](../delivery/portal-entrega.md)
+- **delivery:** evidências em `docs/architecture/`, `docs/delivery/artifacts-fase4.md` e inventário de cobertura/Postman
