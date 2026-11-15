@@ -5,6 +5,7 @@ import { SagaOrchestratorService } from '../../../../application/saga/saga-orche
 import {
   BILLING_COMMAND_PORT,
   EXECUTION_COMMAND_PORT,
+  SAGA_METRICS_PORT,
   SAGA_REPOSITORY,
 } from '../../../../domain/saga/saga.ports';
 import { SagaStateMachine } from '../../../../domain/saga/saga-state-machine';
@@ -15,6 +16,7 @@ import {
   ExecutionSqsCommandPublisher,
 } from '../../../../infrastructure/messaging/sqs-command.publisher';
 import { SqsSagaEventConsumer } from '../../../../infrastructure/messaging/sqs-saga-event.consumer';
+import { SagaMetricsAdapter } from '../../../../infrastructure/observability/saga-metrics.adapter';
 import { SagaEventsController } from './saga-events.controller';
 
 @Module({
@@ -38,6 +40,7 @@ import { SagaEventsController } from './saga-events.controller';
       useClass: ExecutionSqsCommandPublisher,
     },
     { provide: BILLING_COMMAND_PORT, useClass: BillingSqsCommandPublisher },
+    { provide: SAGA_METRICS_PORT, useClass: SagaMetricsAdapter },
     SqsSagaEventConsumer,
   ],
   exports: [SagaOrchestratorService],

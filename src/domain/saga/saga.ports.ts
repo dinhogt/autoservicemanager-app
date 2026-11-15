@@ -8,6 +8,24 @@ import type {
 export const SAGA_REPOSITORY = Symbol('SAGA_REPOSITORY');
 export const EXECUTION_COMMAND_PORT = Symbol('EXECUTION_COMMAND_PORT');
 export const BILLING_COMMAND_PORT = Symbol('BILLING_COMMAND_PORT');
+export const SAGA_METRICS_PORT = Symbol('SAGA_METRICS_PORT');
+
+export interface SagaMetricsPort {
+  journey(input: {
+    event: string;
+    metric: string;
+    unit?: 'Count' | 'Milliseconds';
+    value: number;
+    operation: string;
+    outcome: string;
+    correlationId: string;
+    sagaId: string;
+    messageId: string;
+    aggregateId: string;
+    durationMs?: number;
+    service?: string;
+  }): void;
+}
 
 export interface SagaRepository {
   create(input: {

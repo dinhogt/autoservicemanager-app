@@ -16,15 +16,16 @@ import { randomUUID } from 'crypto';
 import {
   BILLING_COMMAND_PORT,
   EXECUTION_COMMAND_PORT,
+  SAGA_METRICS_PORT,
   SAGA_REPOSITORY,
   type CommandPublisherPort,
+  type SagaMetricsPort,
   type SagaRepository,
 } from '../../domain/saga/saga.ports';
 import {
   SagaStateMachine,
   initialDiagnosisCommand,
 } from '../../domain/saga/saga-state-machine';
-import { emitJourneyMetric } from '../../infrastructure/observability/business-metrics';
 
 @Injectable()
 export class SagaOrchestratorService {
@@ -34,6 +35,7 @@ export class SagaOrchestratorService {
     private readonly execution: CommandPublisherPort,
     @Inject(BILLING_COMMAND_PORT)
     private readonly billing: CommandPublisherPort,
+    @Inject(SAGA_METRICS_PORT) private readonly metrics: SagaMetricsPort,
     private readonly stateMachine: SagaStateMachine,
   ) {}
 
@@ -49,7 +51,7 @@ export class SagaOrchestratorService {
     });
     await this.repository.enqueue(saga.id, [initialDiagnosisCommand(saga)]);
     await this.dispatchPending(correlationId);
-    emitJourneyMetric({
+    this.metrics.journey({
       event: 'saga_started',
       metric: 'SagaStarted',
       value: 1,
@@ -158,7 +160,7 @@ export class SagaOrchestratorService {
     startedAt: number,
   ): void {
     const durationMs = Date.now() - startedAt;
-    emitJourneyMetric({
+    this.metrics.journey({
       event: 'saga_step_processed',
       metric: 'SagaStepDuration',
       unit: 'Milliseconds',
@@ -173,7 +175,7 @@ export class SagaOrchestratorService {
     });
     if (saga.createdAt) {
       const sagaDurationMs = Math.max(0, Date.now() - saga.createdAt.getTime());
-      emitJourneyMetric({
+      this.metrics.journey({
         event: 'saga_duration_observed',
         metric: 'SagaDuration',
         unit: 'Milliseconds',
@@ -190,7 +192,7 @@ export class SagaOrchestratorService {
     if (
       ['COMPLETED', 'COMPENSATED', 'FAILED', 'CANCELLED'].includes(saga.status)
     ) {
-      emitJourneyMetric({
+      this.metrics.journey({
         event: 'saga_finished',
         metric: 'SagaOutcome',
         value: 1,

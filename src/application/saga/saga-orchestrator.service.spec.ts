@@ -7,6 +7,7 @@ import {
 } from '@dinhogt/domain-shared';
 import type {
   CommandPublisherPort,
+  SagaMetricsPort,
   SagaRepository,
 } from '../../domain/saga/saga.ports';
 import { SagaStateMachine } from '../../domain/saga/saga-state-machine';
@@ -25,6 +26,7 @@ const saga: SagaInstance = {
   paymentId: null,
   failureReason: null,
   metadata: {},
+  createdAt: new Date('2026-09-22T20:00:00.000Z'),
 };
 
 const diagnosisEvent = {
@@ -42,6 +44,7 @@ describe('SagaOrchestratorService', () => {
   let repository: jest.Mocked<SagaRepository>;
   let execution: jest.Mocked<CommandPublisherPort>;
   let billing: jest.Mocked<CommandPublisherPort>;
+  let metrics: jest.Mocked<SagaMetricsPort>;
   let service: SagaOrchestratorService;
 
   beforeEach(() => {
@@ -57,10 +60,12 @@ describe('SagaOrchestratorService', () => {
     };
     execution = { publish: jest.fn().mockResolvedValue(undefined) };
     billing = { publish: jest.fn().mockResolvedValue(undefined) };
+    metrics = { journey: jest.fn() };
     service = new SagaOrchestratorService(
       repository,
       execution,
       billing,
+      metrics,
       new SagaStateMachine(),
     );
   });
